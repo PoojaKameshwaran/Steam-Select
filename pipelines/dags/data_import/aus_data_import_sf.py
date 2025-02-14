@@ -1,6 +1,5 @@
 import pandas as pd
 import json
-import gzip
 import os
 import snowflake.connector as snow
 from snowflake.connector.pandas_tools import write_pandas
@@ -8,10 +7,9 @@ import getpass
 
 def read_json_file(file_path):
     """
-    Reads a JSON or GZIP-compressed JSON file and returns a properly formatted DataFrame.
+    Reads a JSON file and returns a properly formatted DataFrame.
     """
 
-    # Read as a regular JSON file
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -70,7 +68,12 @@ def write_to_snowflake(df, config, table_name):
 
 if __name__ == "__main__":
     # Prompt user for file path
-    file_path = r"C:\Users\pooja\Desktop\NEU\Spring '25\IE 7374\aus_user_reviews.json"
+    file_path = input("Enter the full path of the JSON file: ").strip()
+
+    # Check if file is a JSON file
+    if not file_path.lower().endswith('.json'):
+        print("❌ Error: Please provide a valid .json file.")
+        exit(1)
 
     # Read and parse JSON data
     df = read_json_file(file_path)
