@@ -2,13 +2,13 @@ import ast
 import snowflake.connector
 
 # Snowflake connection details
-SNOWFLAKE_ACCOUNT = "<your_snowflake_account>"
-SNOWFLAKE_USER = "<your_username>"
-SNOWFLAKE_PASSWORD = "<your_password>"
-SNOWFLAKE_DATABASE = "<your_database>"
-SNOWFLAKE_SCHEMA = "<your_schema>"
-SNOWFLAKE_WAREHOUSE = "<your_warehouse>"
-SNOWFLAKE_TABLE = "game_reviews"
+SNOWFLAKE_ACCOUNT = "el02762"
+SNOWFLAKE_USER = "SruthiGandla"
+SNOWFLAKE_PASSWORD = "Northeastern@0923"
+SNOWFLAKE_DATABASE = "STEAM_FULL"
+SNOWFLAKE_SCHEMA = "RAW_DATA"
+SNOWFLAKE_WAREHOUSE = "COMPUTE_WH"
+SNOWFLAKE_TABLE = "AUS_USER_REVIEWS"
 
 # Function to parse the custom dictionary format
 def parse_reviews(file_path):
