@@ -1,88 +1,84 @@
-import pandas as pd
-import json
-import os
-import snowflake.connector as snow
-from snowflake.connector.pandas_tools import write_pandas
-import getpass
+import ast
+import snowflake.connector
 
-def read_json_file(file_path):
-    """
-    Reads a JSON file and returns a properly formatted DataFrame.
-    """
+# Snowflake connection details
+SNOWFLAKE_ACCOUNT = "<your_snowflake_account>"
+SNOWFLAKE_USER = "<your_username>"
+SNOWFLAKE_PASSWORD = "<your_password>"
+SNOWFLAKE_DATABASE = "<your_database>"
+SNOWFLAKE_SCHEMA = "<your_schema>"
+SNOWFLAKE_WAREHOUSE = "<your_warehouse>"
+SNOWFLAKE_TABLE = "game_reviews"
 
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
+# Function to parse the custom dictionary format
+def parse_reviews(file_path):
+    records = []
+    with open(file_path, "r", encoding="utf-8") as file:
+        for line in file:
+            line = line.strip()
+            if line:  # Ensure line is not empty
+                try:
+                    record = ast.literal_eval(line)  # Convert string to dictionary
+                    records.append(record)
+                except Exception as e:
+                    print(f"Error parsing line: {line}\nError: {e}")
+    return records
 
-    return pd.DataFrame(data).fillna('None').astype(str)
-
-def get_snowflake_connection():
-    """
-    Prompts the user for Snowflake credentials at runtime.
-    """
-    user = input("Enter your Snowflake username: ")
-    password = getpass.getpass("Enter your Snowflake password: ")
-    account = input("Enter your Snowflake account (e.g., xyz123.region.cloud): ")
-    warehouse = input("Enter your Snowflake warehouse: ")
-    database = input("Enter your Snowflake database: ")
-    schema = input("Enter your Snowflake schema: ")
-
-    return {
-        "user": user,
-        "password": password,
-        "account": account,
-        "warehouse": warehouse,
-        "database": database,
-        "schema": schema
-    }
-
-def write_to_snowflake(df, config, table_name):
-    """
-    Connects to Snowflake, creates the database/schema/table if not exists, and loads the DataFrame.
-    """
-    conn = snow.connect(
-        user=config["user"],
-        password=config["password"],
-        account=config["account"],
-        warehouse=config["warehouse"]
+# Function to insert data into Snowflake
+def load_to_snowflake(records):
+    conn = snowflake.connector.connect(
+        user=SNOWFLAKE_USER,
+        password=SNOWFLAKE_PASSWORD,
+        account=SNOWFLAKE_ACCOUNT,
+        warehouse=SNOWFLAKE_WAREHOUSE,
+        database=SNOWFLAKE_DATABASE,
+        schema=SNOWFLAKE_SCHEMA
     )
-
-    cur = conn.cursor()
-
-    # Create database and schema if they do not exist
-    cur.execute(f"CREATE DATABASE IF NOT EXISTS {config['database']}")
-    cur.execute(f"USE DATABASE {config['database']}")
-    cur.execute(f"CREATE SCHEMA IF NOT EXISTS {config['schema']}")
-    cur.execute(f"USE SCHEMA {config['schema']}")
-
-    # Write DataFrame to Snowflake
-    write_pandas(
-        conn=conn,
-        df=df,
-        table_name=table_name,
-        auto_create_table=True
-    )
-
-    cur.close()
+    cursor = conn.cursor()
+    
+    # Create table if not exists
+    cursor.execute(f"""
+        CREATE TABLE IF NOT EXISTS {SNOWFLAKE_TABLE} (
+            user_id STRING,
+            user_url STRING,
+            item_id STRING,
+            posted STRING,
+            last_edited STRING,
+            helpful STRING,
+            recommend BOOLEAN,
+            review STRING
+        )
+    """)
+    
+    # Insert records
+    for record in records:
+        user_id = record.get("user_id", "")
+        user_url = record.get("user_url", "")
+        for review in record.get("reviews", []):
+            cursor.execute(f"""
+                INSERT INTO {SNOWFLAKE_TABLE} (user_id, user_url, item_id, posted, last_edited, helpful, recommend, review)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                user_id,
+                user_url,
+                review.get("item_id", ""),
+                review.get("posted", ""),
+                review.get("last_edited", ""),
+                review.get("helpful", ""),
+                review.get("recommend", False),
+                review.get("review", "")
+            ))
+    
+    conn.commit()
+    cursor.close()
     conn.close()
-    print("✅ Data successfully loaded into Snowflake!")
+    print("Data successfully loaded into Snowflake.")
 
+# Main execution
 if __name__ == "__main__":
-    # Prompt user for file path
-    file_path = input("Enter the full path of the JSON file: ").strip()
-
-    # Check if file is a JSON file
-    if not file_path.lower().endswith('.json'):
-        print("❌ Error: Please provide a valid .json file.")
-        exit(1)
-
-    # Read and parse JSON data
-    df = read_json_file(file_path)
-
-    # Prompt user for Snowflake credentials
-    config = get_snowflake_connection()
-
-    # Table name input
-    table_name = input("Enter the Snowflake table name: ").strip()
-
-    # Load data into Snowflake
-    write_to_snowflake(df, config, table_name)
+    file_path = "reviews.txt"  # Change this to your actual file path
+    records = parse_reviews(file_path)
+    if records:
+        load_to_snowflake(records)
+    else:
+        print("No valid records found in the file.")
