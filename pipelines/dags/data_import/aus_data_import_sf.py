@@ -75,7 +75,7 @@ def write_to_snowflake(df, config, table_name):
 
 if __name__ == "__main__":
     # Prompt user for file path
-    file_path = r""C:\Users\pooja\Desktop\NEU\Spring '25\IE 7374\aus_user_reviews.json""
+    file_path = r"C:\Users\pooja\Desktop\NEU\Spring '25\IE 7374\aus_user_reviews.json"
 
     # Read and parse JSON data
     df = read_json_file(file_path)
