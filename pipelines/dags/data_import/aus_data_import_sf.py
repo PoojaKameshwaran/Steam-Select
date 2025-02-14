@@ -11,14 +11,9 @@ def read_json_file(file_path):
     Reads a JSON or GZIP-compressed JSON file and returns a properly formatted DataFrame.
     """
 
-    try:
-        # Attempt to read as a gzipped JSON file
-        with gzip.open(file_path, 'rt', encoding='utf-8') as file:
-            data = [json.loads(line) for line in file]
-    except (OSError, gzip.BadGzipFile):
-        # Fallback: Read as a regular JSON file
-        with open(file_path, 'r', encoding='utf-8') as file:
-            data = json.load(file)
+    # Read as a regular JSON file
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
 
     return pd.DataFrame(data).fillna('None').astype(str)
 
