@@ -57,6 +57,8 @@ def write_to_snowflake(df, database, schema, table_name):
 
 if __name__ == "__main__":
 
-    file_path = 'data/raw/steam_reviews/steam_new.json'
+    # file_path = 'data/raw/steam_reviews/steam_new.json'
+    file_path = r"C:\Users\pooja\Desktop\NEU\Spring '25\IE 7374\australian_user_reviews.json"
     df = read_json_file(file_path)
-    write_to_snowflake(df, "STEAM_FULL", "RAW_DATA", "REVIEWS_DATA")
+    #write_to_snowflake(df, "STEAM_FULL", "RAW_DATA", "REVIEWS_DATA")
+    write_to_snowflake(df, "STEAM_FULL", "RAW_DATA", "AUS_REVIEWS_DATA")
