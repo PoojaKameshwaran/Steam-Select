@@ -26,10 +26,14 @@ def write_to_snowflake(df, database, schema, table_name):
     load_dotenv(override=True)
 
     conn = snow.connect(
-        user=os.getenv('SNOWFLAKE_USER'),
-        password=os.getenv('SNOWFLAKE_PASSWORD'),
-        account=os.getenv('SNOWFLAKE_ACCOUNT'),
-        warehouse=os.getenv('SNOWFLAKE_WAREHOUSE')
+        # user=os.getenv('SNOWFLAKE_USER'),
+        # password=os.getenv('SNOWFLAKE_PASSWORD'),
+        # account=os.getenv('SNOWFLAKE_ACCOUNT'),
+        # warehouse=os.getenv('SNOWFLAKE_WAREHOUSE')
+        user = "SruthiGandla",
+        password = "Northeastern@0923",
+        account = "el02762.us-east.gcp",
+        warehouse = "COMPUTE_WH"
     )
     
     cur = conn.cursor()
