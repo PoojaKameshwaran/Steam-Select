@@ -10,13 +10,13 @@ import gzip
 def read_json_file(file_path):
     data = []
     try:
-        with gzip.open(file_path, 'rt', encoding='ISO-8859–1') as file:
+        with gzip.open(file_path, 'rt', encoding='utf-8') as file:
             for line in file:
                 data.append(ast.literal_eval(line))
     except Exception as e:
 
         # Fallback to regular file reading if not gzipped
-        with open(file_path, 'r', encoding='ISO-8859–1') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
                 data.append(ast.literal_eval(line))
     return pd.DataFrame(data).fillna('None').astype(str)
