@@ -76,7 +76,7 @@ def load_to_snowflake(records):
 
 # Main execution
 if __name__ == "__main__":
-    file_path = "reviews.txt"  # Change this to your actual file path
+    file_path = r"C:\Users\pooja\Desktop\NEU\Spring '25\IE 7374\aus_user_reviews.json"
     records = parse_reviews(file_path)
     if records:
         load_to_snowflake(records)
