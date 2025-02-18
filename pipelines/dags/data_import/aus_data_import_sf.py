@@ -1,84 +1,67 @@
-import ast
 import snowflake.connector
+import getpass
 
-# Snowflake connection details
-SNOWFLAKE_ACCOUNT = "el02762"
-SNOWFLAKE_USER = "SruthiGandla"
-SNOWFLAKE_PASSWORD = "Northeastern@0923"
-SNOWFLAKE_DATABASE = "STEAM_FULL"
-SNOWFLAKE_SCHEMA = "RAW_DATA"
-SNOWFLAKE_WAREHOUSE = "COMPUTE_WH"
-SNOWFLAKE_TABLE = "AUS_USER_REVIEWS"
+# Get Snowflake credentials from user input
+user = input("Enter your Snowflake username: ")
+password = getpass.getpass("Enter your Snowflake password: ")
+account = input("Enter your Snowflake account (e.g., xy12345.us-east-1): ")
+warehouse = input("Enter your Snowflake warehouse: ")
+database = input("Enter your Snowflake database: ")
+schema = input("Enter your Snowflake schema: ")
+role = input("Enter your Snowflake role: ")
 
-# Function to parse the custom dictionary format
-def parse_reviews(file_path):
-    records = []
-    with open(file_path, "r", encoding="utf-8") as file:
-        for line in file:
-            line = line.strip()
-            if line:  # Ensure line is not empty
-                try:
-                    record = ast.literal_eval(line)  # Convert string to dictionary
-                    records.append(record)
-                except Exception as e:
-                    print(f"Error parsing line: {line}\nError: {e}")
-    return records
+# GCS Bucket and Integration details
+GCS_STAGE_NAME = "my_gcs_stage"
+GCS_BUCKET_URL = "gcs://steam-select/aus_user_reviews_norm.json"
+GCS_INTEGRATION_NAME = "my_gcs_integration" 
+TABLE_NAME = "aus_reviews_raw"
 
-# Function to insert data into Snowflake
-def load_to_snowflake(records):
-    conn = snowflake.connector.connect(
-        user=SNOWFLAKE_USER,
-        password=SNOWFLAKE_PASSWORD,
-        account=SNOWFLAKE_ACCOUNT,
-        warehouse=SNOWFLAKE_WAREHOUSE,
-        database=SNOWFLAKE_DATABASE,
-        schema=SNOWFLAKE_SCHEMA
-    )
-    cursor = conn.cursor()
-    
-    # Create table if not exists
-    cursor.execute(f"""
-        CREATE TABLE IF NOT EXISTS {SNOWFLAKE_TABLE} (
-            user_id STRING,
+# Connect to Snowflake
+conn = snowflake.connector.connect(
+    user=user,
+    password=password,
+    account=account,
+    warehouse=warehouse,
+    database=database,
+    schema=schema,
+    role=role
+)
+
+cur = conn.cursor()
+
+try:
+    # Create Table (if not exists) with updated schema
+    cur.execute(f"""
+        CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
+            review_id INTEGER,
             user_url STRING,
-            item_id STRING,
+            user_id STRING,
+            funny INTEGER,
             posted STRING,
             last_edited STRING,
-            helpful STRING,
+            item_id INTEGER,
+            helpful INTEGER,
             recommend BOOLEAN,
             review STRING
-        )
+        );
     """)
-    
-    # Insert records
-    for record in records:
-        user_id = record.get("user_id", "")
-        user_url = record.get("user_url", "")
-        for review in record.get("reviews", []):
-            cursor.execute(f"""
-                INSERT INTO {SNOWFLAKE_TABLE} (user_id, user_url, item_id, posted, last_edited, helpful, recommend, review)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            """, (
-                user_id,
-                user_url,
-                review.get("item_id", ""),
-                review.get("posted", ""),
-                review.get("last_edited", ""),
-                review.get("helpful", ""),
-                review.get("recommend", False),
-                review.get("review", "")
-            ))
-    
-    conn.commit()
-    cursor.close()
-    conn.close()
+
+    # Create External Stage (if not exists)
+    cur.execute(f"""
+        CREATE STAGE IF NOT EXISTS {GCS_STAGE_NAME}
+        URL = '{GCS_BUCKET_URL}'
+        STORAGE_INTEGRATION = {GCS_INTEGRATION_NAME};
+    """)
+
+    # Copy JSON data into Snowflake Table
+    cur.execute(f"""
+        COPY INTO {TABLE_NAME}
+        FROM @{GCS_STAGE_NAME}
+        FILE_FORMAT = (TYPE = 'JSON');
+    """)
+
     print("Data successfully loaded into Snowflake.")
 
-# Main execution
-if __name__ == "__main__":
-    file_path = r"C:\Users\pooja\Desktop\NEU\Spring '25\IE 7374\aus_user_reviews.json"
-    records = parse_reviews(file_path)
-    if records:
-        load_to_snowflake(records)
-    else:
-        print("No valid records found in the file.")
+finally:
+    cur.close()
+    conn.close()
