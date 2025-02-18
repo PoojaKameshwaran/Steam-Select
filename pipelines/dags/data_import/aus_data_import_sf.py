@@ -31,6 +31,7 @@ try:
     # Create Table (if not exists) with updated schema
     cur.execute(f"""
         CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
+            dummy VARCHAR,
             review_id NUMBER,
             user_url VARCHAR,
             user_id VARCHAR,
