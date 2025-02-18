@@ -13,7 +13,7 @@ schema = input("Enter your Snowflake schema: ")
 GCS_STAGE_NAME = "my_gcs_stage"
 GCS_BUCKET_URL = "gcs://steam-select/"
 GCS_INTEGRATION_NAME = "my_gcs_integration" 
-TABLE_NAME = "aus_reviews_raw"
+TABLE_NAME = "aus_items_raw"
 
 # Connect to Snowflake
 conn = snowflake.connector.connect(
@@ -31,17 +31,12 @@ try:
     # Create Table (if not exists) with updated schema
     cur.execute(f"""
         CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
-            dummy VARCHAR,
-            review_id NUMBER,
-            user_url VARCHAR,
             user_id VARCHAR,
+            items_count NUMBER,
+            steam_id VARCHAR,
             funny NUMBER,
-            posted VARCHAR,
-            last_edited VARCHAR,
-            item_id NUMBER,
-            helpful NUMBER,
-            recommend BOOLEAN,
-            review VARCHAR
+            user_url VARCHAR,
+            items VARCHAR
         );
     """)
 
@@ -55,8 +50,8 @@ try:
     # Copy JSON data into Snowflake Table
     cur.execute(f"""
         COPY INTO {TABLE_NAME}
-        FROM @{GCS_STAGE_NAME}/formatted_reviews.csv
-        FILE_FORMAT = (TYPE = 'CSV', SKIP_HEADER = 1, RECORD_DELIMITER = '\n');
+        FROM @{GCS_STAGE_NAME}/aus_user_items.json
+        FILE_FORMAT = (TYPE = 'JSON', MATCH_BY_COLUMN_NAME = 'CASE_INSENSITIVE');
     """)
 
     print("Data successfully loaded into Snowflake.")
