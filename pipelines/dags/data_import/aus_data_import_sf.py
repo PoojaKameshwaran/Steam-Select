@@ -54,10 +54,8 @@ try:
     # Copy JSON data into Snowflake Table
     cur.execute(f"""
         COPY INTO {TABLE_NAME}
-        FROM @{GCS_STAGE_NAME}/aus_user_reviews_norm.json
-        FILE_FORMAT = (TYPE = 'JSON')
-        MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE
-        FORCE = TRUE;
+        FROM @{GCS_STAGE_NAME}/formatted_reviews.csv
+        FILE_FORMAT = (TYPE = 'CSV', SKIP_HEADER = 1, RECORD_DELIMITER = '\n');
     """)
 
     print("Data successfully loaded into Snowflake.")
