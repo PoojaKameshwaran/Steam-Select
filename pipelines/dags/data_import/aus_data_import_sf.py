@@ -23,8 +23,7 @@ conn = snowflake.connector.connect(
     account=account,
     warehouse=warehouse,
     database=database,
-    schema=schema,
-    role=role
+    schema=schema
 )
 
 cur = conn.cursor()
@@ -35,7 +34,7 @@ try:
         CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
             review_id INTEGER,
             user_url STRING,
-            user_id STRING,
+            user_id STRING,git
             funny INTEGER,
             posted STRING,
             last_edited STRING,
