@@ -8,11 +8,10 @@ account = input("Enter your Snowflake account (e.g., xy12345.us-east-1): ")
 warehouse = input("Enter your Snowflake warehouse: ")
 database = input("Enter your Snowflake database: ")
 schema = input("Enter your Snowflake schema: ")
-role = input("Enter your Snowflake role: ")
 
 # GCS Bucket and Integration details
 GCS_STAGE_NAME = "my_gcs_stage"
-GCS_BUCKET_URL = "gcs://steam-select/aus_user_reviews_norm.json"
+GCS_BUCKET_URL = "gcs://steam-select/"
 GCS_INTEGRATION_NAME = "my_gcs_integration" 
 TABLE_NAME = "aus_reviews_raw"
 
@@ -55,7 +54,7 @@ try:
     # Copy JSON data into Snowflake Table
     cur.execute(f"""
         COPY INTO {TABLE_NAME}
-        FROM @{GCS_STAGE_NAME}
+        FROM @{GCS_STAGE_NAME}/aus_user_reviews_norm.json
         FILE_FORMAT = (TYPE = 'JSON');
     """)
 
