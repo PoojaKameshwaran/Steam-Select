@@ -31,16 +31,16 @@ try:
     # Create Table (if not exists) with updated schema
     cur.execute(f"""
         CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
-            review_id INTEGER,
-            user_url STRING,
-            user_id STRING,git
-            funny INTEGER,
-            posted STRING,
-            last_edited STRING,
-            item_id INTEGER,
-            helpful INTEGER,
+            review_id NUMBER,
+            user_url VARCHAR,
+            user_id VARCHAR,
+            funny NUMBER,
+            posted VARCHAR,
+            last_edited VARCHAR,
+            item_id NUMBER,
+            helpful NUMBER,
             recommend BOOLEAN,
-            review STRING
+            review VARCHAR
         );
     """)
 
