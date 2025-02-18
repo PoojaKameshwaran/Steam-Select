@@ -34,7 +34,6 @@ try:
             user_id VARCHAR,
             items_count NUMBER,
             steam_id VARCHAR,
-            funny NUMBER,
             user_url VARCHAR,
             items VARCHAR
         );
