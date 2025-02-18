@@ -52,7 +52,8 @@ try:
         COPY INTO {TABLE_NAME}
         FROM @{GCS_STAGE_NAME}/aus_user_items.json
         FILE_FORMAT = (TYPE = 'JSON')
-        MATCH_BY_COLUMN_NAME = 'CASE_INSENSITIVE');
+        MATCH_BY_COLUMN_NAME = 'CASE_INSENSITIVE'
+        FORCE = TRUE;
     """)
 
     print("Data successfully loaded into Snowflake.")
