@@ -47,7 +47,7 @@ print("Snowflake Stage Check : Passed")
 for table_name, table_data in schema["tables"].items():
     file_name = table_data["file_name"]
     gcs_path = f"@{SNOWFLAKE_STAGE}/{file_name}"  
-
+    print(f"Loading from GCS Path : {gcs_path}")
     print(f"Loading data from GCS for table: {table_name}")
 
     # Copy data from GCS to Snowflake
