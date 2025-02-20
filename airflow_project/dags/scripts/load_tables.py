@@ -56,7 +56,7 @@ for table_name, table_data in schema["tables"].items():
     FROM '{gcs_path}'
     FILE_FORMAT = (TYPE = 'JSON')
     MATCH_BY_COLUMN_NAME = 'CASE_INSENSITIVE'
-    ON_ERROR = 'CONTINUE';
+    FORCE = TRUE;
     """
 
     cur.execute(copy_query)
