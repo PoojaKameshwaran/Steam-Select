@@ -30,6 +30,12 @@ for table_name, table_data in schema["tables"].items():
     columns = table_data["columns"]
     column_definitions = ", ".join([f"{col} {dtype}" for col, dtype in columns.items()])
     
+    drop_table_sql = f"""
+        DROP TABLE IF EXISTS {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name};
+    """
+    cur.execute(drop_table_sql)
+    print(f"{SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name} CLEANED")
+    
     create_table_sql = f"""
     CREATE TABLE IF NOT EXISTS {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name} (
         {column_definitions}
