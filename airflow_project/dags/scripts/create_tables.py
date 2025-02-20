@@ -21,7 +21,6 @@ create_db_sql = f"""
 cur.execute(create_db_sql)
 
 create_sch_sql = f"""
-    USE DATABASE {SNOWFLAKE_DATABASE};
     CREATE SCHEMA IF NOT EXISTS {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA};
 """
 cur.execute(create_sch_sql)
