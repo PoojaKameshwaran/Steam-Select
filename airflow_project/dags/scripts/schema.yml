@@ -1,6 +1,8 @@
 database : STEAM_FULL
 schema : STEAM_RAW_LOAD
 warehouse : COMPUTE_WH
+gcs_bucket : steam-select
+integration : gcs_integration
 stage : gcs_stage
 tables:
   bundle_data:
