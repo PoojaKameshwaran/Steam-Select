@@ -1,62 +1,34 @@
-import snowflake.connector
-import getpass
+import yaml
+from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 
-# Get Snowflake credentials from user input
-user = input("Enter your Snowflake username: ")
-password = getpass.getpass("Enter your Snowflake password: ")
-account = input("Enter your Snowflake account (e.g., xy12345.us-east-1): ")
-warehouse = input("Enter your Snowflake warehouse: ")
-database = input("Enter your Snowflake database: ")
-schema = input("Enter your Snowflake schema: ")
+# Load schema.yml
+with open("schema.yml", "r") as file:
+    schema = yaml.safe_load(file)
 
-# GCS Bucket and Integration details
-GCS_STAGE_NAME = "my_gcs_stage"
-GCS_BUCKET_URL = "gcs://steam-select/"
-GCS_INTEGRATION_NAME = "my_gcs_integration" 
-TABLE_NAME = "aus_items_raw"
-
-# Connect to Snowflake
-conn = snowflake.connector.connect(
-    user=user,
-    password=password,
-    account=account,
-    warehouse=warehouse,
-    database=database,
-    schema=schema
-)
-
+# Fetch Snowflake connection from Airflow
+snowflake_hook = SnowflakeHook(snowflake_conn_id="snowflake_default")
+conn = snowflake_hook.get_conn()
 cur = conn.cursor()
 
-try:
-    # Create Table (if not exists) with updated schema
-    cur.execute(f"""
-        CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
-            user_id VARCHAR,
-            items_count NUMBER,
-            steam_id VARCHAR,
-            user_url VARCHAR,
-            items VARCHAR
-        );
-    """)
+# Extract database details from schema.yml
+SNOWFLAKE_DATABASE = schema["database"]
+SNOWFLAKE_SCHEMA = schema["schema"]
 
-    # Create External Stage (if not exists)
-    cur.execute(f"""
-        CREATE STAGE IF NOT EXISTS {GCS_STAGE_NAME}
-        URL = '{GCS_BUCKET_URL}'
-        STORAGE_INTEGRATION = {GCS_INTEGRATION_NAME};
-    """)
+# Loop through tables in schema.yml and create them in Snowflake
+for table_name, table_data in schema["tables"].items():
+    columns = table_data["columns"]
+    column_definitions = ", ".join([f"{col} {dtype}" for col, dtype in columns.items()])
+    
+    create_table_sql = f"""
+    CREATE TABLE IF NOT EXISTS {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name} (
+        {column_definitions}
+    );
+    """
+    
+    print(f"Creating table: {table_name}")
+    cur.execute(create_table_sql)
 
-    # Copy JSON data into Snowflake Table
-    cur.execute(f"""
-        COPY INTO {TABLE_NAME}
-        FROM @{GCS_STAGE_NAME}/aus_user_items.json
-        FILE_FORMAT = (TYPE = 'JSON')
-        MATCH_BY_COLUMN_NAME = 'CASE_INSENSITIVE'
-        FORCE = TRUE;
-    """)
-
-    print("Data successfully loaded into Snowflake.")
-
-finally:
-    cur.close()
-    conn.close()
+# Close connection
+cur.close()
+conn.close()
+print("Tables created successfully.")

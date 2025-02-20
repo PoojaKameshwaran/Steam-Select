@@ -1,0 +1,14 @@
+database : STEAM_FULL
+schema : STEAM_RAW_LOAD
+warehouse : COMPUTE_WH
+tables:
+  bundle_data:
+    file_name : formatted_bundle_data.json
+    columns:
+      bundle_final_price : VARCHAR
+      bundle_url : VARCHAR
+      bundle_price : VARCHAR
+      bundle_name : VARCHAR
+      bundle_id : VARCHAR
+      items : VARCHAR
+      bundle_discount : VARCHAR
