@@ -1,5 +1,5 @@
 database : STEAM_FULL
-schema : RAW_LOAD
+schema : STEAM_RAW_LOAD
 warehouse : COMPUTE_WH
 tables:
   bundle_data:
