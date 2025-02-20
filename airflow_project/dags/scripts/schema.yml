@@ -1,6 +1,7 @@
 database : STEAM_FULL
 schema : STEAM_RAW_LOAD
 warehouse : COMPUTE_WH
+stage : gcs_stage
 tables:
   bundle_data:
     file_name : formatted_bundle_data.json
