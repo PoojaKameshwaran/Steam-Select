@@ -14,6 +14,18 @@ cur = conn.cursor()
 SNOWFLAKE_DATABASE = schema["database"]
 SNOWFLAKE_SCHEMA = schema["schema"]
 
+# creating database and schema if they do not exist
+create_db_sql = f"""
+    CREATE DATABASE IF NOT EXISTS {SNOWFLAKE_DATABASE};
+"""
+cur.execute(create_db_sql)
+
+create_sch_sql = f"""
+    USE DATABASE {SNOWFLAKE_DATABASE};
+    CREATE SCHEMA IF NOT EXISTS {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA};
+"""
+cur.execute(create_sch_sql)
+
 # Loop through tables in schema.yml and create them in Snowflake
 for table_name, table_data in schema["tables"].items():
     columns = table_data["columns"]
