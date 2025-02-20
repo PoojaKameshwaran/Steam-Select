@@ -54,7 +54,7 @@ for table_name, table_data in schema["tables"].items():
     copy_query = f"""
     COPY INTO {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name}
     FROM '{gcs_path}'
-    FILE_FORMAT = (TYPE = 'JSON')
+    FILE_FORMAT = (TYPE = 'JSON', STRIP_OUTER_ARRAY = TRUE)
     MATCH_BY_COLUMN_NAME = 'CASE_INSENSITIVE'
     FORCE = TRUE;
     """
