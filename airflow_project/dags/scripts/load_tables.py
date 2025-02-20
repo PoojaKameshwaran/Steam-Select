@@ -38,7 +38,9 @@ create_stage_sql = f"""
     CREATE STAGE IF NOT EXISTS {SNOWFLAKE_STAGE}
     STORAGE_INTEGRATION = {SNOWFLAKE_INTEGRATION}
     URL = 'gcs://{GCS_BUCKET}/'
-    FILE_FORMAT = (TYPE = JSON);
+    FILE_FORMAT = (TYPE = JSON)
+    MATCH_BY_COLUMN_NAME = 'CASE_INSENSITIVE'
+    ON_ERROR = 'CONTINUE';
 """
 cur.execute(create_stage_sql)
 print("Snowflake Stage Check : Passed")
