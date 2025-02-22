@@ -50,7 +50,7 @@ x-airflow-common:
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.9.2}
-  # build: .
+  build: .
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -73,6 +73,7 @@ x-airflow-common:
     # If you want to use it, outcomment it and replace airflow.cfg with the name of your config file
     # AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
   volumes:
+    - .:/opt/airflow/steam-select
     - ${AIRFLOW_PROJ_DIR:-.}/pipelines/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/pipelines/airflowlogs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/pipelines/airflowconfig:/opt/airflow/config
