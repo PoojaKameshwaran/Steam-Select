@@ -49,11 +49,6 @@ for table_name, table_data in schema["tables"].items():
     gcs_path = f"@{SNOWFLAKE_STAGE}/{file_name}"  
     print(f"Loading from GCS Path : {gcs_path}")
     print(f"Loading data from GCS for table: {table_name}")
-
-    drop_table_sql = f"""
-        DROP TABLE IF EXISTS {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name};
-    """
-    cur.execute(drop_table_sql)
     
     # Copy data from GCS to Snowflake
     copy_query = f"""
