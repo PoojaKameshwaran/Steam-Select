@@ -2,9 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import ast
-from load_data_from_snowflake import read_from_snowflake
-
-  # Import the function to fetch data
+from load_data_from_snowflake import read_from_snowflake # Import the function to fetch data
 
 # Load BUNDLE_DATA table from Snowflake
 df = read_from_snowflake(
@@ -60,7 +58,7 @@ print(df.describe())
 # 4️⃣ Add new features (Feature Engineering)
 if "release_date" in df.columns:
    df["release_year"] = pd.to_datetime(df["release_date"], errors='coerce').dt.year
-   
+
 #Extract total number of items in each bundle
 
 df["total_items"] = df["items"].apply(lambda x: len(x) if isinstance(x, list) else 0)
@@ -109,3 +107,50 @@ plt.ylabel("Frequency")
 plt.title("Distribution of Bundle Prices")
 plt.show()
 
+# Price vs. Discount Scatter Plot
+
+plt.figure(figsize=(8,5))
+sns.scatterplot(x=df["bundle_price"], y=df["bundle_discount"], alpha=0.7)
+plt.xlabel("Bundle Price ($)")
+plt.ylabel("Discount (%)")
+plt.title("Bundle Price vs. Discount")
+plt.show()
+
+#Box Plot of Prices (Detecting Outliers)
+
+plt.figure(figsize=(8,5))
+sns.boxplot(x=df["bundle_final_price"])
+plt.xlabel("Final Bundle Price ($)")
+plt.title("Box Plot of Bundle Final Prices")
+plt.show()
+
+# Distribution of Bundle Sizes (Number of Items per Bundle)
+#Purpose: Identifies how many games are typically included in a bundle.
+plt.figure(figsize=(8,5))
+sns.histplot(df["total_items"], bins=20, kde=True)
+plt.xlabel("Number of Items in Bundle")
+plt.ylabel("Count")
+plt.title("Distribution of Bundle Sizes")
+plt.show()
+
+
+#Top 10 Most Expensive Bundles
+# Purpose: Identifies the highest-priced game bundles.
+top_expensive = df.sort_values(by="bundle_final_price", ascending=False).head(10)
+
+plt.figure(figsize=(10,5))
+sns.barplot(y=top_expensive["bundle_name"], x=top_expensive["bundle_final_price"])
+plt.xlabel("Final Price ($)")
+plt.ylabel("Bundle Name")
+plt.title("Top 10 Most Expensive Bundles")
+plt.show()
+
+#Relationship Between Discount & Number of Items
+# Purpose: Do larger bundles get higher discounts?
+
+plt.figure(figsize=(8,5))
+sns.scatterplot(x=df["total_items"], y=df["bundle_discount"], alpha=0.7)
+plt.xlabel("Number of Items in Bundle")
+plt.ylabel("Discount (%)")
+plt.title("Number of Items vs. Discount")
+plt.show()
