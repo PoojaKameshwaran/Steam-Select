@@ -3,7 +3,7 @@ from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 
 # Load schema.yml
-with open("schema.yml", "r") as file:
+with open("/opt/airflow/dags/scripts/schema.yml", "r") as file:
     schema = yaml.safe_load(file)
 
 # Fetch connections from Airflow

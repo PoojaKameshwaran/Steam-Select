@@ -38,7 +38,7 @@ tables:
     file_name : formatted_steam_reviews.json
     columns:
       compensation : VARCHAR
-      date : DATE
+      date : VARCHAR
       early_access : VARCHAR
       found_funny : VARCHAR
       hours : VARCHAR
