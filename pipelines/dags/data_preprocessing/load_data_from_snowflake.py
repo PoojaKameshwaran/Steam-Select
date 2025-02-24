@@ -6,24 +6,14 @@ from pathlib import Path
 
 def read_from_snowflake(database, schema, table_name):
 
-    # Detect if running inside Airflow Docker
-    if os.path.exists("/opt/airflow"):  
-        BASE_DIR = "/opt/airflow/steam-select" 
-    else:
-        
-        current_dir = os.path.abspath(os.path.dirname(__file__))
-        
-        while os.path.basename(current_dir).lower() != "steam-select":
-            current_dir = os.path.dirname(current_dir)
-            if current_dir == os.path.dirname(current_dir): 
-                raise Exception("Could not find the 'steam-select' directory.")
+    
+    # Get the current working directory and print it
+    current_working_directory = os.getcwd()
+    print(f"Current working directory: {current_working_directory}")
 
-        BASE_DIR = current_dir 
+    # Build the path to .env in the current working directory
+    ENV_PATH = os.path.join(current_working_directory, ".env")
 
-    # Construct the .env file path
-    ENV_PATH = os.path.join(BASE_DIR, ".env")
-
-    # Load the .env file
     if os.path.exists(ENV_PATH):
         load_dotenv(ENV_PATH)
         print(f".env file loaded from: {ENV_PATH}")
