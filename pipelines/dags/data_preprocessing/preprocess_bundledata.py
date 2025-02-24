@@ -71,6 +71,19 @@ df["unique_genres"] = df["items"].apply(lambda x: list(set([item["genre"] for it
 
 df["num_unique_genres"] = df["unique_genres"].apply(len)
 
+#Identify High Discount Bundles (More than 50% off)
+
+df["high_discount_flag"] = df["bundle_discount"].apply(lambda x: 1 if x > 50 else 0)
+
+#Calculate Price per Game in the Bundle
+
+df["price_per_item"] = df.apply(lambda row: row["bundle_final_price"] / row["total_items"] if row["total_items"] > 0 else 0, axis=1)
+
+#Calculate Average Discount Per Item
+
+df["avg_discount_per_item"] = df.apply(lambda row: row["bundle_discount"] / row["total_items"] if row["total_items"] > 0 else 0, axis=1)
+
+
 #Outliers
 #Q1 = df["bundle_final_price"].quantile(0.25)
 #Q3 = df["bundle_final_price"].quantile(0.75)
