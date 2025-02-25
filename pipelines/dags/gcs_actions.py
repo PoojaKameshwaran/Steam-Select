@@ -28,11 +28,13 @@ def read_data_from_gcs(bucket_name, blob_name, chunk_size=500000):
     # Decode the byte data to a string
     decoded_data = data.decode('utf-8')
 
-    # Determine file type based on extension
+    # For CSV file, use read_csv
     if blob_name.endswith('.csv'):
         df = dd.read_csv(io.StringIO(decoded_data), blocksize=chunk_size)
+    # For JSON file, we need to use read_bytes and manage it as a byte stream
     elif blob_name.endswith('.json'):
-        df = dd.read_json(io.StringIO(decoded_data), blocksize=chunk_size, orient='records', lines=True)
+        # Use dask's read_bytes method for JSON
+        df = dd.read_json(io.BytesIO(data), blocksize=chunk_size, orient='records', lines=True)
     else:
         logging.error(f"Unsupported file format: {blob_name}")
         raise ValueError("Unsupported file format. Only .csv and .json are supported.")
