@@ -25,11 +25,14 @@ def read_data_from_gcs(bucket_name, blob_name, chunk_size=500000):
     hook = GCSHook(gcp_conn_id='google_cloud_default')
     data = hook.download(bucket_name, blob_name)
 
+    # Decode the byte data to a string
+    decoded_data = data.decode('utf-8')
+
     # Determine file type based on extension
     if blob_name.endswith('.csv'):
-        df = dd.read_csv(io.StringIO(data), blocksize=chunk_size)
+        df = dd.read_csv(io.StringIO(decoded_data), blocksize=chunk_size)
     elif blob_name.endswith('.json'):
-        df = dd.read_json(io.StringIO(data), blocksize=chunk_size, orient='records', lines=True)
+        df = dd.read_json(io.StringIO(decoded_data), blocksize=chunk_size, orient='records', lines=True)
     else:
         logging.error(f"Unsupported file format: {blob_name}")
         raise ValueError("Unsupported file format. Only .csv and .json are supported.")
