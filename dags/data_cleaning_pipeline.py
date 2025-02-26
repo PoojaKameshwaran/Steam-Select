@@ -7,6 +7,7 @@ from airflow import configuration as conf
 from data_preprocessing.download_data  import download_from_gcp
 from data_preprocessing.read_json import read_from_json
 from data_preprocessing.cleaning_item import clean_item_metadata
+from data_preprocessing.preprocess_item import preprocess_item_metadata
 
 #Define the paths to project directory and the path to the key
 PROJECT_DIR = os.getcwd()
@@ -58,5 +59,13 @@ clean_item_metadata_task = PythonOperator(
     dag=dag,
 )
 
+#DEFINE A FUNCTION PREPROCESS THE ITEM DATA
+preprocess_item_metadata_task = PythonOperator(
+    task_id='preprocess_item_metadata',
+    python_callable=preprocess_item_metadata,
+    op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="clean_item_metadata") }}'},
+    dag=dag,
+)
+
 # Define task dependencies
-download_task >> read_json_task >> clean_item_metadata_task
+download_task >> read_json_task >> clean_item_metadata_task >> preprocess_item_metadata_task
