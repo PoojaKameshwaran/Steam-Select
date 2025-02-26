@@ -61,10 +61,10 @@ def extract_and_clean_data():
     SNOWFLAKE_DATABASE = schema['database']
     SNOWFLAKE_SCHEMA = schema['schema']
 
-    query = f"SELECT * FROM {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.REVIEWS_DATA LIMIT 10000" 
+    query = f"SELECT * FROM {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.REVIEWS_DATA LIMIT 100000" 
     
     # using chunking to batch load since it is a large file
-    chunk_size = 1000
+    chunk_size = 10000
     chunks = pd.read_sql(query, conn, chunksize=chunk_size)
 
     # Process each chunk separately
