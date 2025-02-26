@@ -17,7 +17,7 @@ def download_from_gcp(bucket_name, blob_path):
         try:
             storage_client = storage.Client()
         except Exception as e:
-            return None
+            print(e)
 
         bucket = storage_client.bucket(bucket_name)
 
@@ -38,9 +38,16 @@ def download_from_gcp(bucket_name, blob_path):
         return destination_file_path
     
     except Exception as e:
-        return None
+        print(e)
 
 if __name__ == "__main__":
 
     print("Running locally")
+    print("Downloading ITEM_METADATA")
     download_from_gcp("steam-select","raw/item_metadata.json")
+    print("Successfully loaded ITEM_METADATA to raw")
+    print("Downloading BUNDLE_DATA")
+    download_from_gcp("steam-select", "raw/bundle_data.json")
+    print("Downloading REVIEWS")
+    download_from_gcp("steam-select", "raw/reviews.json")
+    print("Successfully loaded REVIEWS to raw")
