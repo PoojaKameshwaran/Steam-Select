@@ -2,6 +2,7 @@ import pandas as pd
 import yaml
 import snowflake.connector
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
+from snowflake.connector.pandas_tools import pd_writer
 
 # Snowflake Connection using Airflow Hook
 def get_snowflake_connection():
@@ -25,7 +26,7 @@ def clean_data(df):
     print(df.isnull().sum())
 
     # Dropping unnecessary columns
-    df.drop(columns = ['compensation', 'user_id', 'page_order', 'page', 'products'], inplace = True)
+    df.drop(columns = ['compensation', 'user_id', 'page_order', 'page', 'products', 'early_access'], inplace = True)
     print("Cleaning up non-essential features : compensation, user_id, products, page_order, page and early_access...")
     print("Dataset after dropping non-essential features...")
     print(df.head())
@@ -37,7 +38,7 @@ def clean_data(df):
     print(df.head())
 
     # Renaming column names
-    df.columns = ['date', 'found_funny', 'hours', 'item_id', 'item_count', 'review', 'username']
+    df.columns = ['date', 'found_funny', 'hours', 'item_id', 'review', 'username']
     print("Dataset after data cleaning...")
     print(df.head())
 
@@ -55,7 +56,7 @@ def extract_and_clean_data():
     SNOWFLAKE_DATABASE = schema['database']
     SNOWFLAKE_SCHEMA = schema['schema']
 
-    query = f"SELECT * FROM {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.REVIEWS_DATA LIMIT 10000"
+    query = f"SELECT * FROM {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.REVIEWS_DATA LIMIT 100000"
 
     # Using chunking to batch load since it is a large file
     chunk_size = 1000
@@ -96,7 +97,7 @@ def create_schema_and_load_data(df_cleaned):
 
     # Create the table if it does not exist
     create_table_query = f"""
-    CREATE OR REPLACE TABLE {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.REVIEWS_DATA (
+    CREATE OR REPLACE TABLE {SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.cleaned_reviews_data (
         date DATE,
         found_funny INT,
         hours FLOAT,
@@ -108,11 +109,16 @@ def create_schema_and_load_data(df_cleaned):
     with conn.cursor() as cur:
         cur.execute(create_table_query)
 
-    # Load the cleaned DataFrame into Snowflake using Pandas to SQL
-    # Using Snowflake's built-in `PUT` command and `COPY INTO`
-    from snowflake.connector.pandas_tools import pd_writer
-
-    df_cleaned.to_sql('REVIEWS_DATA', con=conn, schema=SNOWFLAKE_SCHEMA, if_exists='replace', index=False, method=pd_writer)
+    # Load the cleaned DataFrame into Snowflake using pandas' pd_writer
+    # Snowflake's pd_writer method should be used for inserting data into Snowflake
+    df_cleaned.to_sql(
+        'REVIEWS_DATA', 
+        con=conn, 
+        schema=SNOWFLAKE_SCHEMA, 
+        if_exists='replace', 
+        index=False, 
+        method=pd_writer
+    )
 
     print("Data successfully loaded into Snowflake.")
     conn.close()
