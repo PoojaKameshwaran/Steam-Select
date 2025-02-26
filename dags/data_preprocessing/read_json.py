@@ -7,8 +7,9 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__
 RAW_DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
 PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 
-def read_from_json(file_name):
-    JSON_PATH= os.path.join(RAW_DATA_DIR,file_name+".json")
+def read_from_json(file_path):
+    JSON_PATH= file_path
+    file_name = os.path.splitext(os.path.basename(JSON_PATH))[0]
     PARQUET_PATH = os.path.join(PROCESSED_DATA_DIR,"raw_"+file_name+".parquet")
 
     # Read DataFrame from JSON file
@@ -29,5 +30,4 @@ def read_from_json(file_name):
 
 if __name__ == "__main__":
 
-    print("Running locally")
-    read_from_json("item_metadata")
+    read_from_json("d:\\Learning\\MlOps\\Steam-Select\\data\\raw\\item_metadata.json")

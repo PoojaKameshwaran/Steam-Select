@@ -2,12 +2,17 @@ import os
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow import configuration as conf
 
 from data_preprocessing.download_data  import download_from_gcp
 from data_preprocessing.read_json import read_from_json
+from data_preprocessing.cleaning_item import clean_item_metadata
 
 #Define the paths to project directory and the path to the key
 PROJECT_DIR = os.getcwd()
+
+# Enable xcom pickling to allow passage of tasks from one task to another.
+conf.set('core', 'enable_xcom_pickling', 'True')
 
 # Set default arguments
 
@@ -41,9 +46,17 @@ download_task = PythonOperator(
 read_json_task = PythonOperator(
     task_id='read_json_data',
     python_callable=read_from_json,
-    op_kwargs={'file_name': 'item_metadata'},
+    op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="download_data_from_gcp") }}'},
+    dag=dag,
+)
+
+#DEFINE A FUNCTION CLEAN THE ITEM DATA
+clean_item_metadata_task = PythonOperator(
+    task_id='clean_item_metadata',
+    python_callable=clean_item_metadata,
+    op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="read_json_data") }}'},
     dag=dag,
 )
 
 # Define task dependencies
-download_task >> read_json_task
+download_task >> read_json_task >> clean_item_metadata_task
