@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import yaml
 import snowflake.connector
@@ -51,8 +52,15 @@ def clean_data(df):
 
 if __name__ == "__main__":
 
-    df = pd.read_json('/../../data/raw/reviews.json', orient = 'records', lines = True)
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Construct the path to the data file (assuming it's at root/data/processed/reviews.json)
+    data_file_path = os.path.join(script_dir, '..', '..', 'data', 'raw', 'reviews.json')
+    df = pd.read_json(data_file_path, orient = 'records', lines = True)
     cleaned_df = clean_data(df)
-    cleaned_df.to_json('/../../data/processed/cleaned_reviews.json', orient = 'records', lines = True)
+
+    write_to_path = data_file_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'reviews.json')
+    cleaned_df.to_json(write_to_path, orient = 'records', lines = True)
     print("Dataset cleaned successfully...")
     print("Dataset loaded to data/processed")
