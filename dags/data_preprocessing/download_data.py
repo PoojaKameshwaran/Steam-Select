@@ -43,4 +43,4 @@ def download_from_gcp(bucket_name, blob_path):
 if __name__ == "__main__":
 
     print("Running locally")
-    download_from_gcp("steam-select","raw/reviews.json")
+    download_from_gcp("steam-select","raw/item_metadata.json")
