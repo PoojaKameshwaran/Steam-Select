@@ -3,3 +3,5 @@
 .venv
 __pycache__/
 /pipelines/airflowlogs/
+config/key.json
+logs/

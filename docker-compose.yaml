@@ -73,11 +73,12 @@ x-airflow-common:
     # If you want to use it, outcomment it and replace airflow.cfg with the name of your config file
     # AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
   volumes:
-    - .:/opt/airflow/steam-select
-    - ${AIRFLOW_PROJ_DIR:-.}/pipelines/dags:/opt/airflow/dags
-    - ${AIRFLOW_PROJ_DIR:-.}/pipelines/airflowlogs:/opt/airflow/logs
-    - ${AIRFLOW_PROJ_DIR:-.}/pipelines/airflowconfig:/opt/airflow/config
-    - ${AIRFLOW_PROJ_DIR:-.}/pipelines/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
+    - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
+    - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/data/processed:/opt/airflow/data/processed
+    - ${AIRFLOW_PROJ_DIR:-.}/data/raw:/opt/airflow/data/raw
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
