@@ -1,5 +1,8 @@
 .env
+/data/processed
 /data/raw
 .venv
 __pycache__/
 /pipelines/airflowlogs/
+config/key.json
+logs/
