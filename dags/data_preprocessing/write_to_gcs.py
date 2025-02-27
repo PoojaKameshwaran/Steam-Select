@@ -43,12 +43,12 @@ if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Construct the path to the data file (assuming it's at: root/data/processed/reviews.parquet)
-    folder_path = os.path.join(script_dir, '..', '..', 'data', 'processed')
+    folder_path = os.path.join(script_dir, '..', '..', 'data', 'raw')
 
     # Upload Reviews file using optimized large file upload
-    print("Uploading REVIEWS")
-    source_file = os.path.join(folder_path, "reviews.parquet")
+    print("Uploading BUNDLE_DATA")
+    source_file = os.path.join(folder_path, "bundle_data.json")
     print(source_file)
     
-    upload_large_file_to_gcp("steam-select", source_file, "staging/reviews.parquet")
-    print("Successfully uploaded REVIEWS to staging")
+    upload_large_file_to_gcp("steam-select", source_file, "staging/bundle_data.json")
+    print("Successfully uploaded BUNDLE_DATA to staging")
