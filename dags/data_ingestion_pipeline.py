@@ -29,7 +29,8 @@ dag = DAG(
 #DEFINE A FUNCTION TO DOWNLOAD THE DATA FROM GCP
 download_task = BashOperator(
     task_id='download_data_from_gcp',
-    bash_command = "python /opt/airflow/dags/data_preprocessing/download_data.py"
+    bash_command = "python /opt/airflow/dags/data_preprocessing/download_data.py",
+    dag = dag
 )
 
 # Define task dependencies
