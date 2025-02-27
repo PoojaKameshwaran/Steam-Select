@@ -12,11 +12,11 @@ def get_snowflake_connection():
 # Function to clean the DataFrame
 def clean_data(df):
     # Drop duplicate records
-    df = df.drop_duplicates()
+    df.drop_duplicates(inplace = True)
 
     # Trim whitespace from string columns
     str_cols = df.select_dtypes(include=["object"]).columns
-    df[str_cols] = df[str_cols].apply(lambda x: x.str.strip())
+    df[str_cols] = df[str_cols].apply(lambda x: x.str.strip(), inplace = True)
 
     # formatting the date
     df["date"] = pd.to_datetime(df["date"], unit="ms").dt.date
@@ -57,10 +57,19 @@ if __name__ == "__main__":
 
     # Construct the path to the data file (assuming it's at root/data/processed/reviews.json)
     data_file_path = os.path.join(script_dir, '..', '..', 'data', 'raw', 'reviews.json')
-    df = pd.read_json(data_file_path, orient = 'records', lines = True)
-    cleaned_df = clean_data(df)
+
+    chunk_size = 100000
+    chunks = pd.read_json(data_file_path, orient='records', lines=True, chunksize=chunk_size)
+    
+    cleaned_chunks = []
+    for chunk in chunks:
+        cleaned_chunk = clean_data(chunk)
+        cleaned_chunks.append(cleaned_chunk)
+
+    cleaned_df = pd.concat(cleaned_chunks, ignore_index=True)
 
     write_to_path = data_file_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'reviews.json')
     cleaned_df.to_json(write_to_path, orient = 'records', lines = True)
     print("Dataset cleaned successfully...")
     print("Dataset loaded to data/processed")
+
