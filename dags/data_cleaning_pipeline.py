@@ -1,12 +1,8 @@
 import os
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 
-from data_preprocessing.download_data  import download_from_gcp
-
-#Define the paths to project directory and the path to the key
-PROJECT_DIR = os.getcwd()
 
 # Set default arguments
 
@@ -20,21 +16,56 @@ default_args = {
 
 #INITIALIZE THE DAG INSTANCE
 dag = DAG(
-    'Data_Preprocessing',
+    'data_cleaning_eda_pipeline',
     default_args = default_args,
-    description = 'MLOps Data pipeline',
+    description = 'Data Cleaning and EDA Pipeline',
     schedule_interval = None,  # Set the schedule interval or use None for manual triggering
     catchup = False,
 )
 
-
-#DEFINE A FUNCTION TO DOWNLOAD THE DATA FROM GCP
-download_task = PythonOperator(
-    task_id='download_data_from_gcp',
-    python_callable=download_from_gcp,
-    op_kwargs={'bucket_name': 'steam-select', 'blob_path':'raw/item_metadata.json'},
-    dag=dag,
+clean_reviews_task = BashOperator(
+    task_id='clean_reviews_task',
+    bash_command="python /opt/airflow/dags/data_preprocessing/clean_reviews.py"
 )
 
+eda_reviews_task = BashOperator(
+    task_id='eda_reviews_task',
+    bash_command="python /opt/airflow/dags/data_preprocessing/EDA_reviews.py"
+)
+
+# clean_bundle_task = BashOperator(
+#     task_id='clean_bundle_task',
+#     bash_command="python /opt/airflow/dags/data_preprocessing/clean_bundle_data.py"
+# )
+
+# eda_bundle_task = BashOperator(
+#     task_id='eda_bundle_task',
+#     bash_command="python /opt/airflow/dags/data_preprocessing/EDA_bundle_data.py"
+# )
+
+# clean_items_task = BashOperator(
+#     task_id='clean_items_task',
+#     bash_command="python /opt/airflow/dags/data_preprocessing/clean_item_metadata.py"
+# )
+
+# eda_items_task = BashOperator(
+#     task_id='eda_items_task',
+#     bash_command="python /opt/airflow/dags/data_preprocessing/EDA_item_metadata.py"
+# )
+
+# write_to_stage_task = BashOperator(
+#     task_id='write_to_stage_task',
+#     bash_command="python /opt/airflow/dags/data_preprocessing/write_to_gcs.py"
+# )
+
+# clean_up_stage_task = BashOperator(
+#     task_id='clean_up_stage',
+#     bash_command="python /opt/airflow/dags/data_preprocessing/cleanup_stage.py"
+# )
+
 # Define task dependencies
-download_task
+# clean_bundle_task >> eda_bundle_task >> write_to_stage_task
+# clean_items_task >> eda_items_task >> write_to_stage_task
+# clean_reviews_task >> eda_reviews_task >> write_to_stage_task
+clean_reviews_task >> eda_reviews_task
+# write_to_stage_task >> clean_up_stage_task
