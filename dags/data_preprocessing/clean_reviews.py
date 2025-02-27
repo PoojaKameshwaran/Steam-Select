@@ -37,7 +37,7 @@ def clean_data(df):
     # Typecasting
     # No null handling needed since product_id has no null values
     print("Null / NaN value handling and typecasting...")
-    df['product_id'] = df['products'].fillna(0).astype('int64')
+    df['product_id'] = df['product_id'].fillna(0).astype('int64')
     print("Dataset after typecasting, null/NaN value handling")
     print(df.head())
 
