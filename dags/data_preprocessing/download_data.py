@@ -48,6 +48,7 @@ if __name__ == "__main__":
     print("Successfully loaded ITEM_METADATA to raw")
     print("Downloading BUNDLE_DATA")
     download_from_gcp("steam-select", "raw/bundle_data.json")
+    print("Successfully loaded BUNDLE_DATA to raw")
     print("Downloading REVIEWS")
     download_from_gcp("steam-select", "raw/reviews.json")
     print("Successfully loaded REVIEWS to raw")
