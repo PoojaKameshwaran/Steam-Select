@@ -69,7 +69,7 @@ if __name__ == "__main__":
     cleaned_df = pd.concat(cleaned_chunks, ignore_index=True)
 
     write_to_path = data_file_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'reviews.json')
-    cleaned_df.to_json(write_to_path, orient = 'records', lines = True)
+    cleaned_df.to_parquet(write_to_path.replace('.json', '.parquet'))
     print("Dataset cleaned successfully...")
     print("Dataset loaded to data/processed")
 
