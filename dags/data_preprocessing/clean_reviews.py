@@ -29,7 +29,7 @@ def clean_data(df):
     # username is available for all reviews, so dropping user_id which has many empty values and is redundant
     # only product_id and text are necessary for our usecase especially in terms of reviews
     df.drop(columns = ['compensation', 'user_id', 'username', 'found_funny', \
-                       'hours', 'page_order', 'page', 'early_access', 'products'], inplace = True)
+                       'hours', 'page_order', 'page', 'early_access', 'products', 'date'], inplace = True)
     print("Cleaning up non-essential features : compensation, user_id, page_order, page, early_access etc...")
     print("Dataset after dropping non-essential features...")
     print(df.head())
