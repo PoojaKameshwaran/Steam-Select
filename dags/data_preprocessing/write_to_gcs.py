@@ -2,7 +2,7 @@ import os
 from google.cloud import storage
 
 # Define paths
-PROJECT_DIR = os.getcwd()
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 KEY_PATH = os.path.join(PROJECT_DIR, "config", "key.json")
 
 # Authenticate with GCP
@@ -46,5 +46,6 @@ if __name__ == "__main__":
     # upload_to_gcp("steam-select", os.path.join(folder_path, "bundle_data.parquet") , "staging/bundle_data.parquet")
     # print("Successfully uploaded ITEM_METADATA to staging")
     print("Uploading REVIEWS")
+    print(os.path.join(folder_path, "reviews.parquet"))
     upload_to_gcp("steam-select", os.path.join(folder_path, "reviews.parquet") , "staging/reviews.parquet")
     print("Successfully loaded REVIEWS to staging")

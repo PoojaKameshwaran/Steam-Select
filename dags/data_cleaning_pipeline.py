@@ -68,4 +68,3 @@ clean_up_stage_task = BashOperator(
 # clean_bundle_task >> eda_bundle_task >> write_to_stage_task
 # clean_items_task >> eda_items_task >> write_to_stage_task
 clean_reviews_task >> eda_reviews_task >> write_to_stage_task
-write_to_stage_task >> clean_up_stage_task
