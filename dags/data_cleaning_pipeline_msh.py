@@ -67,5 +67,5 @@ preprocess_item_metadata_task = PythonOperator(
     dag=dag,
 )
 
-# Define task dependencies
+# Define the task dependencies
 download_task >> read_json_task >> clean_item_metadata_task >> preprocess_item_metadata_task
