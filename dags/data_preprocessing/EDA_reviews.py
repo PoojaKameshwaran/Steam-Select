@@ -30,8 +30,8 @@ logging.info(f"{missing_values}")
 # Visualizations
 
 # 1. Counts of reviews per product_id
-review_counts = df['product_id'].value_counts().reset_index()
-review_counts.columns = ['product_id', 'review_count']
+review_counts = df['id'].value_counts().reset_index()
+review_counts.columns = ['id', 'review_count']
 
 # Plot the counts of reviews per product_id
 plt.figure(figsize=(12, 6))
