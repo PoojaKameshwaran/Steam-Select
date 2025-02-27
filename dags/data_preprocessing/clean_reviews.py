@@ -16,7 +16,7 @@ def clean_data(df):
 
     # Trim whitespace from string columns
     str_cols = df.select_dtypes(include=["object"]).columns
-    df[str_cols] = df[str_cols].apply(lambda x: x.str.strip(), inplace = True)
+    df[str_cols] = df[str_cols].apply(lambda x: x.str.strip())
 
     # formatting the date
     df["date"] = pd.to_datetime(df["date"], unit="ms").dt.date
