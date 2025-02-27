@@ -31,7 +31,7 @@ clean_reviews_task = BashOperator(
 
 eda_reviews_task = BashOperator(
     task_id='eda_reviews_task',
-    bash_command="python /opt/airflow/dags/data_preprocessing/EDA_reviews.py"
+    bash_command="/usr/local/bin/python /opt/airflow/dags/data_preprocessing/EDA_reviews.py"
 )
 
 # clean_bundle_task = BashOperator(
