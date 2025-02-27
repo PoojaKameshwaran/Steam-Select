@@ -35,7 +35,7 @@ review_counts.columns = ['id', 'review_count']
 
 # Plot the counts of reviews per product_id
 plt.figure(figsize=(12, 6))
-sns.barplot(x='product_id', y='review_count', data=review_counts.head(20))  # Display top 20 product_ids with most reviews
+sns.barplot(x='id', y='review_count', data=review_counts.head(20))  # Display top 20 product_ids with most reviews
 plt.title('Top 20 Product IDs by Review Count')
 plt.xlabel('Product ID')
 plt.ylabel('Number of Reviews')
