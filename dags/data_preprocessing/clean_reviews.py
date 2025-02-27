@@ -2,12 +2,6 @@ import os
 import pandas as pd
 import yaml
 import snowflake.connector
-from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
-
-# Snowflake Connection using Airflow Hook
-def get_snowflake_connection():
-    hook = SnowflakeHook(snowflake_conn_id="snowflake_default")
-    return hook.get_conn()
 
 # Function to clean the DataFrame
 def clean_data(df):

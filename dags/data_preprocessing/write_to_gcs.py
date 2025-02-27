@@ -33,12 +33,18 @@ def upload_to_gcp(bucket_name, source_file_path, destination_blob_name):
 if __name__ == "__main__":
 
     print("Running locally")
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Construct the path to the data file (assuming it's at ex : root/data/processed/reviews.parquet)
+    folder_path = os.path.join(script_dir, '..', '..', 'data', 'processed')
+    
     # print("Uploading ITEM_METADATA")
-    # upload_to_gcp("steam-select","staging/item_metadata.parquet")
+    # upload_to_gcp("steam-select", os.path.join(folder_path, "item_metadata.parquet") , "staging/item_metadata.parquet")
     # print("Successfully uploaded ITEM_METADATA to staging")
     # print("Uploading BUNDLE_DATA")
-    # upload_to_gcp("steam-select", "staging/bundle_data.parquet")
+    # upload_to_gcp("steam-select", os.path.join(folder_path, "bundle_data.parquet") , "staging/bundle_data.parquet")
     # print("Successfully uploaded ITEM_METADATA to staging")
     print("Uploading REVIEWS")
-    upload_to_gcp("steam-select", "staging/reviews.parquet")
+    upload_to_gcp("steam-select", os.path.join(folder_path, "reviews.parquet") , "staging/reviews.parquet")
     print("Successfully loaded REVIEWS to staging")

@@ -54,19 +54,18 @@ eda_reviews_task = BashOperator(
 #     bash_command="python /opt/airflow/dags/data_preprocessing/EDA_item_metadata.py"
 # )
 
-# write_to_stage_task = BashOperator(
-#     task_id='write_to_stage_task',
-#     bash_command="python /opt/airflow/dags/data_preprocessing/write_to_gcs.py"
-# )
+write_to_stage_task = BashOperator(
+    task_id='write_to_stage_task',
+    bash_command="python /opt/airflow/dags/data_preprocessing/write_to_gcs.py"
+)
 
-# clean_up_stage_task = BashOperator(
-#     task_id='clean_up_stage',
-#     bash_command="python /opt/airflow/dags/data_preprocessing/cleanup_stage.py"
-# )
+clean_up_stage_task = BashOperator(
+    task_id='clean_up_stage',
+    bash_command="python /opt/airflow/dags/data_preprocessing/cleanup_stage.py"
+)
 
 # Define task dependencies
 # clean_bundle_task >> eda_bundle_task >> write_to_stage_task
 # clean_items_task >> eda_items_task >> write_to_stage_task
-# clean_reviews_task >> eda_reviews_task >> write_to_stage_task
-clean_reviews_task >> eda_reviews_task
-# write_to_stage_task >> clean_up_stage_task
+clean_reviews_task >> eda_reviews_task >> write_to_stage_task
+write_to_stage_task >> clean_up_stage_task
