@@ -1,9 +1,7 @@
 import os
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.python import PythonOperator
-
-from data_preprocessing.download_data  import download_from_gcp
+from airflow.operators.bash import BashOperator
 
 #Define the paths to project directory and the path to the key
 PROJECT_DIR = os.getcwd()
@@ -29,10 +27,9 @@ dag = DAG(
 
 
 #DEFINE A FUNCTION TO DOWNLOAD THE DATA FROM GCP
-download_task = PythonOperator(
+download_task = BashOperator(
     task_id='download_data_from_gcp',
-    python_callable=download_from_gcp,
-    dag=dag,
+    bash_command = "python /opt/airflow/dags/data_preprocessing/download_data.py"
 )
 
 # Define task dependencies
