@@ -1,13 +1,10 @@
 import os
 from google.cloud import storage
 
-PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# can download from gcs and put in specified DATA_DIR
+# key needs to be present in PROJECT_DIR/config/key.json
 
-# Set up project directories
-DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
-os.makedirs(DATA_DIR, exist_ok=True)
-
-def download_from_gcp(bucket_name, blob_path):
+def download_from_gcp(bucket_name, blob_path, PROJECT_DIR, DATA_DIR):
     try:
         # Set environment variables for authentication
         KEY_PATH = os.path.join(PROJECT_DIR, "config", "key.json")
@@ -42,13 +39,18 @@ def download_from_gcp(bucket_name, blob_path):
 
 if __name__ == "__main__":
 
+    # Set up project directories
+    PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
+    os.makedirs(DATA_DIR, exist_ok=True)
+    
     print("Running locally")
     print("Downloading ITEM_METADATA")
-    download_from_gcp("steam-select","raw/item_metadata.json")
+    download_from_gcp("steam-select","raw/item_metadata.json", PROJECT_DIR, DATA_DIR)
     print("Successfully loaded ITEM_METADATA to raw")
     print("Downloading BUNDLE_DATA")
-    download_from_gcp("steam-select", "raw/bundle_data.json")
+    download_from_gcp("steam-select", "raw/bundle_data.json", PROJECT_DIR, DATA_DIR)
     print("Successfully loaded BUNDLE_DATA to raw")
     print("Downloading REVIEWS")
-    download_from_gcp("steam-select", "raw/reviews.json")
+    download_from_gcp("steam-select", "raw/reviews.json", PROJECT_DIR, DATA_DIR)
     print("Successfully loaded REVIEWS to raw")
