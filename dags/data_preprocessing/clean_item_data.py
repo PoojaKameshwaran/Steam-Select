@@ -3,15 +3,6 @@ import pandas as pd
 import re
 import yaml
 import ast  
-import snowflake.connector
-from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
-
-
-# Snowflake Connection using Airflow Hook
-def get_snowflake_connection():
-    hook = SnowflakeHook(snowflake_conn_id="snowflake_default")
-    return hook.get_conn()
-
 
 # Function to clean text values
 def clean_text(s):
@@ -88,4 +79,5 @@ def clean_data(df):
     print(df[['sentiment', 'sentiment_score']].head())
 
     return df  # Return the cleaned DataFrame
+
 

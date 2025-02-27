@@ -10,7 +10,7 @@ from collections import Counter
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Construct the path to the data file (assuming it's at root/data/processed/Itemmeta.json)
-data_file_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'Itemmeta.parquet')
+data_file_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'item_data.parquet')
 
 df = pd.read_parquet(data_file_path)  # Update the file path if needed
 

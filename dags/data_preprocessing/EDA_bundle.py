@@ -10,7 +10,7 @@ import logging
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Construct the path to the data file (assuming it's at root/data/processed/bundledata.json)
-data_file_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'bundledata.parquet')
+data_file_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'bundle_data.parquet')
 
 df = pd.read_parquet(data_file_path)  # Update the file path if needed
 

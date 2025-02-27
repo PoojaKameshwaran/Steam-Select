@@ -2,14 +2,6 @@ import os
 import pandas as pd
 import yaml
 import ast  
-import snowflake.connector
-from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
-
-
-# Snowflake Connection using Airflow Hook
-def get_snowflake_connection():
-    hook = SnowflakeHook(snowflake_conn_id="snowflake_default")
-    return hook.get_conn()
 
 
 # Function to clean the DataFrame
@@ -60,7 +52,7 @@ if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Construct the path to the data file (assuming it's at root/data/raw/bundledata.json)
-    data_file_path = os.path.join(script_dir, '..', '..', 'data', 'raw', 'bundledata.json')
+    data_file_path = os.path.join(script_dir, '..', '..', 'data', 'raw', 'bundle_data.json')
 
     # Load data (assuming JSON format)
     try:
@@ -73,7 +65,7 @@ if __name__ == "__main__":
     df = clean_data(df)
 
     # Define processed file path
-    write_to_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'bundledata.parquet')
+    write_to_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'bundle_data.parquet')
 
     # Save the cleaned dataset
     df.to_parquet(write_to_path, compression='snappy')
