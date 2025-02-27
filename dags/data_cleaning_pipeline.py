@@ -25,7 +25,8 @@ dag = DAG(
 
 clean_reviews_task = BashOperator(
     task_id='clean_reviews_task',
-    bash_command="python /opt/airflow/dags/data_preprocessing/clean_reviews.py"
+    bash_command="python /opt/airflow/dags/data_preprocessing/clean_reviews.py",
+    dag = dag
 )
 
 eda_reviews_task = BashOperator(
