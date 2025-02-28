@@ -39,19 +39,19 @@ dag = DAG(
 )
 
 
-# clean_reviews_task = PythonOperator(
-#     task_id='clean_reviews',
-#     python_callable=read_and_clean_reviews_file,
-#     op_kwargs={'file_name': 'reviews.json'},
-#     dag=dag,
-# )
+clean_reviews_task = PythonOperator(
+    task_id='clean_reviews',
+    python_callable=read_and_clean_reviews_file,
+    op_kwargs={'file_name': 'reviews.json'},
+    dag=dag,
+)
 
-# eda_reviews_task = PythonOperator(
-#     task_id='eda_reviews',
-#     python_callable=eda_reviews_data,
-#     op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="clean_reviews_task") }}'},
-#     dag=dag,
-# )
+eda_reviews_task = PythonOperator(
+    task_id='eda_reviews',
+    python_callable=eda_reviews_data,
+    op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="clean_reviews") }}'},
+    dag=dag,
+)
 
 clean_item_task = PythonOperator(
     task_id='clean_item',
@@ -85,17 +85,20 @@ def upload_files_gcp(**kwargs):
     ti = kwargs['ti']
 
     # Retrieve file paths from XCom, ensuring they're always lists
+    file_list_1 = ti.xcom_pull(task_ids='clean_reviews', key='return_value') or []
     file_list_2 = ti.xcom_pull(task_ids='clean_item', key='return_value') or []
     file_list_3 = ti.xcom_pull(task_ids='clean_bundle', key='return_value') or []
 
     # Ensure both are lists
+    if isinstance(file_list_1, str):
+        file_list_1 = [file_list_1]
     if isinstance(file_list_2, str):
         file_list_2 = [file_list_2]
     if isinstance(file_list_3, str):
         file_list_3 = [file_list_3]
 
     # Combine all files
-    all_files = file_list_2 + file_list_3
+    all_files = file_list_1 + file_list_2 + file_list_3
 
     # Define GCS bucket and destination folder
     bucket_name = "steam-select"
@@ -122,7 +125,7 @@ clean_up_stage_task = PythonOperator(
     dag=dag,
 )
 
-# clean_reviews_task >> eda_reviews_task >> staging_to_gcs_task
+clean_reviews_task >> eda_reviews_task >> staging_to_gcs_task
 clean_item_task >> eda_item_task >> staging_to_gcs_task
 clean_bundle_task >> eda_bundle_task >> staging_to_gcs_task
 staging_to_gcs_task >> clean_up_stage_task

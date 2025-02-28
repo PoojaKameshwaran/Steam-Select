@@ -28,7 +28,25 @@ def eda_item_data(file_path):
     logging.info(f"{missing_values}")
 
 
-    # DO THE VISUALIZATION HERE
+    
+    
+
+
+
+
+
+
+    #PLACE YOUR CODE HERE FOR VISUALIZATION
+
+
+
+
+
+
+
+
+
+    
 
     
 

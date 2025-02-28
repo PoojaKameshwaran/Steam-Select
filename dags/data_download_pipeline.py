@@ -37,7 +37,7 @@ dag = DAG(
 download_task = PythonOperator(
     task_id='download_data_from_gcp',
     python_callable=download_from_gcp,
-    op_kwargs={'bucket_name': 'steam-select', 'blob_paths': ["raw/item_metadata.json", "raw/reviews.json"]},
+    op_kwargs={'bucket_name': 'steam-select', 'blob_paths': ["raw/item_metadata.json", "raw/reviews.json", "raw/bundle_data.json"]},
     dag=dag,
 )
 

@@ -10,6 +10,22 @@ PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 # Function to clean the DataFrame
 def clean_item_data(df):
     
+
+
+
+
+
+
+    #PLACE YOUR CODE HERE FOR CLEANING
+
+
+
+
+
+
+
+
+
     print(f"The shape of the item data after cleaned {df.shape}")
 
     return df
