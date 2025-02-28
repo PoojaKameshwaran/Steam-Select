@@ -35,20 +35,25 @@ def upload_large_file_to_gcp(bucket_name, source_file_path, destination_blob_nam
     except Exception as e:
         print(f"Error uploading file to GCS: {e}")
 
+def upload_multiple_files(bucket_name, destination_folder, file_path_names):
+    """
+    Uploads multiple files to Google Cloud Storage.
+
+    :param bucket_name: GCS bucket name
+    :param destination_folder: Target folder in GCS bucket
+    :param file_path_names: List of local file paths to upload
+    """
+    for file_path in file_path_names:
+        file_name = os.path.basename(file_path)
+        destination_blob_name = os.path.join(destination_folder, file_name)
+        upload_large_file_to_gcp(bucket_name, file_path, destination_blob_name)
 
 if __name__ == "__main__":
-    print("Running locally")
     
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Construct the path to the data file (assuming it's at: root/data/processed/reviews.parquet)
-    folder_path = os.path.join(script_dir, '..', '..', 'data', 'raw')
-
-    # Upload Reviews file using optimized large file upload
-    print("Uploading BUNDLE_DATA")
-    source_file = os.path.join(folder_path, "bundle_data.json")
-    print(source_file)
-    
-    upload_large_file_to_gcp("steam-select", source_file, "staging/bundle_data.json")
-    print("Successfully uploaded BUNDLE_DATA to staging")
+    file_paths = [
+        # "d:\\Learning\\MlOps\\Steam-Select\\data\\processed\\raw_item_metadata.parquet"
+        ""
+    ]
+    # Upload files using the modularized function
+    upload_multiple_files("steam-select", "staging", file_paths)
+    print("Successfully uploaded files to staging")

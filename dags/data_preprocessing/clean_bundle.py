@@ -8,38 +8,37 @@ RAW_DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
 PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 
 # Function to clean the DataFrame
-def clean_reviews_data(df):
-    # Drop duplicate records
-    df.drop_duplicates(inplace=True)
-
-    # Trim whitespace from string columns
-    str_cols = df.select_dtypes(include=["object"]).columns
-    df[str_cols] = df[str_cols].apply(lambda x: x.str.strip())
-
-    # Formatting the date
-    df["date"] = pd.to_datetime(df["date"], unit="ms").dt.date
-
-    # Drop non-essential features
-    df.drop(columns=['compensation', 'user_id', 'username', 'found_funny',
-                     'hours', 'page_order', 'page', 'early_access', 'products', 'date'], inplace=True)
+def clean_bundle_data(df):
     
-    # Typecasting
-    df['product_id'] = df['product_id'].fillna(0).astype('int64')
-    
-    # Renaming column names
-    df.columns = ['id', 'review']
+
+
+
+
+
+
+    #PLACE YOUR CODE HERE FOR CLEANING
+
+
+
+
+
+
+
+
+
+    print(f"The shape of the bundle data after cleaned {df.shape}")
 
     return df
 
 # Function to read the file in batches
-def read_and_clean_reviews_file(file_name):
+def read_and_clean_bundle_file(file_name):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_file_path = os.path.join(RAW_DATA_DIR, file_name)
     file_name_without_ext = os.path.splitext(os.path.basename(data_file_path))[0]
     chunk_size = 100000
     chunks = pd.read_json(data_file_path, orient='records', lines=True, chunksize=chunk_size)
     
-    cleaned_chunks = [clean_reviews_data(chunk) for chunk in chunks]
+    cleaned_chunks = [clean_bundle_data(chunk) for chunk in chunks]
     
     cleaned_df = pd.concat(cleaned_chunks, ignore_index=True)
     
@@ -64,4 +63,4 @@ def read_and_clean_reviews_file(file_name):
 
 
 if __name__ == "__main__":
-    read_and_clean_reviews_file('reviews.json')
+    read_and_clean_bundle_file('bundle_data.json')
