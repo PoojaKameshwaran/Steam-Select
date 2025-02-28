@@ -1,6 +1,9 @@
 pandas
 matplotlib
 seaborn
+dask
+fastparquet
+nltk
 python-dotenv
 snowflake-connector-python
 snowflake-connector-python[pandas]
