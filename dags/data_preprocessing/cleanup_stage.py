@@ -1,12 +1,19 @@
 import os
 import shutil
 
-def clean_up_files_in_folder(folder_path):
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Set up project directories
+RAW_DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
+PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
+
+def clean_up_files_in_folder():
     """
     Removes all files and subdirectories within the specified folder.
 
     :param folder_path: Path to the folder to be cleaned.
     """
+    folder_path = PROCESSED_DATA_DIR
     if not os.path.exists(folder_path):
         print(f"Folder '{folder_path}' does not exist.")
         return
@@ -28,10 +35,4 @@ def clean_up_files_in_folder(folder_path):
 # Example usage
 if __name__ == "__main__":
     
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Construct the path to the data file (assuming it's at root/data/processed)
-    folder_to_clean = os.path.join(script_dir, '..', '..', 'data', 'processed')
-    
-    clean_up_files_in_folder(folder_to_clean)
+    clean_up_files_in_folder()
