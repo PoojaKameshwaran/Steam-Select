@@ -7,40 +7,43 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__
 DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-def download_from_gcp(bucket_name, blob_path):
+def download_from_gcp(bucket_name, blob_paths):
     try:
         # Set environment variables for authentication
         KEY_PATH = os.path.join(PROJECT_DIR, "config", "key.json")
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = KEY_PATH
-        print(PROJECT_DIR)
+        
         # Google Cloud setup
-        try:
-            storage_client = storage.Client()
-        except Exception as e:
-            return None
-
+        storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
-
-        # Get the specific blob
-        blob = bucket.blob(blob_path)
         
-        if not blob.exists():
-            return None
+        downloaded_files = []
         
-        # Extract filename from blob path
-        filename = os.path.basename(blob_path)
+        for blob_path in blob_paths:
+            blob = bucket.blob(blob_path)
+            
+            if not blob.exists():
+                print(f"Blob {blob_path} does not exist.")
+                continue
+            
+            # Extract filename from blob path
+            filename = os.path.basename(blob_path)
+            
+            # Download the file directly to the specified folder
+            destination_file_path = os.path.join(DATA_DIR, filename)
+            blob.download_to_filename(destination_file_path)
+            
+            print(f"Successfully downloaded {blob_path} to {destination_file_path}")
+            downloaded_files.append(destination_file_path)
         
-        # Download the file directly to the specified folder
-        destination_file_path = os.path.join(DATA_DIR, filename)
-        blob.download_to_filename(destination_file_path)
-        
-        print(f"Successfully loaded at {destination_file_path}")
-        return destination_file_path
-    
+        return downloaded_files
     except Exception as e:
-        return None
+        print(f"Error: {e}")
+        return []
 
 if __name__ == "__main__":
+    
+    blob_paths = ["raw/item_metadata.json","raw/bundle_data.json", "raw/reviews.json"]
 
-    print("Running locally")
-    download_from_gcp("steam-select","raw/item_metadata.json")
+    downloaded_files = download_from_gcp("steam-select", blob_paths)
+
