@@ -98,6 +98,7 @@ def upload_files_gcp(**kwargs):
         file_list_3 = [file_list_3]
 
     # Combine all files
+    
     all_files = file_list_1 + file_list_2 + file_list_3
 
     # Define GCS bucket and destination folder

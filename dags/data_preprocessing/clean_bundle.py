@@ -1,5 +1,6 @@
-import os
+import os 
 import pandas as pd
+import ast
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -9,22 +10,41 @@ PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 
 # Function to clean the DataFrame
 def clean_bundle_data(df):
+    # PLACE YOUR CODE HERE FOR CLEANING
     
+    # Do the necessary data cleaning here
+    print("\n📌 Initial Data Info:")
+    print(df.info())
 
+    df = df.applymap(lambda x: str(x) if isinstance(x, (list, dict)) else x)
+    df.drop_duplicates(inplace=True)
+    
+    # Handle missing values
+    missing_values = df.isnull().sum()
+    print("\n🔍 Missing Values Before Cleaning:")
+    print(missing_values)
 
+    print("\n📌 Fixing Data Types...")
 
+    # Convert `bundle_final_price` & `bundle_price` to float
+    df["bundle_final_price"] = df["bundle_final_price"].replace(r'[\$,]', '', regex=True).astype(float)
+    df["bundle_price"] = df["bundle_price"].replace(r'[\$,]', '', regex=True).astype(float)
 
+    df["bundle_discount"] = df["bundle_discount"].astype(str).str.replace('%', '').astype(float)
 
+    # Convert `bundle_id` to integer
+    df["bundle_id"] = df["bundle_id"].astype(int)
 
-    #PLACE YOUR CODE HERE FOR CLEANING
+    # Convert `items` column (currently a JSON-like string) into a list of dictionaries
+    df["items"] = df["items"].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
 
+    # Verify Fixed Data
+    print("\n✅ Data Types After Fixing:")
+    print(df.dtypes)
 
-
-
-
-
-
-
+    # Standardize column names
+    df.columns = df.columns.str.lower().str.replace(" ", "_")
+    print(df.describe())
 
     print(f"The shape of the bundle data after cleaned {df.shape}")
 
@@ -60,7 +80,6 @@ def read_and_clean_bundle_file(file_name):
     del cleaned_df
 
     return write_to_path
-
 
 if __name__ == "__main__":
     read_and_clean_bundle_file('bundle_data.json')
