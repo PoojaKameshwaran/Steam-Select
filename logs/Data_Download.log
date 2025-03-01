@@ -4,3 +4,15 @@
 2025-03-01 18:51:12,129 - Data_Download - INFO - Successfully read and stored as parquet file /opt/airflow/data/processed/raw_item_metadata.parquet
 2025-03-01 18:52:02,051 - Data_Download - INFO - Successfully read and stored as parquet file /opt/airflow/data/processed/raw_reviews.parquet
 2025-03-01 18:52:02,441 - Data_Download - INFO - Successfully read and stored as parquet file /opt/airflow/data/processed/raw_bundle_data.parquet
+2025-03-01 20:18:41,352 - Data_Download - INFO - Successfully downloaded raw/item_metadata.json to /opt/airflow/data/raw/item_metadata.json
+2025-03-01 20:18:41,801 - Data_Download - INFO - Successfully downloaded raw/bundle_data.json to /opt/airflow/data/raw/bundle_data.json
+2025-03-01 20:18:46,415 - Data_Download - INFO - Successfully read and stored as parquet file /opt/airflow/data/processed/raw_item_metadata.parquet
+2025-03-01 20:18:46,602 - Data_Download - INFO - Successfully read and stored as parquet file /opt/airflow/data/processed/raw_bundle_data.parquet
+2025-03-01 20:25:42,438 - Data_Download - INFO - Successfully downloaded raw/item_metadata.json to /opt/airflow/data/raw/item_metadata.json
+2025-03-01 20:25:42,815 - Data_Download - INFO - Successfully downloaded raw/bundle_data.json to /opt/airflow/data/raw/bundle_data.json
+2025-03-01 20:25:48,737 - Data_Download - INFO - Successfully read and stored as parquet file /opt/airflow/data/processed/raw_item_metadata.parquet
+2025-03-01 20:25:48,795 - Data_Download - INFO - Successfully read and stored as parquet file /opt/airflow/data/processed/raw_bundle_data.parquet
+2025-03-01 20:26:21,506 - Data_Download - INFO - Successfully downloaded raw/item_metadata.json to /opt/airflow/data/raw/item_metadata.json
+2025-03-01 20:26:21,874 - Data_Download - INFO - Successfully downloaded raw/bundle_data.json to /opt/airflow/data/raw/bundle_data.json
+2025-03-01 20:26:27,933 - Data_Download - INFO - Successfully read and stored as parquet file /opt/airflow/data/processed/raw_item_metadata.parquet
+2025-03-01 20:26:28,037 - Data_Download - INFO - Successfully read and stored as parquet file /opt/airflow/data/processed/raw_bundle_data.parquet
