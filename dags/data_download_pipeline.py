@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow import configuration as conf
+from notification import notify_failure, notify_success
+
 
 from data_preprocessing.download_data  import download_from_gcp
 from data_preprocessing.store_paraquet import read_from_json_to_paraquet
@@ -38,6 +40,7 @@ download_task = PythonOperator(
     task_id='download_data_from_gcp',
     python_callable=download_from_gcp,
     op_kwargs={'bucket_name': 'steam-select', 'blob_paths': ["raw/item_metadata.json", "raw/reviews.json", "raw/bundle_data.json"]},
+    on_failure_callback=notify_failure,
     dag=dag,
 )
 
@@ -46,6 +49,8 @@ read_json_task = PythonOperator(
     task_id='read_json_data',
     python_callable=read_from_json_to_paraquet,
     op_kwargs={'file_path': "{{ task_instance.xcom_pull(task_ids='download_data_from_gcp') | default([]) }}"},
+    on_failure_callback=notify_failure,
+    on_success_callback=notify_success,
     dag=dag,
 )
 

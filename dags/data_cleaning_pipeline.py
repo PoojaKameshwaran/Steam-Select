@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow import configuration as conf
+from notification import notify_failure, notify_success
 
 from data_preprocessing.clean_reviews  import read_and_clean_reviews_file
 from data_preprocessing.EDA_reviews  import eda_reviews_data
@@ -43,6 +44,7 @@ clean_reviews_task = PythonOperator(
     task_id='clean_reviews',
     python_callable=read_and_clean_reviews_file,
     op_kwargs={'file_name': 'reviews.json'},
+    on_failure_callback=notify_failure,
     dag=dag,
 )
 
@@ -50,6 +52,7 @@ eda_reviews_task = PythonOperator(
     task_id='eda_reviews',
     python_callable=eda_reviews_data,
     op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="clean_reviews") }}'},
+    on_failure_callback=notify_failure,
     dag=dag,
 )
 
@@ -57,6 +60,7 @@ clean_item_task = PythonOperator(
     task_id='clean_item',
     python_callable=read_and_clean_item_file,
     op_kwargs={'file_name': 'item_metadata.json'},
+    on_failure_callback=notify_failure,
     dag=dag,
 )
 
@@ -64,6 +68,7 @@ eda_item_task = PythonOperator(
     task_id='eda_item',
     python_callable=eda_item_data,
     op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="clean_item") }}'},
+    on_failure_callback=notify_failure,
     dag=dag,
 )
 
@@ -71,6 +76,7 @@ clean_bundle_task = PythonOperator(
     task_id='clean_bundle',
     python_callable=read_and_clean_bundle_file,
     op_kwargs={'file_name': 'bundle_data.json'},
+    on_failure_callback=notify_failure,
     dag=dag,
 )
 
@@ -78,6 +84,7 @@ eda_bundle_task = PythonOperator(
     task_id='eda_bundle',
     python_callable=eda_bundle_data,
     op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="clean_bundle") }}'},
+    on_failure_callback=notify_failure,
     dag=dag,
 )
 
@@ -115,6 +122,7 @@ staging_to_gcs_task = PythonOperator(
     task_id='staging_to_gcs',
     python_callable=upload_files_gcp,
     provide_context=True,
+    on_failure_callback=notify_failure,
     dag=dag,
 )
 
@@ -122,6 +130,7 @@ clean_up_stage_task = PythonOperator(
     task_id='clean_up_stage',
     python_callable=clean_up_files_in_folder,
     provide_context=True,
+    on_failure_callback=notify_failure,
     dag=dag,
 )
 

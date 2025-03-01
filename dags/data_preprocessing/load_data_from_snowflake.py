@@ -64,12 +64,13 @@ def read_from_snowflake(database, schema, table_name):
         conn.close()
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
     
-#     df = read_from_snowflake(
-#         database="STEAM_FULL",
-#         schema="RAW_DATA",
-#         table_name="ITEM_METADATA"
-#     )
-#     print(df.shape)
-#     print(df.head())
+    df = read_from_snowflake(
+        database="STEAM_FULL",
+        schema="RAW_DATA",
+        table_name="ITEM_METADATA"
+    )
+    df.to_csv(r"C:\GitHub\Steam-Select\data\raw\ITEM_METADATA.csv", index=False)
+    print(df.shape)
+    print(df.head())
