@@ -16,7 +16,7 @@ from airflow.operators.email import EmailOperator
 def notify_success(context):
     success_email = EmailOperator(
         task_id='success_email',
-        to='balasubramaniamrenganathan@gmail.com',
+        to='steamrecommendation83@gmail.com',
         subject='Success Notification from Airflow',
         html_content='<p>The task succeeded.</p>',
         dag=context['dag']

@@ -123,6 +123,7 @@ staging_to_gcs_task = PythonOperator(
     python_callable=upload_files_gcp,
     provide_context=True,
     on_failure_callback=notify_failure,
+    on_success_callback=notify_success,
     dag=dag,
 )
 

@@ -7,7 +7,7 @@ from notification import notify_failure, notify_success
 
 
 from data_preprocessing.download_data  import download_from_gcp
-#from data_preprocessing.store_paraquet import read_from_json_to_paraquet
+from data_preprocessing.store_paraquet import read_from_json_to_paraquet
 
 #Define the paths to project directory and the path to the key
 PROJECT_DIR = os.getcwd()
@@ -27,7 +27,7 @@ default_args = {
 
 #INITIALIZE THE DAG INSTANCE
 dag = DAG(
-    'Data_Download',
+    'Data_Download_Pipeline',
     default_args = default_args,
     description = 'MLOps Data pipeline',
     schedule_interval = None,  # Set the schedule interval or use None for manual triggering
@@ -39,7 +39,7 @@ dag = DAG(
 download_task = PythonOperator(
     task_id='download_data_from_gcp',
     python_callable=download_from_gcp,
-    op_kwargs={'bucket_name': 'steam-select', 'blob_paths': ["raw/item_metadata.json", "raw/reviews.json", "raw/bundle_data.json"]},
+    op_kwargs={'bucket_name': 'steam-select', 'blob_paths': ["raw/item_metadata.json", "raw/bundle_data.json", "raw/reviews.json"]},
     on_failure_callback=notify_failure,
     dag=dag,
 )
@@ -55,4 +55,4 @@ read_json_task = PythonOperator(
 )
 
 # Define the task dependencies
-download_task #>> read_json_task
+download_task >> read_json_task
