@@ -67,7 +67,7 @@ x-airflow-common:
     AIRFLOW__SMTP__SMTP_USER: steamrecommendation83@gmail.com
     AIRFLOW__SMTP__SMTP_PASSWORD: rfnz mntk vdzd kdip
     AIRFLOW__SMTP__SMTP_PORT: 587
-    AIRFLOW__SMTP__SMTP_MAIL_FROM: steamrecommendation@gmail.com
+    AIRFLOW__SMTP__SMTP_MAIL_FROM: steamrecommendation83@gmail.com
     # AIRFLOW__SMTP__SMTP_TIMEOUT: 30
     # AIRFLOW__SMTP__SMTP_RETRY_LIMIT: 5
     # yamllint disable rule:line-length
