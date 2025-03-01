@@ -25,7 +25,7 @@ default_args = {
 
 #INITIALIZE THE DAG INSTANCE
 dag = DAG(
-    'Data_Preprocessing',
+    'Data_Download',
     default_args = default_args,
     description = 'MLOps Data pipeline',
     schedule_interval = None,  # Set the schedule interval or use None for manual triggering

@@ -17,7 +17,7 @@ def eda_item_data(file_path):
     df = pd.read_parquet(data_file_path)  # Update the file path if needed
 
     # Create a folder to save the visualizations
-    output_folder = os.path.join(script_dir, '..', 'visualizations', 'reviews')
+    output_folder = os.path.join(script_dir, '..', 'visualizations', 'Itemmeta')
     os.makedirs(output_folder, exist_ok=True)
 
     # Log findings
@@ -35,7 +35,8 @@ def eda_item_data(file_path):
     plt.title("Sentiment Score Distribution")
     plt.xlabel("Sentiment Score")
     plt.ylabel("Count")
-    plt.show()
+    plt.savefig(os.path.join(output_folder, 'Sentiment Score Distribution.png'))
+    plt.close()
 
     # Most Common Games Based on Sentiment Score
     top_games = df.groupby("Game")["sentiment_score"].mean().sort_values(ascending=False).head(10)
@@ -44,7 +45,8 @@ def eda_item_data(file_path):
     plt.title("Top 10 Games by Sentiment Score")
     plt.xlabel("Average Sentiment Score")
     plt.ylabel("Game")
-    plt.show()
+    plt.savefig(os.path.join(output_folder, 'Top 10 Games by Sentiment Score.png'))
+    plt.close()
 
     # Sentiment Score vs. Game_ID Analysis
     plt.figure(figsize=(10, 5))
@@ -52,7 +54,8 @@ def eda_item_data(file_path):
     plt.title("Sentiment Score vs. Game ID")
     plt.xlabel("Game ID")
     plt.ylabel("Sentiment Score")
-    plt.show()
+    plt.savefig(os.path.join(output_folder, 'Sentiment Score vs. Game ID.png'))
+    plt.close()
 
     # Ensure "genres" column is in string format
     df["genres"] = df["genres"].astype(str)
@@ -76,7 +79,8 @@ def eda_item_data(file_path):
     plt.xlabel("Count")
     plt.ylabel("Genre")
     plt.title("Top 10 Most Common Game Genres")
-    plt.show()
+    plt.savefig(os.path.join(output_folder, 'Top 10 Most Common Game Genres.png'))
+    plt.close()
 
     # Log additional findings after plotting
     logging.info(f"Visualizations saved in the '{output_folder}' folder.")
