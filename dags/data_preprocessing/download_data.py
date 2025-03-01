@@ -38,7 +38,7 @@ def download_from_gcp(bucket_name, blob_paths):
             blob.download_to_filename(destination_file_path)
             
             print(f"Successfully downloaded {blob_path} to {destination_file_path}")
-            logger.info("Download successful")
+            logger.info(f"Successfully downloaded {blob_path} to {destination_file_path}")
             downloaded_files.append(destination_file_path)
         
         return downloaded_files
