@@ -2,15 +2,10 @@ import os
 from google.cloud import storage
 from custom_logging import get_logger
 
-PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logger = get_logger('Data_Download')
 
-# Set up project directories
-DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
-os.makedirs(DATA_DIR, exist_ok=True)
-
-def download_from_gcp(bucket_name, blob_paths):
+def download_from_gcp(bucket_name, blob_paths, PROJECT_DIR, DATA_DIR):
     try:
         # Set environment variables for authentication
         KEY_PATH = os.path.join(PROJECT_DIR, "config", "key.json")
@@ -51,5 +46,10 @@ if __name__ == "__main__":
     
     blob_paths = ["raw/item_metadata.json","raw/bundle_data.json", "raw/reviews.json"]
 
-    downloaded_files = download_from_gcp("steam-select", blob_paths)
+    PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    # Set up project directories
+    DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    downloaded_files = download_from_gcp("steam-select", blob_paths, PROJECT_DIR, DATA_DIR)
 
