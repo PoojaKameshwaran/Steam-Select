@@ -48,8 +48,6 @@ def clean_item_data(df):
     }
     df.rename(columns=rename_mapping, inplace=True)
 
-    # Ensure missing values are handled before cleaning
-    df['sentiment'] = df['sentiment'].fillna("unknown")
 
     # Function to clean sentiment column
     def clean_sentiment(value):
@@ -60,28 +58,7 @@ def clean_item_data(df):
     # Apply cleaning function
     df['sentiment'] = df['sentiment'].apply(clean_sentiment)
 
-    # Check missing values after cleaning
-    print("\n📌 Missing Values After Cleaning:")
-    print(df['sentiment'].isnull().sum())
 
-    # Sentiment mapping to numerical scores
-    sentiment_mapping = {
-        'overwhelmingly negative': -3,
-        'very negative': -2,
-        'mostly negative': -1,
-        'negative': -1,
-        'mixed': 0,  # Assigning Mixed as 0
-        'positive': 1,
-        'mostly positive': 2,
-        'very positive': 3,
-        'overwhelmingly positive': 4
-    }
-
-    # Map sentiment to numerical score
-    df['sentiment_score'] = df['sentiment'].map(lambda x: sentiment_mapping.get(x.lower(), None) if isinstance(x, str) else None)
-
-    # Confirm that sentiment mapping is applied correctly
-    print("\n✅ Sentiment Mapping Applied")
     print(f"The shape of the item data after cleaned {df.shape}")
 
     return df

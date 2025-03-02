@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import dask as dd
+import dask.dataframe as dd
 import pyarrow.parquet as pq
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
@@ -21,6 +21,10 @@ nltk.download("vader_lexicon")
 # Initialize Sentiment Analyzer once (avoiding reloading for each row)
 sia = SentimentIntensityAnalyzer()
 
+# Function to round the mean to the closest predefined sentiment value
+def round_to_closest(value, sentiment_values):
+    return min(sentiment_values, key=lambda x: abs(x - value))
+
 def feature_df_reviews_data(df):
     """Processes the DataFrame to add sentiment score and aggregate by product ID."""
     try:
@@ -38,10 +42,13 @@ def feature_df_reviews_data(df):
         # Drop review text to save memory
         dask_df = dask_df.drop(columns=["review"])
 
-        # Group by product_id and compute rounded mean sentiment score
-        df_grouped = dask_df.groupby("id")["sentiment_score"].mean().round().astype("int").reset_index()
+        # Define the predefined sentiment values
+        sentiment_values = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
 
-        logger.info(f"Feature engineering completed. Processed data shape: {df_grouped.shape}")
+        # Apply the rounding function
+        df_grouped = dask_df.groupby("id")["sentiment_score"].mean().apply(lambda x: round_to_closest(x, sentiment_values)).reset_index()
+
+        logger.info(f"Feature engineering completed.")
         
         # Convert to Pandas for efficient saving
         df_grouped = df_grouped.compute()
@@ -58,16 +65,25 @@ def get_sentiment_score(text):
         
         sentiment = sia.polarity_scores(text)["compound"]
         
-        if sentiment <= -0.6:
-            return 1  # Very Negative
+        # Mapping sentiment based on predefined ranges
+        if sentiment <= -0.8:
+            return 1  # Overwhelmingly Negative
+        elif sentiment <= -0.6:
+            return 1.5  # Mostly Negative
+        elif sentiment <= -0.4:
+            return 2  # Very Negative
         elif sentiment <= -0.2:
-            return 2  # Negative
+            return 2.5  # Negative
+        elif sentiment <= 0:
+            return 3  # Mixed/Neutral
         elif sentiment <= 0.2:
-            return 3  # Neutral
+            return 3.5  # Positive
+        elif sentiment <= 0.4:
+            return 4  # Very Positive
         elif sentiment <= 0.6:
-            return 4  # Positive
+            return 4.5  # Mostly Positive
         else:
-            return 5  # Very Positive
+            return 5  # Overwhelmingly Positive
     except Exception as e:
         logger.error(f"Error computing sentiment score: {str(e)}", exc_info=True)
         return 3  # Default to neutral in case of error
@@ -76,7 +92,7 @@ def feature_engineering_cleaned_reviews_file(file_name):
     """Reads the Parquet file in chunks, applies feature engineering, and saves the output."""
     try:
         data_file_path = os.path.join(PROCESSED_DATA_DIR, file_name)
-        write_to_path = os.path.join(PROCESSED_DATA_DIR, file_name.replace('.parquet', '_engineered.parquet'))
+        write_to_path = os.path.join(PROCESSED_DATA_DIR, file_name.replace('.parquet', '_cleaned.parquet'))
 
         logger.info(f"Processing file: {data_file_path}")
         parquet_file = pq.ParquetFile(data_file_path)
