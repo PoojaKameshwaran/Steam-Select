@@ -11,7 +11,7 @@ default_args = {
     "owner": "MLopsProject",
     "depends_on_past": False,
     "start_date": datetime(2024, 10, 19),
-    "retries": 1,
+    "retries": 0,
     "retry_delay": timedelta(minutes=5),
 }
 
@@ -50,14 +50,14 @@ validate_bundle_task = PythonOperator(
 anomaly_item_task = PythonOperator(
     task_id="detect_anomalies_item",
     python_callable=read_and_detect_anomalies,
-    op_kwargs={"file_name": "processed_item_metadata.json"},
+    op_kwargs={"file_name": "item_metadata.json"},
     dag=dag,
 )
 
 anomaly_reviews_task = PythonOperator(
     task_id="detect_anomalies_reviews",
     python_callable=read_and_detect_anomalies,
-    op_kwargs={"file_name": "processed_reviews.json"},
+    op_kwargs={"file_name": "reviews.json"},
     dag=dag,
 )
 
@@ -65,3 +65,4 @@ anomaly_reviews_task = PythonOperator(
 validate_item_task >> anomaly_item_task
 validate_reviews_task >> anomaly_reviews_task
 validate_bundle_task
+validate_item_task

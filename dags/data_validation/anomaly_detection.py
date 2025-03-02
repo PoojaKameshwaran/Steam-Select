@@ -6,6 +6,7 @@ import logging
 # Define paths
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
+DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
 LOG_DIR = os.path.join(PROJECT_DIR, "dags", "logs")
 
 # Ensure necessary directories exist
@@ -55,9 +56,9 @@ def detect_anomalies(df, file_name):
 
 def read_and_detect_anomalies(file_name):
     """Load and analyze file for anomalies."""
-    file_path = os.path.join(PROCESSED_DATA_DIR, file_name)
+    file_path = os.path.join(DATA_DIR, file_name)
     df = pd.read_json(file_path, orient="records", lines=True)
     return detect_anomalies(df, file_name)
 
 if __name__ == "__main__":
-    read_and_detect_anomalies("processed_item_metadata.json")
+    read_and_detect_anomalies("item_metadata.json")

@@ -60,7 +60,7 @@ def validate_data(df, file_name):
         logger.warning(f"Validation issues detected in {file_name}")  
     else:
         logger.info(f"{file_name} passed validation checks.")  
-    return df  # Return validated DataFrame
+    return None  # Return validated DataFrame
 
 def read_and_validate_file(file_name):
     """Read a JSON file and validate the data."""
