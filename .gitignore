@@ -1,8 +1,10 @@
 .env
-/data/processed
+/data/processed/*
+!/data/processed/.gitkeep
 /data/raw
 .venv
 __pycache__/
 /pipelines/airflowlogs/
 config/key.json
-logs/
+logs/*
+!logs/Data_Download.log

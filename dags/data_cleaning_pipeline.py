@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow import configuration as conf
+from notification import notify_failure, notify_success
 
 from data_preprocessing.clean_reviews  import read_and_clean_reviews_file
 from data_preprocessing.EDA_reviews  import eda_reviews_data
@@ -31,9 +32,9 @@ default_args = {
 
 #INITIALIZE THE DAG INSTANCE
 dag = DAG(
-    'Data_Cleaning_EDA_Pipeline',
+    'data_cleaning_EDA_pipeline',
     default_args = default_args,
-    description = 'MLOps Data pipeline',
+    description = 'Data Cleaning & EDA Pipeline',
     schedule_interval = None,  # Set the schedule interval or use None for manual triggering
     catchup = False,
 )
@@ -43,6 +44,7 @@ clean_reviews_task = PythonOperator(
     task_id='clean_reviews',
     python_callable=read_and_clean_reviews_file,
     op_kwargs={'file_name': 'reviews.json'},
+    on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline : Clean Reviews Task Failed."),
     dag=dag,
 )
 
@@ -50,6 +52,7 @@ eda_reviews_task = PythonOperator(
     task_id='eda_reviews',
     python_callable=eda_reviews_data,
     op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="clean_reviews") }}'},
+        on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline : EDA Reviews Task Failed."),
     dag=dag,
 )
 
@@ -57,6 +60,7 @@ clean_item_task = PythonOperator(
     task_id='clean_item',
     python_callable=read_and_clean_item_file,
     op_kwargs={'file_name': 'item_metadata.json'},
+    on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline : Clean Item Task Failed."),
     dag=dag,
 )
 
@@ -64,6 +68,7 @@ eda_item_task = PythonOperator(
     task_id='eda_item',
     python_callable=eda_item_data,
     op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="clean_item") }}'},
+    on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline : EDA Item Task Failed."),
     dag=dag,
 )
 
@@ -71,6 +76,7 @@ clean_bundle_task = PythonOperator(
     task_id='clean_bundle',
     python_callable=read_and_clean_bundle_file,
     op_kwargs={'file_name': 'bundle_data.json'},
+    on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline : Clean Bundle Task Failed."),
     dag=dag,
 )
 
@@ -78,6 +84,7 @@ eda_bundle_task = PythonOperator(
     task_id='eda_bundle',
     python_callable=eda_bundle_data,
     op_kwargs={'file_path': '{{ task_instance.xcom_pull(task_ids="clean_bundle") }}'},
+    on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline : EDA Bundle Task Failed."),
     dag=dag,
 )
 
@@ -115,6 +122,8 @@ staging_to_gcs_task = PythonOperator(
     task_id='staging_to_gcs',
     python_callable=upload_files_gcp,
     provide_context=True,
+    on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline Failed."),
+    on_success_callback=lambda context: notify_success(context, "Data Cleaning Pipeline Succeeded!"),
     dag=dag,
 )
 
@@ -122,6 +131,7 @@ clean_up_stage_task = PythonOperator(
     task_id='clean_up_stage',
     python_callable=clean_up_files_in_folder,
     provide_context=True,
+    on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline : Cleanup Stage Task Failed."),
     dag=dag,
 )
 
