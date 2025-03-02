@@ -1,0 +1,36 @@
+Missing values found in item_metadata.json: 
+publisher          8052
+genres             3283
+app_name              2
+title              2050
+url                   0
+release_date       2067
+tags                163
+discount_price    31910
+reviews_url           2
+specs               670
+price              3287
+early_access          0
+id                    2
+developer          3299
+sentiment          7182
+metascore         29458
+dtype: int64
+Missing values found in item_metadata.json: 
+publisher          8052
+genres             3283
+app_name              2
+title              2050
+url                   0
+release_date       2067
+tags                163
+discount_price    31910
+reviews_url           2
+specs               670
+price              3287
+early_access          0
+id                    2
+developer          3299
+sentiment          7182
+metascore         29458
+dtype: int64
