@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import ast
 import pyarrow.parquet as pq
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -10,33 +11,20 @@ PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 
 # Function to clean the DataFrame
 def feature_df_item_data(df):
-
-
-
-
-
-
-
-
-
-
-
     # PLACE YOUR CODE HERE FOR CLEANING
 
+    # Ensure genres are properly formatted as lists
+    df["genres"] = df["genres"].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
 
+    # Count the number of genres correctly
+    df["num_genres"] = df["genres"].apply(len)
 
-
-
-
-
-    
     print(f"The shape of the item data after preprocessed {df.shape}")
 
     return df
 
 # Function to read the file in batches
 def feature_engineering_cleaned_item_file(file_name):
-
     data_file_path = os.path.join(PROCESSED_DATA_DIR, file_name)
     write_to_path = os.path.join(PROCESSED_DATA_DIR, file_name.replace('.parquet', '_cleaned.parquet'))
 
