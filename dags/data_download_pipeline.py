@@ -27,32 +27,32 @@ default_args = {
 
 #INITIALIZE THE DAG INSTANCE
 dag = DAG(
-    'Data_Download_Pipeline',
+    'data_download_pipeline',
     default_args = default_args,
-    description = 'MLOps Data pipeline',
+    description = 'Data Download from GCS Pipeline',
     schedule_interval = None,  # Set the schedule interval or use None for manual triggering
     catchup = False,
 )
 
+PROJECT_DIR = os.getcwd()
+DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
+os.makedirs(DATA_DIR, exist_ok=True)  # Ensure the directory exists
 
 #DEFINE A FUNCTION TO DOWNLOAD THE DATA FROM GCP
 download_task = PythonOperator(
     task_id='download_data_from_gcp',
     python_callable=download_from_gcp,
-    op_kwargs={'bucket_name': 'steam-select', 'blob_paths': ["raw/item_metadata.json", "raw/bundle_data.json", "raw/reviews.json"]},
-    on_failure_callback=notify_failure,
+    op_kwargs={
+        'bucket_name': 'steam-select', 
+        'blob_paths': ["raw/item_metadata.json", "raw/bundle_data.json", "raw/reviews.json"],
+        'PROJECT_DIR' : PROJECT_DIR,
+        'DATA_DIR' : DATA_DIR
+    },
+    on_success_callback=lambda context: notify_success(context, "Data Download Pipeline Succeeded!"),
+    on_failure_callback=lambda context: notify_failure(context, "Data Download Pipeline Failed."),
     dag=dag,
 )
 
-#DEFINE A FUNCTION TO LOAD THE DATA LOCALLY AND SAVE AS PARAQUET
-read_json_task = PythonOperator(
-    task_id='read_json_data',
-    python_callable=read_from_json_to_paraquet,
-    op_kwargs={'file_path': "{{ task_instance.xcom_pull(task_ids='download_data_from_gcp') | default([]) }}"},
-    on_failure_callback=notify_failure,
-    on_success_callback=notify_success,
-    dag=dag,
-)
 
 # Define the task dependencies
-download_task >> read_json_task
+download_task
