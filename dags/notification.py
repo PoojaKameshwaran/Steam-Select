@@ -13,22 +13,22 @@ from airflow.operators.email import EmailOperator
 #         username='airflow'
 #     )
 
-def notify_success(context):
+def notify_success(context, message = "The task succeeded!"):
     success_email = EmailOperator(
         task_id='success_email',
         to='steamrecommendation83@gmail.com',
         subject='Success Notification from Airflow',
-        html_content='<p>The task succeeded.</p>',
+        html_content=f'<p>{message}.</p>',
         dag=context['dag']
     )
     success_email.execute(context=context)
 
-def notify_failure(context):
+def notify_failure(context, message = "The task failed."):
     failure_email = EmailOperator(
         task_id='failure_email',
-        to='balasubramaniamrenganathan@gmail.com',
+        to='steamrecommendation83@gmail.com',
         subject='Failure Notification from Airflow',
-        html_content='<p>The task failed.</p>',
+        html_content=f'<p>{message}</p>',
         dag=context['dag']
     )
     failure_email.execute(context=context)

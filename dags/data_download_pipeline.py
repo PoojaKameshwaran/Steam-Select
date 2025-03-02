@@ -48,7 +48,8 @@ download_task = PythonOperator(
         'PROJECT_DIR' : PROJECT_DIR,
         'DATA_DIR' : DATA_DIR
     },
-    on_failure_callback=notify_failure,
+    on_success_callback=lambda context: notify_success(context, "Data Download Pipeline Succeeded!"),
+    on_failure_callback=lambda context: notify_failure(context, "Data Download Pipeline Failed."),
     dag=dag,
 )
 
