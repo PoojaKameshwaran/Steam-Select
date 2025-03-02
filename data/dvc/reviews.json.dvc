@@ -1,0 +1,5 @@
+outs:
+- md5: 7b5a0b4a89e5f060b93b36a842b190be
+  size: 654316820
+  hash: md5
+  path: reviews.json
