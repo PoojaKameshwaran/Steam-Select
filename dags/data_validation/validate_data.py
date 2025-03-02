@@ -7,8 +7,8 @@ import numpy as np
 # Define paths
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RAW_DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
-PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
-LOG_DIR = os.path.join(PROJECT_DIR, "dags", "logs")
+PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "dags", "Data_validation_reports")
+LOG_DIR = os.path.join(PROJECT_DIR,"logs")
 
 # Ensure necessary directories exist
 os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)

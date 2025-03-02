@@ -5,9 +5,9 @@ import logging
 
 # Define paths
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
+PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "dags","Data_validation_reports")
 DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
-LOG_DIR = os.path.join(PROJECT_DIR, "dags", "logs")
+LOG_DIR = os.path.join(PROJECT_DIR, "logs")
 
 # Ensure necessary directories exist
 os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
