@@ -6,8 +6,10 @@
 __pycache__/
 /pipelines/airflowlogs/
 config/key.json
-logs/*
+logs/dag*
+logs/scheduler*
 !logs/Data_Download.log
 /data/dvc/bundle_data.json
 /data/dvc/item_metadata.json
 /data/dvc/reviews.json
+

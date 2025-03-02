@@ -17,7 +17,7 @@ default_args = {
 
 # Initialize DAG
 dag = DAG(
-    "Data_Validation_Pipeline",
+    "data_validation_pipeline",
     default_args=default_args,
     description="Data Validation and Anomaly Detection Pipeline",
     schedule_interval=None,
