@@ -2,7 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
-import logging
+from custom_logging import get_logger
+
+logger = get_logger('EDA')
 
 def eda_reviews_data(file_path):
     # Load your dataset
@@ -19,12 +21,12 @@ def eda_reviews_data(file_path):
     os.makedirs(output_folder, exist_ok=True)
 
     # Log findings
-    logging.info("Data Overview:")
-    logging.info(f"{df.info()}")
+    logger.info("Data Overview:")
+    logger.info(f"{df.info()}")
 
-    logging.info("Missing Values:")
+    logger.info("Missing Values:")
     missing_values = df.isnull().sum()
-    logging.info(f"{missing_values}")
+    logger.info(f"{missing_values}")
 
 
     # Visualizations
@@ -43,7 +45,7 @@ def eda_reviews_data(file_path):
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'review_counts_per_product.png'))
     plt.close()
-    logging.info("Top 20 product review counts plot saved as 'review_counts_per_product.png'.")
+    logger.info("Top 20 product review counts plot saved as 'review_counts_per_product.png'.")
 
     # 2. Distribution of review counts
     plt.figure(figsize=(10, 6))
@@ -53,10 +55,10 @@ def eda_reviews_data(file_path):
     plt.ylabel('Frequency')
     plt.savefig(os.path.join(output_folder, 'review_counts_distribution.png'))
     plt.close()
-    logging.info("Review counts distribution plot saved as 'review_counts_distribution.png'.")
+    logger.info("Review counts distribution plot saved as 'review_counts_distribution.png'.")
 
     # Log additional findings after plotting
-    logging.info(f"Visualizations saved in the '{output_folder}' folder.")
+    logger.info(f"Visualizations saved in the '{output_folder}' folder.")
 
     return None
 

@@ -1,5 +1,8 @@
 import os
 from google.cloud import storage
+from custom_logging import get_logger
+
+logger = get_logger('Storing_in_GCS')
 
 # Define paths
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -30,10 +33,10 @@ def upload_large_file_to_gcp(bucket_name, source_file_path, destination_blob_nam
         with open(source_file_path, "rb") as file_obj:
             blob.upload_from_file(file_obj, rewind=True)
         
-        print(f"File {source_file_path} uploaded to {destination_blob_name} in bucket {bucket_name}.")
+        logger.info(f"File {source_file_path} uploaded to {destination_blob_name} in bucket {bucket_name}.")
 
     except Exception as e:
-        print(f"Error uploading file to GCS: {e}")
+        logger.info(f"Error uploading file to GCS: {e}")
 
 def upload_multiple_files(bucket_name, destination_folder, file_path_names):
     """
@@ -56,4 +59,4 @@ if __name__ == "__main__":
     ]
     # Upload files using the modularized function
     upload_multiple_files("steam-select", "staging", file_paths)
-    print("Successfully uploaded files to staging")
+    logger.info("Successfully uploaded files to staging")
