@@ -88,7 +88,6 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ${AIRFLOW_PROJ_DIR:-.}/data/processed:/opt/airflow/data/processed
     - ${AIRFLOW_PROJ_DIR:-.}/data/raw:/opt/airflow/data/raw
-    - ${AIRFLOW_PROJ_DIR:-.}/custom_dags:/opt/airflow/custom_dags
 
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
@@ -257,8 +256,7 @@ services:
       _AIRFLOW_WWW_USER_CREATE: 'true'
       _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
       _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
-      _PIP_ADDITIONAL_REQUIREMENTS: ''
-      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/custom_dags 
+      _PIP_ADDITIONAL_REQUIREMENTS: '' 
     user: "0:0"
     volumes:
       - ${AIRFLOW_PROJ_DIR:-.}:/sources
@@ -301,4 +299,3 @@ services:
 
 volumes:
   postgres-db-volume:
-  custom-dags-volume:
