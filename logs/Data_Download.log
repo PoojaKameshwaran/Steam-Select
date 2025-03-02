@@ -22,3 +22,8 @@ NoneType: None
 NoneType: None
 2025-03-02 01:54:18,018 - Data_Download - INFO - Successfully downloaded staging/item_metadata.parquet to /opt/airflow/data/processed/item_metadata.parquet
 2025-03-02 01:54:18,316 - Data_Download - INFO - Successfully downloaded staging/bundle_data.parquet to /opt/airflow/data/processed/bundle_data.parquet
+2025-03-02 03:53:20,542 - Data_Download - INFO - Successfully downloaded staging/item_metadata.parquet to /opt/airflow/data/processed/item_metadata.parquet
+2025-03-02 03:53:20,896 - Data_Download - INFO - Successfully downloaded staging/bundle_data.parquet to /opt/airflow/data/processed/bundle_data.parquet
+2025-03-02 03:55:33,325 - Data_Download - INFO - Successfully downloaded staging/item_metadata.parquet to /opt/airflow/data/processed/item_metadata.parquet
+2025-03-02 03:55:33,633 - Data_Download - INFO - Successfully downloaded staging/bundle_data.parquet to /opt/airflow/data/processed/bundle_data.parquet
+2025-03-02 03:55:55,362 - Data_Download - INFO - Successfully downloaded staging/reviews.parquet to /opt/airflow/data/processed/reviews.parquet
