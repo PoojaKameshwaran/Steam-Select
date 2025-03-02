@@ -1,8 +1,11 @@
 import os
 import pandas as pd
 import re
+from custom_logging import get_logger
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+logger = get_logger('Data_Cleaning')
 
 # Set up project directories
 RAW_DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
@@ -110,7 +113,9 @@ def read_and_clean_item_file(file_name):
         cleaned_df.to_parquet(write_to_path, compression='snappy')
     
     print("Dataset cleaned successfully...")
+    logger.info("Dataset cleaned successfully - Item")
     print("Dataset loaded to data/processed")
+    logger.info("Dataset loaded to data/processed - Item")
     
     # Remove DataFrame from memory
     del cleaned_df
