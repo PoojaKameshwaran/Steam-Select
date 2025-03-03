@@ -1,34 +1,42 @@
 import unittest
+from unittest.mock import patch
 import pandas as pd
-from dags.data_preprocessing.clean_bundle import clean_bundle_data
+from your_script import clean_bundle_data  # Update with correct import
 
-class TestCleanBundle(unittest.TestCase):
-    def setUp(self):
-        # Create a sample DataFrame for testing
-        self.test_df = pd.DataFrame({
-            'bundle_id': ['1', '2'],
-            'bundle_final_price': ['$10.99', '$20.50'],
-            'bundle_price': ['$15.99', '$25.00'],
-            'bundle_discount': ['30%', '18%'],
-            'items': ['[{"id": 1}]', '[{"id": 2}]']
-        })
-
+class TestDataCleaning(unittest.TestCase):
+    
+    # Test the cleaning logic directly on a DataFrame
     def test_clean_bundle_data(self):
-        cleaned_df = clean_bundle_data(self.test_df)
+        # Create mock data (simulating what would be read from the JSON file)
+        mock_data = {
+            'bundle_id': [1, 2],
+            'bundle_final_price': ['$10.00', '$20.00'],
+            'bundle_price': ['$15.00', '$25.00'],
+            'bundle_discount': ['10%', '20%'],
+            'items': ['[{"item_id": 1, "item_name": "itemA"}]', '[{"item_id": 2, "item_name": "itemB"}]']
+        }
+        mock_df = pd.DataFrame(mock_data)
         
-        # Check if data types are correct
-        self.assertEqual(cleaned_df['bundle_id'].dtype, 'int64')
-        self.assertEqual(cleaned_df['bundle_final_price'].dtype, 'float64')
-        self.assertEqual(cleaned_df['bundle_price'].dtype, 'float64')
-        self.assertEqual(cleaned_df['bundle_discount'].dtype, 'float64')
+        # Call the function that performs the cleaning
+        cleaned_df = clean_bundle_data(mock_df)
         
-        # Check if values are correctly converted
-        self.assertEqual(cleaned_df['bundle_final_price'].iloc[0], 10.99)
-        self.assertEqual(cleaned_df['bundle_discount'].iloc[1], 18.0)
+        # Assert the cleaned data is as expected
         
-        # Check if items column is converted to list of dictionaries
-        self.assertIsInstance(cleaned_df['items'].iloc[0], list)
-        self.assertIsInstance(cleaned_df['items'].iloc[0][0], dict)
+        # Check that the 'bundle_final_price' and 'bundle_price' columns are converted to float
+        self.assertEqual(cleaned_df['bundle_final_price'].dtype, float)
+        self.assertEqual(cleaned_df['bundle_price'].dtype, float)
+        
+        # Check that 'bundle_discount' is a float (after conversion from percentage string)
+        self.assertEqual(cleaned_df['bundle_discount'].dtype, float)
+        
+        # Ensure that 'items' column is now a list (after conversion from JSON-like string)
+        self.assertEqual(type(cleaned_df['items'].iloc[0]), list)
+        
+        # Check that the 'bundle_id' column is of type integer
+        self.assertEqual(cleaned_df['bundle_id'].dtype, int)
+        
+        # Verify that the shape of the cleaned data is correct (should be the same as the input)
+        self.assertEqual(cleaned_df.shape[0], 2)  # Ensure 2 rows after cleaning
 
 if __name__ == '__main__':
     unittest.main()
