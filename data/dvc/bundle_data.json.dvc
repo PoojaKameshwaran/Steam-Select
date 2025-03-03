@@ -1,0 +1,5 @@
+outs:
+- md5: a2369010ba6863a69a3bdb94927b75f2
+  size: 814845
+  hash: md5
+  path: bundle_data.json

@@ -2,8 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
-import logging
 from collections import Counter
+from custom_logging import get_logger
+
+logger = get_logger('EDA')
 
 def eda_item_data(file_path):
     print(file_path)
@@ -21,12 +23,12 @@ def eda_item_data(file_path):
     os.makedirs(output_folder, exist_ok=True)
 
     # Log findings
-    logging.info("Data Overview:")
-    logging.info(f"{df.info()}")
+    logger.info("Data Overview:")
+    logger.info(f"{df.info()}")
 
-    logging.info("Missing Values:")
+    logger.info("Missing Values:")
     missing_values = df.isnull().sum()
-    logging.info(f"{missing_values}")
+    logger.info(f"{missing_values}")
 
     # PLACE YOUR CODE HERE FOR VISUALIZATION
 
@@ -83,7 +85,7 @@ def eda_item_data(file_path):
     plt.close()
 
     # Log additional findings after plotting
-    logging.info(f"Visualizations saved in the '{output_folder}' folder.")
+    logger.info(f"Visualizations saved in the '{output_folder}' folder.")
 
     return None
 

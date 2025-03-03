@@ -1,0 +1,31 @@
+2025-03-02 22:53:28,439 - EDA - INFO - Data Overview:
+2025-03-02 22:53:28,456 - EDA - INFO - None
+2025-03-02 22:53:28,458 - EDA - INFO - Missing Values:
+2025-03-02 22:53:28,461 - EDA - INFO - bundle_final_price    0
+bundle_url            0
+bundle_price          0
+bundle_name           0
+bundle_id             0
+items                 0
+bundle_discount       0
+dtype: int64
+2025-03-02 22:53:30,237 - EDA - INFO - Visualizations saved in the '/opt/airflow/dags/data_preprocessing/../visualizations/bundle' folder.
+2025-03-02 22:53:33,056 - EDA - INFO - Data Overview:
+2025-03-02 22:53:33,078 - EDA - INFO - None
+2025-03-02 22:53:33,079 - EDA - INFO - Missing Values:
+2025-03-02 22:53:33,086 - EDA - INFO - genres             0
+Game               0
+Game_ID            1
+sentiment          0
+sentiment_score    0
+dtype: int64
+2025-03-02 22:53:36,015 - EDA - INFO - Visualizations saved in the '/opt/airflow/dags/data_preprocessing/../visualizations/Itemmeta' folder.
+2025-03-02 22:55:36,233 - EDA - INFO - Data Overview:
+2025-03-02 22:55:36,339 - EDA - INFO - None
+2025-03-02 22:55:36,341 - EDA - INFO - Missing Values:
+2025-03-02 22:55:36,433 - EDA - INFO - id        0
+review    0
+dtype: int64
+2025-03-02 22:55:43,796 - EDA - INFO - Top 20 product review counts plot saved as 'review_counts_per_product.png'.
+2025-03-02 22:55:53,081 - EDA - INFO - Review counts distribution plot saved as 'review_counts_distribution.png'.
+2025-03-02 22:55:53,088 - EDA - INFO - Visualizations saved in the '/opt/airflow/dags/data_preprocessing/../visualizations/reviews' folder.

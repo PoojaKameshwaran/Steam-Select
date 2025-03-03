@@ -1,0 +1,3 @@
+2025-03-02 22:51:32,868 - INFO - bundle_data.json passed validation checks.
+2025-03-02 22:51:34,874 - WARNING - Validation issues detected in item_metadata.json
+2025-03-02 22:52:15,486 - WARNING - Validation issues detected in reviews.json

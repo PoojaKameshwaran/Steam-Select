@@ -1,7 +1,10 @@
 import os
 import shutil
+from custom_logging import get_logger
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+logger = get_logger('Data_Cleaning')
 
 # Set up project directories
 RAW_DATA_DIR = os.path.join(PROJECT_DIR, "data", "raw")
@@ -16,6 +19,7 @@ def clean_up_files_in_folder():
     folder_path = PROCESSED_DATA_DIR
     if not os.path.exists(folder_path):
         print(f"Folder '{folder_path}' does not exist.")
+        logger.info(f"Folder '{folder_path}' does not exist.")
         return
     
     try:
@@ -25,12 +29,14 @@ def clean_up_files_in_folder():
             if os.path.isfile(file_path):
                 os.remove(file_path)  # Delete file
                 print(f"Deleted file: {file_path}")
+                logger.info(f"Deleted file: {file_path}")
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)  # Delete subdirectory
-                print(f"Cleaned up Staging directory: {file_path}")
+                logger.info(f"Cleaned up Staging directory: {file_path}")
+
 
     except Exception as e:
-        print(f"Error while cleaning up files: {e}")
+        logger.info(f"Error while cleaning up files: {e}")
 
 # Example usage
 if __name__ == "__main__":

@@ -1,0 +1,4 @@
+2025-03-02 22:56:11,914 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/reviews.parquet uploaded to staging/reviews.parquet in bucket steam-select.
+2025-03-02 22:56:12,983 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/item_metadata.parquet uploaded to staging/item_metadata.parquet in bucket steam-select.
+2025-03-02 22:56:13,332 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/bundle_data.parquet uploaded to staging/bundle_data.parquet in bucket steam-select.
+2025-03-02 22:58:03,651 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/bundle_data_cleaned.parquet uploaded to processed/bundle_data_cleaned.parquet in bucket steam-select.
