@@ -38,7 +38,7 @@ def clean_bundle_data(df):
     # Convert `bundle_id` to integer
     df["bundle_id"] = df["bundle_id"].astype(int)
 
-    # Convert `items` column (currently a JSON-like string) into a list of dictionaries
+    # Convert `items` column (currently a JSON-like string) into a list of dictionarie
     df["items"] = df["items"].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
 
     # Verify Fixed Data

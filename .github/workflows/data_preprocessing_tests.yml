@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - 'dags/data_preprocessing/**'
+  workflow_dispatch:  # This enables manual triggering from the GitHub Actions UI
 
 jobs:
   test:
@@ -23,5 +24,5 @@ jobs:
         pip install pandas pytest
     - name: Run tests
       run: |
-        cd dags/data_preprocessing
-        python -m unittest discover tests
+        cd ..
+        python -m unittest discover -s test
