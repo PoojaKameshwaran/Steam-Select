@@ -32,32 +32,32 @@ def eda_item_data(file_path):
 
     # PLACE YOUR CODE HERE FOR VISUALIZATION
 
-    plt.figure(figsize=(8, 5))
-    sns.histplot(df['sentiment_score'], bins=10, kde=True, color="green")
-    plt.title("Sentiment Score Distribution")
-    plt.xlabel("Sentiment Score")
-    plt.ylabel("Count")
-    plt.savefig(os.path.join(output_folder, 'Sentiment Score Distribution.png'))
-    plt.close()
+    # plt.figure(figsize=(8, 5))
+    # sns.histplot(df['sentiment_score'], bins=10, kde=True, color="green")
+    # plt.title("Sentiment Score Distribution")
+    # plt.xlabel("Sentiment Score")
+    # plt.ylabel("Count")
+    # plt.savefig(os.path.join(output_folder, 'Sentiment Score Distribution.png'))
+    # plt.close()
 
-    # Most Common Games Based on Sentiment Score
-    top_games = df.groupby("Game")["sentiment_score"].mean().sort_values(ascending=False).head(10)
-    plt.figure(figsize=(10, 5))
-    sns.barplot(x=top_games.values, y=top_games.index, palette="coolwarm")
-    plt.title("Top 10 Games by Sentiment Score")
-    plt.xlabel("Average Sentiment Score")
-    plt.ylabel("Game")
-    plt.savefig(os.path.join(output_folder, 'Top 10 Games by Sentiment Score.png'))
-    plt.close()
+    # # Most Common Games Based on Sentiment Score
+    # top_games = df.groupby("Game")["sentiment_score"].mean().sort_values(ascending=False).head(10)
+    # plt.figure(figsize=(10, 5))
+    # sns.barplot(x=top_games.values, y=top_games.index, palette="coolwarm")
+    # plt.title("Top 10 Games by Sentiment Score")
+    # plt.xlabel("Average Sentiment Score")
+    # plt.ylabel("Game")
+    # plt.savefig(os.path.join(output_folder, 'Top 10 Games by Sentiment Score.png'))
+    # plt.close()
 
-    # Sentiment Score vs. Game_ID Analysis
-    plt.figure(figsize=(10, 5))
-    sns.scatterplot(x=df["Game_ID"], y=df["sentiment_score"], alpha=0.5, color="purple")
-    plt.title("Sentiment Score vs. Game ID")
-    plt.xlabel("Game ID")
-    plt.ylabel("Sentiment Score")
-    plt.savefig(os.path.join(output_folder, 'Sentiment Score vs. Game ID.png'))
-    plt.close()
+    # # Sentiment Score vs. Game_ID Analysis
+    # plt.figure(figsize=(10, 5))
+    # sns.scatterplot(x=df["Game_ID"], y=df["sentiment_score"], alpha=0.5, color="purple")
+    # plt.title("Sentiment Score vs. Game ID")
+    # plt.xlabel("Game ID")
+    # plt.ylabel("Sentiment Score")
+    # plt.savefig(os.path.join(output_folder, 'Sentiment Score vs. Game ID.png'))
+    # plt.close()
 
     # Ensure "genres" column is in string format
     df["genres"] = df["genres"].astype(str)
