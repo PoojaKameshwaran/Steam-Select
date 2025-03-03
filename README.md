@@ -64,6 +64,7 @@ To manually download the dataset from Hugging Face:
 ├── data/
 │   ├── raw/  <- Stores raw dataset
 │   ├── processed/  <- Stores processed dataset
+├── [reports/](reports/Data Pipeline Report.pdf) <- Contains project report and findings
 ```
 
 ---
