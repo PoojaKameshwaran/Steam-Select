@@ -10,7 +10,8 @@ PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 
 # Function to clean and merge two DataFrames
 def merge_reviews_item_data(reviews_df, item_df):
-    
+    print(reviews_df.head())
+    print(item_df.head())
     # Define the mapping for sentiment string values
     sentiment_map = {
         'Mostly Positive': 4.5,
@@ -30,16 +31,17 @@ def merge_reviews_item_data(reviews_df, item_df):
     # Step 2: For ids with no sentiment in item_metadata, use the sentiment_score from reviews
     item_df = item_df.merge(reviews_df[['id', 'sentiment_score']], left_on='Game_ID', right_on='id', how='left')
     item_df['sentiment'] = item_df['sentiment'].combine_first(reviews_df['sentiment_score'])
+    print("This is the one")
+    print(item_df.columns)
+    print(item_df.head())
 
     # Step 3: Replace any null values in sentiment column with 3
     item_df['sentiment'] = item_df['sentiment'].fillna(3)
 
     # Step 4: Remove the temporary sentiment_score column and return the updated dataframe
-    item_df = item_df.drop(columns=['id', 'sentiment_score_x', 'sentiment_score_y'])
+    item_df = item_df.drop(columns=['id', 'sentiment_score'])
 
     print(f"Final Item Dataset: {item_df.head()}")
-
-
     return item_df
 
 # Function to read, preprocess, merge, and save the cleaned data
@@ -67,8 +69,8 @@ def merge_reviews_item_file(file_paths):
 if __name__ == "__main__":
 
     file_paths = [
-        "D:\\Work\\MLOps\\Steam-Select\\data\\processed\\reviews_cleaned.parquet",
-        "D:\\Work\\MLOps\\Steam-Select\\data\\processed\\item_metadata_cleaned.parquet"
+        "D:\\Learning\\MlOps\\Steam-Select\\data\\processed\\reviews_cleaned.parquet",
+        "D:\\Learning\\MlOps\\Steam-Select\\data\\processed\\item_metadata_cleaned.parquet"
     ]
 
     merge_reviews_item_file(file_paths)
