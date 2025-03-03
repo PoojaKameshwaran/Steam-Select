@@ -23,5 +23,5 @@ jobs:
 
       - name: Run tests
         run: |
-          cd ../test  # Adjust path to your test folder
+          cd test  # Adjust path to your test folder
           python -m unittest discover
