@@ -126,6 +126,10 @@ Visit [http://localhost:8080](http://localhost:8080) and log in:
 ```bash
 docker compose down
 ```
+---
+
+## Data Pipeline Report
+[Data Pipeline Report](reports/Data Pipeline Project.pdf)
 
 ---
 
