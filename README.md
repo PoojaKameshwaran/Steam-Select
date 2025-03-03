@@ -1,72 +1,155 @@
-# Steam Select: A Steam Game Recommendation System 🎮  
+# Steam Select: MLOps-Powered Game Recommendation System
 
-## Overview  
-**Steam Select** is a cutting-edge recommendation system designed to help Steam users discover new video games based on their preferences. Users interact with a chatbot interface, providing details about games they liked or disliked. The system suggests similar games, dissimilar games, or profitable bundles tailored to the user's interests.  
-
-This project leverages advanced recommendation techniques and an intuitive chatbot interface to deliver an engaging and personalized experience for gamers.  
+## Introduction
+Steam Select is a machine learning-powered game recommendation system designed to enhance user experience by providing personalized game suggestions and profitable bundle deals. Users input five of their favorite games, and the system recommends five similar games along with profitable game bundles, helping them discover new titles efficiently.
 
 ---
 
-## Features  
-- **Personalized Recommendations**: Suggests games similar to user favorites or dissimilar to disliked games.  
-- **Bundle Suggestions**: Recommends profitable bundles based on user preferences.  
-- **Interactive Chatbot**: Provides a seamless conversational interface for game discovery.  
-- **Cloud Integration**: Hosted on Google Cloud Platform (GCP) for scalability and efficiency.  
+## Dataset Information
+The dataset originates from Julian McAuley's repository but has been sampled to 25% of the original user reviews to accommodate storage and compute constraints. The dataset covers over 16,000 games with the following tables:
+
+- **Bundle Data**: 615 rows
+- **Item Metadata**: 32,100 rows
+- **Reviews**: 1,100,000 rows
+
+The dataset can be downloaded from [Hugging Face](<https://huggingface.co/datasets/PookiePooks/steam-games-dataset/tree/main>).
+
+### Manual Download Instructions:
+To manually download the dataset from Hugging Face:
+1. Visit the dataset page: `https://huggingface.co/datasets/PookiePooks/steam-games-dataset/tree/main`
+2. Click on the "Download" button.
+3. Extract the dataset files and place them in the GCS bucket.
+
 
 ---
 
-## Dataset  
-The dataset includes user reviews, purchase data, gameplay statistics, and bundle details, sourced from Julian McAuley's **Steam Video Game and Bundle Data**.  
-- **Reviews**: 7,793,069  
-- **Users**: 2,567,538  
-- **Items**: 15,474  
-- **Bundles**: 615  
-
-Dataset URL: [Steam Data Repository](https://cseweb.ucsd.edu/~jmcauley/datasets.html#steam_data)  
+## Git Repository Structure
+```
+├── .env     <- Environment variable configuration
+├── .gitignore  <- Specifies files to be ignored in version control
+├── docker-compose.yaml  <- Docker configuration for running the project
+├── Dockerfile  <- Defines the Docker image and dependencies
+├── README.md  <- Project documentation
+├── requirements.txt  <- Python dependencies
+├── config/
+│   ├── key.json  <- GCP service account credentials for accessing cloud storage
+├── dags/  <- Airflow DAGs (Directed Acyclic Graphs) for data processing
+│   ├── data_preprocessing/
+│   │   ├── clean_bundle.py  
+│   │   ├── clean_item.py
+│   │   ├── clean_reviews.py
+│   │   ├── cleanup_stage.py
+│   │   ├── download_data.py
+│   │   ├── EDA_bundle.py
+│   │   ├── EDA_item.py
+│   │   ├── EDA_reviews.py
+│   │   ├── store_parquet.py
+│   │   ├── write_to_gcs.py
+│   ├── feature_engineering/
+│   │   ├── feature_bundle.py
+│   │   ├── feature_item.py
+│   │   ├── feature_reviews.py
+│   │   ├── merge_reviews_item.py
+│   ├── visualizations/
+│   │   ├── bundle  <- Bundle visualizations
+│   │   ├── itemmeta  <- Item metadata visualizations
+│   │   ├── reviews  <- Review visualizations
+│   ├── custom_logging.py  <- Logging module
+│   ├── data_cleaning_pipeline.py  <- Main DAG for data cleaning
+│   ├── data_download_pipeline.py  <- DAG for downloading data
+│   ├── feature_engineering_pipeline.py  <- DAG for feature engineering
+│   ├── notification.py  <- Notification handling
+│   ├── data_validation_pipeline.py  <- DAG for data validation
+│   ├── master_data_pipeline.py  <- DAG orchestrating end-to-end pipeline
+├── data/
+│   ├── raw/  <- Stores raw dataset
+│   ├── processed/  <- Stores processed dataset
+```
 
 ---
 
-## Tech Stack  
-### Backend:  
-- **Recommendation Engine**: Scikit-learn, TensorFlow, or PyTorch  
-- **Pre-trained Models**: BERT, Sentence Transformers for NLP tasks  
-- **Data Processing**: Pandas, NumPy  
+## Installation Guide
 
-### Cloud Platform:  
-- **Data Hosting**: Snowflake  
-- **Model Deployment**: Google Cloud Vertex AI  
-- **Pipeline Orchestration**: Apache Airflow  
+This project requires **Python 3.8 or higher** and is compatible with Windows, Linux, and macOS.
 
-### Frontend:  
-- **API Development**: FastAPI  
-- **User Interface**: Streamlit  
+### Prerequisites
+- Git
+- Python >= 3.8
+- Docker Daemon/Desktop (Docker must be running)
 
-### DevOps:  
-- **CI/CD**: GitHub Actions, Docker  
-- **Monitoring & Alerting**: GCP Cloud Monitoring  
+### User Installation
+
+1. **Clone the Git Repository**
+```bash
+git clone https://github.com/PoojaKameshwaran/Steam-Select.git
+cd steam-select
+```
+
+2. **Verify Python Version**
+```bash
+python --version
+```
+
+3. **Check Available Memory**
+```bash
+docker run --rm "debian:bullseye-slim" bash -c 'numfmt --to iec $(echo $(($(getconf _PHYS_PAGES) * $(getconf PAGE_SIZE))))'
+```
+If you encounter memory issues, increase Docker’s memory allocation.
+
+4. **Modify `docker-compose.yaml` if needed**
+- Set user permissions:
+```yaml
+user: "1000:0"
+```
+- Adjust SMTP settings for email notifications if not using Gmail.
+
+5. **Add GCP Credentials**
+Place your `key.json` file in `config/` to enable GCP data access.
+
+6. **Build Docker Image**
+```bash
+docker compose build
+```
+
+7. **Initialize Airflow**
+```bash
+docker compose up airflow-init
+```
+
+8. **Run the Docker Containers**
+```bash
+docker compose up
+```
+
+9. **Access Airflow Web Server**
+Visit [http://localhost:8080](http://localhost:8080) and log in:
+- **Username**: airflow
+- **Password**: airflow
+
+10. **Stop Docker Containers**
+```bash
+Ctrl + C
+```
 
 ---
 
-## Project Workflow  
-1. **Data Collection & Ingestion**: Extract data from JSON, load into Snowflake, and schedule ingestion pipelines with Apache Airflow.  
-2. **Data Preprocessing & Validation**: Clean and validate data using Pandas, NumPy, and Great Expectations.  
-3. **Model Training**: Train collaborative filtering and content-based models. Fine-tune pre-trained models as needed.  
-4. **Model Versioning**: Track experiments, hyperparameters, and metrics with MLflow.  
-5. **Deployment**: Use Docker to containerize the model and deploy it on GCP Vertex AI.  
-6. **Frontend Integration**: Develop an interactive chatbot using FastAPI and Streamlit.  
-7. **Monitoring & Maintenance**: Implement monitoring tools to track performance and schedule periodic retraining with Airflow.  
+## Data Pipeline Workflow
+
+### 1. **Data Collection**
+- Raw dataset is downloaded from Hugging Face and uploaded to your gcs bucket.
+- key.json of Airflow Service Account in GCP is placed inside config/
+- Data ingestion is handled via Airflow DAGs.
+
+### 2. **Data Validation**
+- The validation pipeline ensures data integrity and consistency.
+- Missing values and anomalies are identified and logged.
+
+### 3. **Data Cleaning & Visualization**
+- Cleaning scripts preprocess bundle, item metadata, and review data.
+- Exploratory Data Analysis (EDA) generates insights and summary statistics.
+
+### 4. **Feature Engineering**
+- Sentiment-based scores derived from review data.
+- Item metadata and reviews sentiment scores merged on Game_ID
 
 ---
-
-## Getting Started  
-### Prerequisites  
-- Python 3.9+  
-- GCP account with Vertex AI access  
-- Snowflake account  
-- GitHub repository setup with CI/CD pipelines  
-
-### Installation  
-1. Clone the repository:  
-   ```bash
-   git clone https://github.com/your-username/steam-select.git
-   cd steam-select
