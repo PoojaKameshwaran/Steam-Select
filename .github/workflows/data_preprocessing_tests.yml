@@ -8,14 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3  # Use latest checkout version
+        with:
+          ref: ${{ github.ref }}  # Checkout the current branch that triggered the workflow
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt  # Use requirements.txt if available
+
       - name: Run tests
         run: |
           cd ../test  # Adjust path to your test folder
