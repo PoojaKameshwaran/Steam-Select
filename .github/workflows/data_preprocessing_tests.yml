@@ -23,7 +23,9 @@ jobs:
     - name: Add project root to PYTHONPATH
       run: echo "PYTHONPATH=$PYTHONPATH:${{ github.workspace }}" >> $GITHUB_ENV
     - name: Run unittests
-      run: python -m unittest discover -v
+      run: |
+        cd tests
+        python -m unittest discover -v
     - name: Notify on success
       if: success()
       run: echo "Unit tests passed successfully"
