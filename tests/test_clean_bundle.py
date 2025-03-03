@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 import pandas as pd
-from your_script import clean_bundle_data  # Update with correct import
+from dags.data_preprocessing.clean_bundle import clean_bundle_data
 
 class TestDataCleaning(unittest.TestCase):
     
