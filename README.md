@@ -64,6 +64,7 @@ To manually download the dataset from Hugging Face:
 ├── data/
 │   ├── raw/  <- Stores raw dataset
 │   ├── processed/  <- Stores processed dataset
+├── [reports/](reports/Data Pipeline Report.pdf) <- Contains project report and findings
 ```
 
 ---
@@ -125,6 +126,11 @@ Visit [http://localhost:8080](http://localhost:8080) and log in:
 ```bash
 docker compose down
 ```
+---
+
+## Data Pipeline Report
+[Data Pipeline Report](reports/Data%20Pipeline%20Report.pdf)
+
 
 ---
 
