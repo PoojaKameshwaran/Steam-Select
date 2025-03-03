@@ -1,4 +1,4 @@
-# Steam Select: MLOps-Powered Game Recommendation System
+# Steam Select: Steam Game Recommendation System
 
 ## Introduction
 Steam Select is a machine learning-powered game recommendation system designed to enhance user experience by providing personalized game suggestions and profitable bundle deals. Users input five of their favorite games, and the system recommends five similar games along with profitable game bundles, helping them discover new titles efficiently.
@@ -16,7 +16,7 @@ The dataset can be downloaded from [Hugging Face](<https://huggingface.co/datase
 
 ### Manual Download Instructions:
 To manually download the dataset from Hugging Face:
-1. Visit the dataset page: `https://huggingface.co/datasets/PookiePooks/steam-games-dataset/tree/main`
+1. Visit the dataset page: `<https://huggingface.co/datasets/PookiePooks/steam-games-dataset/tree/main>`
 2. Click on the "Download" button.
 3. Extract the dataset files and place them in the GCS bucket.
 
@@ -111,24 +111,19 @@ Place your `key.json` file in `config/` to enable GCP data access.
 docker compose build
 ```
 
-7. **Initialize Airflow**
+7. **Initialize Airflow and Run the Docker Containers**
 ```bash
-docker compose up airflow-init
+docker compose up -d
 ```
 
-8. **Run the Docker Containers**
-```bash
-docker compose up
-```
-
-9. **Access Airflow Web Server**
+8. **Access Airflow Web Server**
 Visit [http://localhost:8080](http://localhost:8080) and log in:
 - **Username**: airflow
 - **Password**: airflow
 
-10. **Stop Docker Containers**
+9. **Stop Docker Containers**
 ```bash
-Ctrl + C
+docker compose down
 ```
 
 ---
