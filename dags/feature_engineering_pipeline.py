@@ -111,8 +111,8 @@ def upload_files_gcp(**kwargs):
     ti = kwargs['ti']
 
     # Retrieve file paths from XCom, ensuring they're always lists
-    file_list_1 = ti.xcom_pull(task_ids='merge_reviews_item', key='return_value') or []
-    file_list_2 = ti.xcom_pull(task_ids='feature_bundle', key='return_value') or []
+    file_list_1 = os.path.join(DATA_DIR, "reviews_item_cleaned.parquet") or []
+    file_list_2 = os.path.join(DATA_DIR, "bundle_data_cleaned.parquet") or []
 
     # Ensure both are lists
     if isinstance(file_list_1, str):
