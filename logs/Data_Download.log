@@ -33,3 +33,7 @@ NoneType: None
 2025-03-02 22:57:05,661 - Data_Download - INFO - Successfully downloaded staging/item_metadata.parquet to /opt/airflow/data/processed/item_metadata.parquet
 2025-03-02 22:57:06,048 - Data_Download - INFO - Successfully downloaded staging/bundle_data.parquet to /opt/airflow/data/processed/bundle_data.parquet
 2025-03-02 22:57:28,524 - Data_Download - INFO - Successfully downloaded staging/reviews.parquet to /opt/airflow/data/processed/reviews.parquet
+2025-03-14 21:29:11,615 - Data_Download - INFO - Successfully downloaded processed/reviews_item_cleaned.parquet to /opt/airflow/data/processed/reviews_item_cleaned.parquet
+2025-03-14 21:29:11,959 - Data_Download - INFO - Successfully downloaded processed/bundle_data_cleaned.parquet to /opt/airflow/data/processed/bundle_data_cleaned.parquet
+2025-03-14 21:31:32,046 - Data_Download - INFO - Successfully downloaded processed/reviews_item_cleaned.parquet to /opt/airflow/data/processed/reviews_item_cleaned.parquet
+2025-03-14 21:31:32,350 - Data_Download - INFO - Successfully downloaded processed/bundle_data_cleaned.parquet to /opt/airflow/data/processed/bundle_data_cleaned.parquet

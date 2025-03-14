@@ -12,6 +12,7 @@ PROJECT_DIR = os.getcwd()
 DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 
 from data_preprocessing.download_data  import download_from_gcp
+from model_development.rec_model import build_recommender_model
 
 #Define the paths to project directory and the path to the key
 PROJECT_DIR = os.getcwd()
@@ -57,6 +58,12 @@ download_task = PythonOperator(
     dag=dag,
 )
 
+build_model_task = PythonOperator(
+    task_id='feature_reviews',
+    python_callable=build_recommender_model,
+    # on_failure_callback=lambda context: notify_failure(context, "Feature Engineering Pipeline : Feature Reviews Task Failed."),
+    dag=dag,
+)
 
 # Define the task dependencies
-download_task
+download_task >> build_model_task

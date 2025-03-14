@@ -9,6 +9,11 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.manifold import TSNE
 import os
 
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    # Set up project directories
+DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
+MODEL_DIR = os.path.join(DATA_DIR, "models")
+
 # -------------------- STEP 1: MODEL IMPLEMENTATION -------------------- #
 
 def preprocess_data(item_df):
@@ -71,7 +76,12 @@ def get_game_recommendations(user_games, item_df, tfidf_matrix, top_n=5):
 
 def save_model(tfidf_matrix, tfidf, scaler, svd, filename='recommender_model.pkl'):
     """Saves the model components to a file."""
-    with open(filename, 'wb') as file:
+    # Construct the full path
+    model_path = os.path.join(MODEL_DIR, filename)
+    
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(model_path), exist_ok=True)
+    with open(model_path, 'wb') as file:
         pickle.dump((tfidf_matrix, tfidf, scaler, svd), file)
 
 # -------------------- STEP 3: MODEL EVALUATION -------------------- #
@@ -133,11 +143,9 @@ def retrain_and_save_model(item_df, filename='recommender_model_v2.pkl'):
     save_model(adjusted_scores, tfidf, scaler, svd, filename)
     return tfidf_matrix, tfidf, scaler, svd, embedded_matrix
 
-if __name__ == "__main__":
+def build_recommender_model():
     # Load Data
-    PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    # Set up project directories
-    DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
+    
     file_path = os.path.join(DATA_DIR, "reviews_item_cleaned.parquet")
     item_df = pd.read_parquet(file_path)
 
@@ -163,4 +171,7 @@ if __name__ == "__main__":
     # for metric in metrics.keys():
     #     print(f"{metric} : {metrics[metric]}")
 
-    print("Models saved appropriately, choose the best model")
+    print("Models saved appropriately")
+
+if __name__ == "__main__":
+    build_recommender_model()
