@@ -6,4 +6,4 @@ nltk
 python-dotenv
 snowflake-connector-python
 snowflake-connector-python[pandas]
-apache-airflow
+scikit-learn

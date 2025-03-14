@@ -148,7 +148,7 @@ if __name__ == "__main__":
     recommendations = get_game_recommendations(user_games, item_df, tfidf_matrix)
     print("Recommended Games:", recommendations)
 
-    all_games = list(item_df['Game'].unique())+
+    all_games = list(item_df['Game'].unique())
     metrics = evaluate_model(recommendations, item_df, all_games, user_games)
     for metric in metrics.keys():
         print(f"{metric} : {metrics[metric]}")
