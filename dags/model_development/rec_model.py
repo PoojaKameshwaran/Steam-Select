@@ -154,13 +154,13 @@ if __name__ == "__main__":
         print(f"{metric} : {metrics[metric]}")
     save_model(tfidf_matrix, tfidf, scaler, svd, filename='recommender_model_v1.pkl')
 
-    tfidf_matrix, tfidf, scaler, svd, embedded_matrix = retrain_and_save_model(item_df, filename='recommender_model_v2.pkl')
-    recommendations = get_game_recommendations(user_games, item_df, tfidf_matrix)
-    print("Recommended Games:", recommendations)
+    # tfidf_matrix, tfidf, scaler, svd, embedded_matrix = retrain_and_save_model(item_df, filename='recommender_model_v2.pkl')
+    # recommendations = get_game_recommendations(user_games, item_df, tfidf_matrix)
+    # print("Recommended Games:", recommendations)
 
-    all_games = list(item_df['Game'].unique())
-    metrics = evaluate_model(recommendations, item_df, all_games, user_games)
-    for metric in metrics.keys():
-        print(f"{metric} : {metrics[metric]}")
+    # all_games = list(item_df['Game'].unique())
+    # metrics = evaluate_model(recommendations, item_df, all_games, user_games)
+    # for metric in metrics.keys():
+    #     print(f"{metric} : {metrics[metric]}")
 
     print("Models saved appropriately, choose the best model")
