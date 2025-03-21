@@ -17,9 +17,10 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__
 PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 
 # --- Split Train/Test Data ---
-def split_train_test(file_path):
-    df = pd.read_parquet(file_path)
-    logging.info(f"Loaded data from {file_path}, shape: {df.shape}")
+def split_train_test():
+    cleaned_reviews_path = os.path.join(PROCESSED_DATA_DIR, "cleaned_reviews.parquet")
+    df = pd.read_parquet(cleaned_reviews_path)
+    logging.info(f"Loaded data from {cleaned_reviews_path}, shape: {df.shape}")
 
     eligible_users = df[df['count_games'] >= 6]['user_id'].unique()
     num_users_to_pick = max(1, int(len(eligible_users) * 0.05))
@@ -50,14 +51,14 @@ def load_processed_data():
     train_path = os.path.join(PROCESSED_DATA_DIR, "train.csv")
     test_path = os.path.join(PROCESSED_DATA_DIR, "test.csv")
     sentiment_path = os.path.join(PROCESSED_DATA_DIR, "reviews_item_cleaned.parquet")
-    item_path = os.path.join(PROCESSED_DATA_DIR, "item_metadata.parquet")
+    # item_path = os.path.join(PROCESSED_DATA_DIR, "item_metadata.parquet")
 
     train_df = pd.read_csv(train_path)
     test_df = pd.read_csv(test_path)
     sentiment_df = pd.read_parquet(sentiment_path)
-    item_df = pd.read_parquet(item_path)
+    # item_df = pd.read_parquet(item_path)
 
-    return train_df, test_df, sentiment_df, item_df
+    return train_df, test_df, sentiment_df #, item_df
 
 # --- Matrix + Model Building ---
 def build_sparse_matrices(df):
@@ -294,15 +295,19 @@ def evaluate_genre_recommendations(get_recommendations, train_df, test_df, senti
 
     return metrics
 
-# --- MAIN ---
-if __name__ == "__main__":
-    cleaned_reviews_path = os.path.join(PROCESSED_DATA_DIR, "cleaned_reviews.parquet")
-    split_train_test(cleaned_reviews_path)
+def wrapper_build_model_function():
+    # cleaned_reviews_path = os.path.join(PROCESSED_DATA_DIR, "cleaned_reviews.parquet")
+    split_train_test()
 
-    train_df, test_df, sentiment_df, item_df = load_processed_data()
+    train_df, test_df, sentiment_df = load_processed_data()
     get_recommendations, *_ = run_hybrid_recommendation_system(train_df)
 
     metrics = evaluate_genre_recommendations(
         get_recommendations, train_df, test_df, sentiment_df, k=10, n_users=10
     )
+
+
+# --- MAIN ---
+if __name__ == "__main__":
+    wrapper_build_model_function()
 

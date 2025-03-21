@@ -7,11 +7,12 @@ from notification import notify_failure, notify_success
 
 # Specify the input parameters
 BUCKET_NAME = "steam-select"
-FILE_PATHS = ["processed/reviews_item_cleaned.parquet", "processed/bundle_data_cleaned.parquet"]
+FILE_PATHS = ["processed/reviews_item_cleaned.parquet", "processed/cleaned_reviews.parquet"]
 PROJECT_DIR = os.getcwd()
 DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 
 from data_preprocessing.download_data  import download_from_gcp
+from model_development.build_model import wrapper_build_model_function
 #from model_development.rec_model import build_recommender_model
 
 
@@ -45,7 +46,7 @@ PROJECT_DIR = os.getcwd()
 os.makedirs(DATA_DIR, exist_ok=True)  # Ensure the directory exists
 
 #DEFINE A FUNCTION TO DOWNLOAD THE DATA FROM GCP
-download_task = PythonOperator(
+download_processed_data_from_gcp_task = PythonOperator(
     task_id='download_processed_data_from_gcp',
     python_callable=download_from_gcp,
     op_kwargs={
@@ -59,12 +60,12 @@ download_task = PythonOperator(
     dag=dag,
 )
 
-#build_model_task = PythonOperator(
- #   task_id='feature_reviews',
-  #  python_callable=build_recommender_model,
+build_hybrid_model_task = PythonOperator(
+   task_id='build_hybrid_model',
+   python_callable=wrapper_build_model_function,
     # on_failure_callback=lambda context: notify_failure(context, "Feature Engineering Pipeline : Feature Reviews Task Failed."),
-   # dag=dag,
-#)
+   dag=dag,
+)
 
 # Define the task dependencies
-download_task #>> build_model_task
+download_processed_data_from_gcp_task >> build_hybrid_model_task

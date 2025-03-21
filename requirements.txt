@@ -4,4 +4,7 @@ seaborn
 python-dotenv
 snowflake-connector-python
 snowflake-connector-python[pandas]
-apache-airflow
+scipy
+collection
+scikit-learn
+numpy
