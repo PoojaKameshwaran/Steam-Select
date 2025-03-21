@@ -57,7 +57,7 @@ def load_processed_data():
     sentiment_df = pd.read_parquet(sentiment_path)
     item_df = pd.read_parquet(item_path)
 
-    return train_df, test_df, sentiment_df, reviews_df
+    return train_df, test_df, sentiment_df, item_df
 
 # --- Matrix + Model Building ---
 def build_sparse_matrices(df):
@@ -299,7 +299,7 @@ if __name__ == "__main__":
     cleaned_reviews_path = os.path.join(PROCESSED_DATA_DIR, "cleaned_reviews.parquet")
     split_train_test(cleaned_reviews_path)
 
-    train_df, test_df, sentiment_df, reviews_df = load_processed_data()
+    train_df, test_df, sentiment_df, item_df = load_processed_data()
     get_recommendations, *_ = run_hybrid_recommendation_system(train_df)
 
     metrics = evaluate_genre_recommendations(
