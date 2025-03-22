@@ -35,3 +35,12 @@ NoneType: None
 2025-03-02 22:57:05,661 - Data_Download - INFO - Successfully downloaded staging/item_metadata.parquet to /opt/airflow/data/processed/item_metadata.parquet
 2025-03-02 22:57:06,048 - Data_Download - INFO - Successfully downloaded staging/bundle_data.parquet to /opt/airflow/data/processed/bundle_data.parquet
 2025-03-02 22:57:28,524 - Data_Download - INFO - Successfully downloaded staging/reviews.parquet to /opt/airflow/data/processed/reviews.parquet
+2025-03-22 14:21:31,294 - Data_Download - INFO - Successfully downloaded raw/item_metadata.json to /opt/airflow/data/raw/item_metadata.json
+2025-03-22 14:21:31,689 - Data_Download - INFO - Successfully downloaded raw/bundle_data.json to /opt/airflow/data/raw/bundle_data.json
+2025-03-22 14:22:28,245 - Data_Download - INFO - Successfully downloaded staging/item_metadata.parquet to /opt/airflow/data/processed/item_metadata.parquet
+2025-03-22 14:22:28,572 - Data_Download - INFO - Successfully downloaded staging/bundle_data.parquet to /opt/airflow/data/processed/bundle_data.parquet
+2025-03-22 14:23:12,230 - Data_Download - INFO - Successfully downloaded staging/reviews.parquet to /opt/airflow/data/processed/reviews.parquet
+2025-03-22 14:23:14,130 - Data_Download - INFO - Successfully downloaded raw/reviews.json to /opt/airflow/data/raw/reviews.json
+2025-03-22 14:23:47,763 - Data_Download - INFO - Successfully downloaded staging/item_metadata.parquet to /opt/airflow/data/processed/item_metadata.parquet
+2025-03-22 14:23:48,114 - Data_Download - INFO - Successfully downloaded staging/bundle_data.parquet to /opt/airflow/data/processed/bundle_data.parquet
+2025-03-22 14:24:19,784 - Data_Download - INFO - Successfully downloaded staging/reviews.parquet to /opt/airflow/data/processed/reviews.parquet
