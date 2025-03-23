@@ -298,9 +298,11 @@ def evaluate_genre_recommendations(get_recommendations, train_df, test_df, senti
 def wrapper_build_model_function():
     # cleaned_reviews_path = os.path.join(PROCESSED_DATA_DIR, "cleaned_reviews.parquet")
     split_train_test()
-
+    user_n = 20
+    game_n = 10
+    metric = 'cosine'
     train_df, test_df, sentiment_df = load_processed_data()
-    get_recommendations, *_ = run_hybrid_recommendation_system(train_df)
+    get_recommendations, *_ = run_hybrid_recommendation_system(train_df, user_n, game_n, metric)
 
     metrics = evaluate_genre_recommendations(
         get_recommendations, train_df, test_df, sentiment_df, k=10, n_users=10

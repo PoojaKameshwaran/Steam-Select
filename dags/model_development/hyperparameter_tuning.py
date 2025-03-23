@@ -1,4 +1,4 @@
-from build_model import *
+from model_development.build_model import run_hybrid_recommendation_system, evaluate_genre_recommendations, load_processed_data
 
 
 def tune_hyperparams(
@@ -100,5 +100,7 @@ def tune_hyperparams(
 
     return best_params
 
-train_df, test_df, sentiment_df = load_processed_data()
-tune_hyperparams(train_df, test_df, sentiment_df)
+
+def tuning_task():
+    train_df, test_df, sentiment_df = load_processed_data()
+    tune_hyperparams(train_df, test_df, sentiment_df)
