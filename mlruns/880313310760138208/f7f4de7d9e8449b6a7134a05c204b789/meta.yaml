@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/User/Desktop/ml%20ops/Steam-Select/mlruns/880313310760138208/f7f4de7d9e8449b6a7134a05c204b789/artifacts
+end_time: 1742760340248
+entry_point_name: ''
+experiment_id: '880313310760138208'
+lifecycle_stage: active
+run_id: f7f4de7d9e8449b6a7134a05c204b789
+run_name: judicious-cub-654
+run_uuid: f7f4de7d9e8449b6a7134a05c204b789
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1742760325817
+status: 3
+tags: []
+user_id: User

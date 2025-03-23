@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/User/Desktop/ml%20ops/Steam-Select/mlruns/880313310760138208/f5f13772d5064219859a571745bdfb47/artifacts
+end_time: 1742761469810
+entry_point_name: ''
+experiment_id: '880313310760138208'
+lifecycle_stage: active
+run_id: f5f13772d5064219859a571745bdfb47
+run_name: unleashed-shrimp-948
+run_uuid: f5f13772d5064219859a571745bdfb47
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1742761441612
+status: 3
+tags: []
+user_id: User
