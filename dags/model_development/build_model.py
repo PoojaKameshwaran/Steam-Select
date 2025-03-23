@@ -16,7 +16,8 @@ sample_user_recommended_games = None
 # --- Set Directories ---
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
-FINAL_MODEL_DIR = os.path.join(PROCESSED_DATA_DIR, "final_model")
+MODEL_SAVE_DIR = os.path.join(PROJECT_DIR, "data", "models")
+FINAL_MODEL_DIR = os.path.join(MODEL_SAVE_DIR, "base_model")
 os.makedirs(FINAL_MODEL_DIR, exist_ok=True)
 
 
@@ -314,7 +315,7 @@ def wrapper_build_model_function():
     user_model, game_model = build_models(user_game_matrix, game_user_matrix)
 
     # Save actual model components
-    best_model_path = os.path.join(FINAL_MODEL_DIR, "best_model.pkl")
+    best_model_path = os.path.join(FINAL_MODEL_DIR, "model_v1.pkl")
     best_model_object = {
         "user_model": user_model,
         "game_model": game_model,
