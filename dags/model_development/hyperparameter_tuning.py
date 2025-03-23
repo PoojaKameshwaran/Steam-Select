@@ -1,4 +1,9 @@
-from model_development.build_model import run_hybrid_recommendation_system, evaluate_genre_recommendations, load_processed_data
+from model_development.build_model import *
+
+
+MODEL_SAVE_DIR = os.path.join(PROJECT_DIR, "data", "models")
+FINAL_MODEL_DIR = os.path.join(MODEL_SAVE_DIR, "tuned_model")
+os.makedirs(FINAL_MODEL_DIR, exist_ok=True)
 
 
 def tune_hyperparams(
@@ -6,7 +11,7 @@ def tune_hyperparams(
     test_df,
     sentiment_df,
     user_n_neighbors_list=[10, 20, 30, 50],
-    game_n_neighbors_list=[5, 10, 20],
+    game_n_neighbors_list=[10, 20],
     metrics=['cosine', 'euclidean', 'manhattan', 'minkowski'],
     k_recs=20,
     n_eval_users=10
@@ -103,4 +108,26 @@ def tune_hyperparams(
 
 def tuning_task():
     train_df, test_df, sentiment_df = load_processed_data()
-    tune_hyperparams(train_df, test_df, sentiment_df)
+    best_params = tune_hyperparams(train_df, test_df, sentiment_df)
+    user_n = best_params['user_neighbors']
+    game_n = best_params['game_neighbors']
+    metric = best_params['metric'] 
+    user_game_matrix, game_user_matrix, user_to_idx, game_to_idx, idx_to_user, idx_to_game = build_sparse_matrices(train_df)
+    user_model, game_model = build_models(user_game_matrix, game_user_matrix, user_n, game_n, metric)
+
+    best_model_path = os.path.join(FINAL_MODEL_DIR, "tuned_model_v1.pkl")
+    best_model_object = {
+        "user_model": user_model,
+        "game_model": game_model,
+        "user_game_matrix": user_game_matrix,
+        "game_user_matrix": game_user_matrix,
+        "user_to_idx": user_to_idx,
+        "game_to_idx": game_to_idx,
+        "idx_to_user": idx_to_user,
+        "idx_to_game": idx_to_game,
+        "metrics": metric
+    }
+
+    with open(best_model_path, "wb") as f:
+         pickle.dump(best_model_object, f)
+    print(f"✅ Saved best model object to: {best_model_path}")

@@ -314,7 +314,7 @@ def wrapper_build_model_function():
     )
     # Build and capture actual models and mappings
     user_game_matrix, game_user_matrix, user_to_idx, game_to_idx, idx_to_user, idx_to_game = build_sparse_matrices(train_df)
-    user_model, game_model = build_models(user_game_matrix, game_user_matrix)
+    user_model, game_model = build_models(user_game_matrix, game_user_matrix, user_n, game_n, metric)
 
     # Save actual model components
     best_model_path = os.path.join(FINAL_MODEL_DIR, "model_v1.pkl")

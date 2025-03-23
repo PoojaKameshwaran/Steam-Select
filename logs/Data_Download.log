@@ -1,2 +1,4 @@
 2025-03-23 04:33:20,633 - Data_Download - INFO - Successfully downloaded processed/reviews_item_cleaned.parquet to /opt/airflow/data/processed/reviews_item_cleaned.parquet
 2025-03-23 04:33:22,516 - Data_Download - INFO - Successfully downloaded processed/cleaned_reviews.parquet to /opt/airflow/data/processed/cleaned_reviews.parquet
+2025-03-23 16:03:37,494 - Data_Download - INFO - Successfully downloaded processed/reviews_item_cleaned.parquet to /opt/airflow/data/processed/reviews_item_cleaned.parquet
+2025-03-23 16:03:41,462 - Data_Download - INFO - Successfully downloaded processed/cleaned_reviews.parquet to /opt/airflow/data/processed/cleaned_reviews.parquet
