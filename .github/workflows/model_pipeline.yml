@@ -31,7 +31,7 @@ jobs:
         python dags/model_development/sensitivity_analysis.py
 
     - name: 📤 Upload log CSVs
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
-        name: model-logs
-        path: dags/model_development/*.csv
+       name: model-logs
+       path: dags/model_development/*.csv
