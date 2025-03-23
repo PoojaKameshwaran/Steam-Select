@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import logging
+import pickle
 from collections import Counter
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
@@ -15,6 +16,9 @@ sample_user_recommended_games = None
 # --- Set Directories ---
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROCESSED_DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
+FINAL_MODEL_DIR = os.path.join(PROCESSED_DATA_DIR, "final_model")
+os.makedirs(FINAL_MODEL_DIR, exist_ok=True)
+
 
 # --- Split Train/Test Data ---
 def split_train_test():
@@ -305,6 +309,27 @@ def wrapper_build_model_function():
     metrics = evaluate_genre_recommendations(
         get_recommendations, train_df, test_df, sentiment_df, k=10, n_users=10
     )
+    # Build and capture actual models and mappings
+    user_game_matrix, game_user_matrix, user_to_idx, game_to_idx, idx_to_user, idx_to_game = build_sparse_matrices(train_df)
+    user_model, game_model = build_models(user_game_matrix, game_user_matrix)
+
+    # Save actual model components
+    best_model_path = os.path.join(FINAL_MODEL_DIR, "best_model.pkl")
+    best_model_object = {
+        "user_model": user_model,
+        "game_model": game_model,
+        "user_game_matrix": user_game_matrix,
+        "game_user_matrix": game_user_matrix,
+        "user_to_idx": user_to_idx,
+        "game_to_idx": game_to_idx,
+        "idx_to_user": idx_to_user,
+        "idx_to_game": idx_to_game,
+        "metrics": metrics
+    }
+
+    with open(best_model_path, "wb") as f:
+         pickle.dump(best_model_object, f)
+    print(f"✅ Saved best model object to: {best_model_path}")
 
 
 # --- MAIN ---

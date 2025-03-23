@@ -4,6 +4,10 @@ seaborn
 dask
 nltk
 python-dotenv
+apache-airflow
+numpy
+collection
+scipy
 snowflake-connector-python
 snowflake-connector-python[pandas]
 scikit-learn
