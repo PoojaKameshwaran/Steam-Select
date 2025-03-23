@@ -48,7 +48,7 @@ download_cleaned_data_task = PythonOperator(
     python_callable=download_from_gcp,
     op_kwargs={
         'bucket_name': 'steam-select', 
-        'blob_paths': ["staging/item_metadata.parquet", "staging/bundle_data.parquet", "staging/reviews.parquet"],
+        'blob_paths': ["staging/item_metadata.parquet", "staging/bundle_data.parquet", "staging/reviews.parquet", "staging/users_cleaned.parquet"],
         'PROJECT_DIR' : PROJECT_DIR,
         'DATA_DIR' : DATA_DIR
     },
@@ -113,15 +113,18 @@ def upload_files_gcp(**kwargs):
     # Retrieve file paths from XCom, ensuring they're always lists
     file_list_1 = os.path.join(DATA_DIR, "reviews_item_cleaned.parquet") or []
     file_list_2 = os.path.join(DATA_DIR, "bundle_data_cleaned.parquet") or []
+    file_list_3 = os.path.join(DATA_DIR, "users_cleaned.parquet") or []
 
     # Ensure both are lists
     if isinstance(file_list_1, str):
         file_list_1 = [file_list_1]
     if isinstance(file_list_2, str):
         file_list_2 = [file_list_2]
+    if isinstance(file_list_3, str):
+        file_list_3 = [file_list_3]
 
     # Combine all files
-    all_files = file_list_1 + file_list_2
+    all_files = file_list_1 + file_list_2 + file_list_3
 
     # Define GCS bucket and destination folder
     bucket_name = "steam-select"

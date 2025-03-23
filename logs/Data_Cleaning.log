@@ -15,3 +15,43 @@
 2025-03-02 22:58:07,642 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/reviews.parquet
 2025-03-02 22:58:07,750 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/reviews_cleaned.parquet
 2025-03-02 22:58:07,761 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/reviews_item_cleaned.parquet
+2025-03-23 05:50:32,767 - Data_Cleaning - INFO - Dataset cleaned successfully - Bundle
+2025-03-23 05:50:32,769 - Data_Cleaning - INFO - Dataset loaded to data/processed - Bundle
+2025-03-23 05:50:36,469 - Data_Cleaning - INFO - Dataset cleaned successfully - Item
+2025-03-23 05:50:36,471 - Data_Cleaning - INFO - Dataset loaded to data/processed - Item
+2025-03-23 05:51:47,481 - Data_Cleaning - INFO - Dataset cleaned successfully - Reviews
+2025-03-23 05:51:47,483 - Data_Cleaning - INFO - Dataset loaded to data/processed - Reviews
+2025-03-23 05:51:49,318 - Data_Cleaning - INFO - Dataset cleaned successfully - Users
+2025-03-23 05:51:49,319 - Data_Cleaning - INFO - Dataset loaded to data/processed - Users
+2025-03-23 05:52:46,718 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/.gitkeep
+2025-03-23 05:52:46,722 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/bundle_data.parquet
+2025-03-23 05:52:46,732 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/cleaned_reviews.parquet
+2025-03-23 05:52:46,735 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/item_metadata.parquet
+2025-03-23 05:52:46,825 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/reviews.parquet
+2025-03-23 05:52:46,831 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/reviews_item_cleaned.parquet
+2025-03-23 05:52:46,835 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/test.csv
+2025-03-23 05:52:46,848 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/train.csv
+2025-03-23 05:52:46,965 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/users_cleaned.parquet
+2025-03-23 05:55:58,135 - Data_Cleaning - INFO - Dataset cleaned successfully - Bundle
+2025-03-23 05:55:58,137 - Data_Cleaning - INFO - Dataset loaded to data/processed - Bundle
+2025-03-23 05:55:59,713 - Data_Cleaning - INFO - Dataset cleaned successfully - Item
+2025-03-23 05:55:59,714 - Data_Cleaning - INFO - Dataset loaded to data/processed - Item
+2025-03-23 05:56:48,514 - Data_Cleaning - INFO - Dataset cleaned successfully - Reviews
+2025-03-23 05:56:48,516 - Data_Cleaning - INFO - Dataset loaded to data/processed - Reviews
+2025-03-23 05:56:50,553 - Data_Cleaning - INFO - Dataset cleaned successfully - Users
+2025-03-23 05:56:50,558 - Data_Cleaning - INFO - Dataset loaded to data/processed - Users
+2025-03-23 05:58:00,618 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/bundle_data.parquet
+2025-03-23 05:58:00,730 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/item_metadata.parquet
+2025-03-23 05:58:00,834 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/reviews.parquet
+2025-03-23 05:58:01,006 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/users_cleaned.parquet
+2025-03-23 06:05:15,080 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/bundle_data.parquet
+2025-03-23 06:05:15,084 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/bundle_data_cleaned.parquet
+2025-03-23 06:05:15,086 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/item_metadata.parquet
+2025-03-23 06:05:15,088 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/item_metadata_cleaned.parquet
+2025-03-23 06:05:15,181 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/reviews.parquet
+2025-03-23 06:05:15,266 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/users_cleaned.parquet
+2025-03-23 06:10:29,015 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/bundle_data.parquet
+2025-03-23 06:10:29,019 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/bundle_data_cleaned.parquet
+2025-03-23 06:10:29,028 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/item_metadata.parquet
+2025-03-23 06:10:29,127 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/reviews.parquet
+2025-03-23 06:10:29,218 - Data_Cleaning - INFO - Deleted file: /opt/airflow/data/processed/users_cleaned.parquet
