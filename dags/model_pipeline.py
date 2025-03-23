@@ -13,6 +13,7 @@ DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
 
 from data_preprocessing.download_data  import download_from_gcp
 from model_development.build_model import wrapper_build_model_function
+from model_development.hyperparameter_tuning import tuning_task
 #from model_development.rec_model import build_recommender_model
 
 
@@ -67,5 +68,12 @@ build_hybrid_model_task = PythonOperator(
    dag=dag,
 )
 
+hyperparameter_tuning_task = PythonOperator(
+   task_id='hyperparameter_tuning',
+   python_callable=tuning_task,
+    # on_failure_callback=lambda context: notify_failure(context, "Feature Engineering Pipeline : Feature Reviews Task Failed."),
+   dag=dag,
+)
+
 # Define the task dependencies
-download_processed_data_from_gcp_task >> build_hybrid_model_task
+download_processed_data_from_gcp_task >> build_hybrid_model_task >> hyperparameter_tuning_task
