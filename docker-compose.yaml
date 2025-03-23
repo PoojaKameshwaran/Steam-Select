@@ -88,6 +88,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ${AIRFLOW_PROJ_DIR:-.}/data/processed:/opt/airflow/data/processed
     - ${AIRFLOW_PROJ_DIR:-.}/data/raw:/opt/airflow/data/raw
+    - ${AIRFLOW_PROJ_DIR:-.}/data/models:/opt/airflow/data/models
 
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
