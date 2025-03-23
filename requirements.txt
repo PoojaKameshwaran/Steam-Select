@@ -10,4 +10,7 @@ collection
 scipy
 snowflake-connector-python
 snowflake-connector-python[pandas]
+scipy
+collection
 scikit-learn
+numpy
