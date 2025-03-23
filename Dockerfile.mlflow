@@ -1,0 +1,16 @@
+FROM python:3.10-slim
+
+RUN pip install --no-cache-dir \
+    mlflow \
+    google-cloud-storage \
+    psycopg2-binary
+
+ENV GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/config/key.json
+
+EXPOSE 5001
+
+CMD mlflow server \
+  --backend-store-uri postgresql://airflow:airflow@postgres:5432/airflow?options=-csearch_path=mlflow \
+  --default-artifact-root gs://steam-select/ml_flow_bucket/mlflow-artifacts/ \
+  --host 0.0.0.0 \
+  --port 5001

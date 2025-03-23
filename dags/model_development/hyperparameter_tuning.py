@@ -111,7 +111,17 @@ def tuning_task():
     best_params = tune_hyperparams(train_df, test_df, sentiment_df)
     user_n = best_params['user_neighbors']
     game_n = best_params['game_neighbors']
-    metric = best_params['metric'] 
+    metric = best_params['metric']
+    # Pick only the evaluation metrics (not hyperparameters)
+    eval_metrics = {k: best_params[k] for k in [
+        'train_genre_precision',
+        'train_genre_recall',
+        'train_genre_hit_rate',
+        'test_genre_precision',
+        'test_genre_recall',
+        'test_genre_hit_rate',
+        'num_evaluated_users'
+    ]}
     user_game_matrix, game_user_matrix, user_to_idx, game_to_idx, idx_to_user, idx_to_game = build_sparse_matrices(train_df)
     user_model, game_model = build_models(user_game_matrix, game_user_matrix, user_n, game_n, metric)
 
@@ -125,7 +135,7 @@ def tuning_task():
         "game_to_idx": game_to_idx,
         "idx_to_user": idx_to_user,
         "idx_to_game": idx_to_game,
-        "metrics": metric
+        "metrics": eval_metrics
     }
 
     with open(best_model_path, "wb") as f:

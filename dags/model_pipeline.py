@@ -4,12 +4,15 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow import configuration as conf
 from notification import notify_failure, notify_success
+from model_development.push_model_to_mlflow import log_model_to_mlflow
+from model_development.select_and_push_best_model import select_and_push_best_model
 
 # Specify the input parameters
 BUCKET_NAME = "steam-select"
 FILE_PATHS = ["processed/reviews_item_cleaned.parquet", "processed/cleaned_reviews.parquet"]
 PROJECT_DIR = os.getcwd()
 DATA_DIR = os.path.join(PROJECT_DIR, "data", "processed")
+base_model_path = os.path.join(PROJECT_DIR, "data", "models", "base_model", "model_v1.pkl")
 
 from data_preprocessing.download_data  import download_from_gcp
 from model_development.build_model import wrapper_build_model_function
@@ -37,7 +40,7 @@ default_args = {
 dag = DAG(
     'model_pipeline',
     default_args = default_args,
-    description = 'Data Download from GCS Pipeline',
+    description = 'Pipeline to build, tune and push model',
     schedule_interval = None,  # Set the schedule interval or use None for manual triggering
     catchup = False,
 )
@@ -68,6 +71,18 @@ build_hybrid_model_task = PythonOperator(
    dag=dag,
 )
 
+push_model_task = PythonOperator(
+    task_id='push_model_to_mlflow',
+    python_callable=log_model_to_mlflow,
+    op_kwargs={
+        'model_path': os.path.join(os.getcwd(), "data", "models", "base_model"),
+        'model_name': "model_v1.pkl",
+        'experiment_name': "steam_games_recommender",
+        'run_name': "steam_games_recommender_v1"
+    },
+    dag=dag
+)
+
 hyperparameter_tuning_task = PythonOperator(
    task_id='hyperparameter_tuning',
    python_callable=tuning_task,
@@ -75,5 +90,24 @@ hyperparameter_tuning_task = PythonOperator(
    dag=dag,
 )
 
+push_tuned_model_task = PythonOperator(
+    task_id='push_tuned_model_to_mlflow',
+    python_callable=log_model_to_mlflow,
+    op_kwargs={
+        'model_path': os.path.join(os.getcwd(), "data", "models", "tuned_model"),
+        'model_name': "tuned_model_v1.pkl",
+        'experiment_name': "steam_games_recommender",
+        'run_name': "steam_games_recommender_v2"
+    },
+    dag=dag
+)
+
+select_and_push_best_model_task = PythonOperator(
+    task_id='select_and_push_best_model',
+    python_callable=select_and_push_best_model,
+    dag=dag
+)
+
 # Define the task dependencies
-download_processed_data_from_gcp_task >> build_hybrid_model_task >> hyperparameter_tuning_task
+download_processed_data_from_gcp_task >> build_hybrid_model_task >> push_model_task >> hyperparameter_tuning_task >> push_tuned_model_task >> select_and_push_best_model_task
+
