@@ -11,3 +11,7 @@ RUN pip install --no-cache-dir \
     mlflow==2.9.2 \
     google-cloud-storage
 
+# Install Python packages listed in requirements.txt
+COPY requirements.txt /requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
+
