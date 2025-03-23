@@ -2,7 +2,6 @@ import os
 import pickle
 import mlflow
 import mlflow.pyfunc
-import cloudpickle
 
 # --- Define the model wrapper class ---
 class HybridRecommenderWrapper(mlflow.pyfunc.PythonModel):
@@ -32,28 +31,33 @@ class HybridRecommenderWrapper(mlflow.pyfunc.PythonModel):
 
 
 # --- Wrapper function to log model to MLflow ---
-def log_model_to_mlflow(model_path: str, experiment_name: str = "steam_games_recommender", run_name: str = "baseline_v1"):
+def log_model_to_mlflow(model_path: str, model_name: str, experiment_name: str = "steam_games_recommender", run_name: str = "baseline_v1"):
     mlflow.set_experiment(experiment_name)
+
     with mlflow.start_run(run_name=run_name):
-        # Log metrics if needed (optional)
-        with open(os.path.join(model_path, "model_v1.pkl"), "rb") as f:
+        # Load the model object
+        full_model_path = os.path.join(model_path, model_name)
+        with open(full_model_path, "rb") as f:
             model_object = pickle.load(f)
-            metrics = model_object.get("metrics", {})
+
+        # Log metrics (optional)
+        metrics = model_object.get("metrics", {})
+        if isinstance(metrics, dict):
             for key, value in metrics.items():
                 mlflow.log_metric(key, value)
 
-        # Log the model
+        # Log and register the model in MLflow
         mlflow.pyfunc.log_model(
             artifact_path="hybrid_recommender",
             python_model=HybridRecommenderWrapper(),
             artifacts={"model_dir": model_path},
-            registered_model_name="steam_recommender_model"
+            registered_model_name="steam_games_recommender"  # ✅ Consistent model name
         )
 
-        print("✅ Model logged to MLflow successfully!")
+        print("✅ Model logged and registered to MLflow successfully!")
 
 
 # --- MAIN ---
 if __name__ == "__main__":
-    model_path = os.path.join(os.getcwd(), "data", "models", "base_models")
-    log_model_to_mlflow(model_path)
+    model_path = os.path.join(os.getcwd(), "data", "models", "base_model")
+    log_model_to_mlflow(model_path, "model_v1.pkl")
