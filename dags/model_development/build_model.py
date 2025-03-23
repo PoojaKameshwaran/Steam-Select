@@ -79,11 +79,11 @@ def build_sparse_matrices(df):
 
     return user_game_matrix, game_user_matrix, user_to_idx, game_to_idx, idx_to_user, idx_to_game
 
-def build_models(user_game_matrix, game_user_matrix):
-    user_model = NearestNeighbors(n_neighbors=20, metric='cosine', algorithm='brute')
+def build_models(user_game_matrix, game_user_matrix, user_n, game_n, metric):
+    user_model = NearestNeighbors(n_neighbors=user_n, metric=metric, algorithm='brute')
     user_model.fit(user_game_matrix)
 
-    game_model = NearestNeighbors(n_neighbors=10, metric='cosine', algorithm='brute')
+    game_model = NearestNeighbors(n_neighbors=game_n, metric=metric, algorithm='brute')
     game_model.fit(game_user_matrix)
 
     return user_model, game_model
@@ -195,9 +195,9 @@ def hybrid_recommendations(user_id, input_game_ids, df, user_model, game_model,
     return [int(game_id) for game_id in recommendations[:k]]
 
 # --- Wrapper ---
-def run_hybrid_recommendation_system(train_df):
+def run_hybrid_recommendation_system(train_df, user_n, game_n, metric):
     user_game_matrix, game_user_matrix, user_to_idx, game_to_idx, idx_to_user, idx_to_game = build_sparse_matrices(train_df)
-    user_model, game_model = build_models(user_game_matrix, game_user_matrix)
+    user_model, game_model = build_models(user_game_matrix, game_user_matrix, user_n, game_n, metric)
 
     def get_recommendations(user_id, input_game_ids, missing_game_genres=None, sentiment_df=None, k=5):
         return hybrid_recommendations(

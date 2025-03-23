@@ -59,3 +59,5 @@ NoneType: None
 2025-03-16 01:50:22,671 - Data_Download - INFO - Successfully downloaded processed/bundle_data_cleaned.parquet to /opt/airflow/data/processed/bundle_data_cleaned.parquet
 2025-03-16 01:52:05,759 - Data_Download - INFO - Successfully downloaded processed/reviews_item_cleaned.parquet to /opt/airflow/data/processed/reviews_item_cleaned.parquet
 2025-03-16 01:52:05,995 - Data_Download - INFO - Successfully downloaded processed/bundle_data_cleaned.parquet to /opt/airflow/data/processed/bundle_data_cleaned.parquet
+2025-03-23 03:38:53,518 - Data_Download - INFO - Successfully downloaded processed/reviews_item_cleaned.parquet to /opt/airflow/data/processed/reviews_item_cleaned.parquet
+2025-03-23 03:38:55,544 - Data_Download - INFO - Successfully downloaded processed/cleaned_reviews.parquet to /opt/airflow/data/processed/cleaned_reviews.parquet

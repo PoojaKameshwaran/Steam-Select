@@ -55,7 +55,7 @@ def tune_hyperparams(
                 # 1. Build the hybrid recommender using your existing helper.
                 try:
                     get_recommendations, user_to_idx, game_to_idx, idx_to_user, idx_to_game = \
-                        run_hybrid_recommendation_system(train_df)
+                        run_hybrid_recommendation_system(train_df, user_n, game_n, metric)
                 except TypeError as e:
                     print(
                         f"Make sure run_hybrid_recommendation_system accepts "
