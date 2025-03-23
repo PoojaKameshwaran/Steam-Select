@@ -6,6 +6,7 @@ from airflow import configuration as conf
 from notification import notify_failure, notify_success
 
 from data_preprocessing.clean_reviews  import read_and_clean_reviews_file
+from data_preprocessing.clean_users  import read_and_clean_users_file
 from data_preprocessing.EDA_reviews  import eda_reviews_data
 from data_preprocessing.clean_item  import read_and_clean_item_file
 from data_preprocessing.EDA_item  import eda_item_data
@@ -45,6 +46,14 @@ clean_reviews_task = PythonOperator(
     python_callable=read_and_clean_reviews_file,
     op_kwargs={'file_name': 'reviews.json'},
     on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline : Clean Reviews Task Failed."),
+    dag=dag,
+)
+
+clean_users_task = PythonOperator(
+    task_id='clean_users',
+    python_callable=read_and_clean_users_file,
+    op_kwargs={'file_name': 'reviews.json'},
+    on_failure_callback=lambda context: notify_failure(context, "Data Cleaning Pipeline : Clean Users Task Failed."),
     dag=dag,
 )
 
@@ -95,6 +104,7 @@ def upload_files_gcp(**kwargs):
     file_list_1 = ti.xcom_pull(task_ids='clean_reviews', key='return_value') or []
     file_list_2 = ti.xcom_pull(task_ids='clean_item', key='return_value') or []
     file_list_3 = ti.xcom_pull(task_ids='clean_bundle', key='return_value') or []
+    file_list_4 = ti.xcom_pull(task_ids='clean_users', key='return_value') or []
 
     # Ensure both are lists
     if isinstance(file_list_1, str):
@@ -103,9 +113,11 @@ def upload_files_gcp(**kwargs):
         file_list_2 = [file_list_2]
     if isinstance(file_list_3, str):
         file_list_3 = [file_list_3]
+    if isinstance(file_list_4, str):
+        file_list_4 = [file_list_4]
 
     # Combine all files
-    all_files = file_list_1 + file_list_2 + file_list_3
+    all_files = file_list_1 + file_list_2 + file_list_3 + file_list_4
 
     # Define GCS bucket and destination folder
     bucket_name = "steam-select"
@@ -138,4 +150,5 @@ clean_up_stage_task = PythonOperator(
 clean_reviews_task >> eda_reviews_task >> staging_to_gcs_task
 clean_item_task >> eda_item_task >> staging_to_gcs_task
 clean_bundle_task >> eda_bundle_task >> staging_to_gcs_task
+clean_users_task >> staging_to_gcs_task
 staging_to_gcs_task >> clean_up_stage_task

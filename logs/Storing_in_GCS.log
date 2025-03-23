@@ -2,3 +2,15 @@
 2025-03-02 22:56:12,983 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/item_metadata.parquet uploaded to staging/item_metadata.parquet in bucket steam-select.
 2025-03-02 22:56:13,332 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/bundle_data.parquet uploaded to staging/bundle_data.parquet in bucket steam-select.
 2025-03-02 22:58:03,651 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/bundle_data_cleaned.parquet uploaded to processed/bundle_data_cleaned.parquet in bucket steam-select.
+2025-03-23 05:52:42,037 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/reviews.parquet uploaded to staging/reviews.parquet in bucket steam-select.
+2025-03-23 05:52:42,905 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/item_metadata.parquet uploaded to staging/item_metadata.parquet in bucket steam-select.
+2025-03-23 05:52:43,778 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/bundle_data.parquet uploaded to staging/bundle_data.parquet in bucket steam-select.
+2025-03-23 05:57:28,813 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/reviews.parquet uploaded to staging/reviews.parquet in bucket steam-select.
+2025-03-23 05:57:29,624 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/item_metadata.parquet uploaded to staging/item_metadata.parquet in bucket steam-select.
+2025-03-23 05:57:30,509 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/bundle_data.parquet uploaded to staging/bundle_data.parquet in bucket steam-select.
+2025-03-23 05:57:57,681 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/users_cleaned.parquet uploaded to staging/users_cleaned.parquet in bucket steam-select.
+2025-03-23 06:05:09,830 - Storing_in_GCS - INFO - Error uploading file to GCS: [Errno 2] No such file or directory: '/opt/airflow/data/processed/reviews_item_cleaned.parquet'
+2025-03-23 06:05:10,517 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/bundle_data_cleaned.parquet uploaded to processed/bundle_data_cleaned.parquet in bucket steam-select.
+2025-03-23 06:09:45,688 - Storing_in_GCS - INFO - Error uploading file to GCS: [Errno 2] No such file or directory: '/opt/airflow/data/processed/reviews_item_cleaned.parquet'
+2025-03-23 06:09:46,410 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/bundle_data_cleaned.parquet uploaded to processed/bundle_data_cleaned.parquet in bucket steam-select.
+2025-03-23 06:10:25,705 - Storing_in_GCS - INFO - File /opt/airflow/data/processed/users_cleaned.parquet uploaded to processed/users_cleaned.parquet in bucket steam-select.

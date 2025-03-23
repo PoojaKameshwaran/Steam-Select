@@ -1,0 +1,5 @@
+2025-03-23 06:00:35,534 - feature_engineering - INFO - Processing file: /opt/airflow/data/processed/reviews.parquet
+2025-03-23 06:00:35,543 - feature_engineering - INFO - Total row groups in parquet file: 2
+2025-03-23 06:00:35,545 - feature_engineering - INFO - Processing row group 1 of 2
+2025-03-23 06:00:39,582 - feature_engineering - INFO - Starting feature engineering on reviews data.
+2025-03-23 06:00:40,595 - feature_engineering - INFO - Feature engineering completed.
