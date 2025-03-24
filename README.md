@@ -154,3 +154,97 @@ docker compose down
 - Item metadata and reviews sentiment scores merged on Game_ID
 
 ---
+
+## 5. Model Training
+
+The model training pipeline is orchestrated using Airflow and is responsible for:
+
+- **Downloading Processed Data**: The cleaned and merged datasets are fetched from GCS.
+- **Model Building**: A hybrid recommender model is trained using KNN over user-item and item-user interaction matrices.
+- **Hyperparameter Tuning**: Grid search over distance metrics and number of neighbors is performed to improve model performance.
+- **Model Versioning**: Models are logged and versioned in MLflow with associated metrics for reproducibility and comparison.
+
+---
+
+## 6. Model Analysis (Bias & Sensitivity Analysis)
+
+To ensure fairness and robustness, the pipeline includes comprehensive model analysis:
+
+### Sensitivity Analysis
+- **Purpose**: Measures how sensitive the model's predictions are to changes in input features such as hours played, sentiment scores, genres, etc.
+- **Approach**: Varies key input features and evaluates how much the output changes, helping identify model dependencies.
+
+### Bias Detection
+- **Purpose**: Detects if the model performs unequally across different groups (e.g., genres or engagement levels).
+- **Slicing Techniques**: Metrics like hit rate and precision are computed across slices of user engagement or genre categories.
+- **Mitigation**: If bias is detected, strategies like reweighting and sampling are used.
+
+---
+
+## 7. Model Monitoring & Retraining
+
+While not deployed in a production environment, the system is designed to support retraining by:
+
+- Periodically pulling fresh review data from GCS.
+- Automatically retraining the model with the latest data.
+- Versioning the newly trained model in MLflow.
+- Comparing performance with previously deployed models.
+- Optionally pushing the best-performing model to GCS for serving.
+
+**Future improvements include:**
+- Alerts on performance degradation.
+- Scheduled retraining using cron-based Airflow scheduling.
+- Data drift monitoring using statistical tests.
+
+---
+
+## 8. Pipeline Orchestration
+
+Airflow is used to orchestrate the complete machine learning pipeline in a modular and reproducible manner. The DAG includes:
+
+```mermaid
+graph TD
+    A[download_from_gcp] --> B[build_model]
+    B --> C[finetune_model]
+    C --> D[sensitivity]
+    D --> E[bias]
+    E --> F[select_and_push_best_model]
+```
+
+---
+
+## 9. Outputs
+
+The pipeline produces several key outputs at different stages of execution:
+
+### ✅ Trained Models
+- Serialized `.pkl` files are stored after training and tuning.
+- Paths:
+  - `data/models/base_model/model_v1.pkl`
+  - `data/models/tuned_model/tuned_model_v1.pkl`
+
+### ✅ MLflow Artifacts
+- Every training run logs:
+  - Metrics (e.g., precision, recall, hit rate)
+  - Parameters used (e.g., distance metric, number of neighbors)
+  - Artifacts including the serialized model, source code, and environment
+
+- Tracked in MLflow under:
+  - **Experiment**: `steam_games_recommender`
+  - **Model Registry**: `hybrid-recommender`
+  - Automatically registered as versioned models (v1, v2, …)
+
+### ✅ Bias & Sensitivity Reports
+- Outputs from:
+  - `sensitivity_analysis.py`: shows how input features like `hours`, `sentiment`, `genres` affect recommendations
+  - `bias_detection.py`: evaluates model fairness across slices (e.g., genre count, playtime range)
+- Reports saved as:
+  - CSV or JSON summaries
+  - Printed logs and visualizations
+
+### ✅ Final Production Model
+- Best-performing model is selected based on a key metric (`test_genre_precision`)
+- Promoted to **Production** stage in MLflow Model Registry
+- Also uploaded to GCS at: [gs://steam-select/best_models/best_model.pkl]
+
+---
