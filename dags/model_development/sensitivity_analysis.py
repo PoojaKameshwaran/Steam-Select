@@ -1,78 +1,70 @@
 import os
+import pickle
 import pandas as pd
 import numpy as np
-from build_model import (
-    load_processed_data,
-    build_sparse_matrices,
-    build_models,
-    hybrid_recommendations,
-    evaluate_genre_recommendations
-)
+import matplotlib.pyplot as plt
+import shap
 
-# Set up output log directory
+# Set up directories
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+MODEL_SAVE_DIR = os.path.join(PROJECT_DIR, "data", "models")
+FINAL_MODEL_DIR = os.path.join(MODEL_SAVE_DIR, "tuned_model")
 SENSITIVITY_DIR = os.path.join(PROJECT_DIR, "dags", "bias_sensitivity_analysis")
 os.makedirs(SENSITIVITY_DIR, exist_ok=True)
-CSV_PATH = os.path.join(SENSITIVITY_DIR, "sensitivity_analysis.csv")
 
-def run_sensitivity_analysis():
-    print("📦 Loading data...")
-    train_df, test_df, sentiment_df = load_processed_data()
-    user_game_matrix, game_user_matrix, user_to_idx, game_to_idx, idx_to_user, idx_to_game = build_sparse_matrices(train_df)
+# Load the tuned model
+model_path = os.path.join(FINAL_MODEL_DIR, "tuned_model_v1.pkl")
+with open(model_path, 'rb') as f:
+    model_data = pickle.load(f)
 
-    print("🧪 Starting hyperparameter sensitivity tests...")
+# Extract model components
+user_model = model_data['user_model']
+game_model = model_data['game_model']
+user_game_matrix = model_data['user_game_matrix']
+game_user_matrix = model_data['game_user_matrix']
+idx_to_game = model_data['idx_to_game']
 
-    # Sensitivity analysis settings
-    neighbor_settings = [10, 20, 30]
-    distance_metrics = ['cosine', 'euclidean']
-    hybrid_weights = [(0.3, 0.7), (0.5, 0.5), (0.7, 0.3)]
-    k_values = [5, 10]
+# Feature importance analysis with SHAP
+# Sample a small subset for faster processing
+sample_size = min(50, user_game_matrix.shape[0])
+sample_indices = np.random.choice(user_game_matrix.shape[0], sample_size, replace=False)
+sample_matrix = user_game_matrix[sample_indices].toarray()
 
-    results = []
+# Modify your model_predict function to ensure compatible output shape
+def model_predict(x):
+    # Ensure output shape matches input samples
+    distances, _ = user_model.kneighbors(x, return_distance=True)
+    # Return first neighbor distance for each sample
+    return distances[:, 0]  # This should match the number of samples in x
 
-    for metric in distance_metrics:
-        for n_neighbors in neighbor_settings:
-            # Build models with current neighbor + metric config
-            user_model, game_model = build_models(user_game_matrix, game_user_matrix, n_neighbors, n_neighbors, metric)
+# Use fewer samples or a different explainer
+explainer = shap.Explainer(model_predict, sample_matrix[:10])
+# Or
+explainer = shap.KernelExplainer(model_predict, sample_matrix[:10], link="identity")
 
-            for user_weight, game_weight in hybrid_weights:
-                for k in k_values:
-                    print(f"\n➡️ Testing with neighbors={n_neighbors}, metric={metric}, weights=({user_weight},{game_weight}), k={k}")
+# Create explainer with a small subset of data
+explainer = shap.KernelExplainer(model_predict, sample_matrix[:10])
 
-                    def get_recommendations(user_id, input_game_ids, missing_game_genres=None, sentiment_df=None, top_k=k):
-                        # hybrid_recommendations must use passed weights
-                        return hybrid_recommendations(
-                            user_id, input_game_ids, train_df,
-                            user_model, game_model,
-                            user_game_matrix, user_to_idx, game_to_idx,
-                            idx_to_user, idx_to_game, game_user_matrix,
-                            missing_game_genres, sentiment_df, top_k,
-                            user_weight=user_weight, game_weight=game_weight
-                        )
+# Calculate SHAP values for a few samples
+shap_values = explainer.shap_values(sample_matrix[:5], nsamples=100)
 
-                    try:
-                        metrics = evaluate_genre_recommendations(
-                            get_recommendations, train_df, test_df, sentiment_df,
-                            k=k, n_users=10
-                        )
-                    except Exception as e:
-                        print(f"❌ Evaluation failed: {e}")
-                        continue
+# Create and save summary plot
+plt.figure(figsize=(12, 8))
+shap.summary_plot(shap_values, sample_matrix[:5], show=False)
+plt.tight_layout()
+plt.savefig(os.path.join(SENSITIVITY_DIR, 'shap_feature_importance.png'))
+plt.close()
 
-                    row = {
-                        "n_neighbors": n_neighbors,
-                        "metric": metric,
-                        "user_weight": user_weight,
-                        "game_weight": game_weight,
-                        "top_k": k,
-                        **metrics
-                    }
+print(f"✅ SHAP analysis completed and saved to {SENSITIVITY_DIR}")
 
-                    results.append(row)
+# Save feature importance scores
+feature_importance = np.abs(shap_values).mean(0)
+top_features_idx = np.argsort(-feature_importance)[:20]
+top_features = [(idx_to_game.get(i, f"GameID_{i}"), feature_importance[i]) 
+                for i in top_features_idx]
 
-    df = pd.DataFrame(results)
-    df.to_csv(CSV_PATH, index=False)
-    print(f"\n✅ Sensitivity analysis results saved to: {CSV_PATH}")
+# Save to CSV
+pd.DataFrame(top_features, columns=['Game', 'Importance']).to_csv(
+    os.path.join(SENSITIVITY_DIR, 'feature_importance.csv'), index=False)
 
-if __name__ == "__main__":
-    run_sensitivity_analysis()
+print("✅ Feature importance analysis completed successfully")

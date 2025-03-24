@@ -32,40 +32,36 @@ def evaluate_user_slices(train_df, test_df, sentiment_df, get_recommendations):
 # --- Step 3: Save and Track Metrics ---
 def log_metrics_to_csv(low_metrics, high_metrics, output_filename="bias_results.csv"):
     PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    log_dir = os.path.join(PROJECT_DIR, "dags", "model_development")
+    log_dir = os.path.join(PROJECT_DIR, "dags", "bias_sensitivity_analysis")
     os.makedirs(log_dir, exist_ok=True)
 
     output_path = os.path.join(log_dir, output_filename)
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    df = pd.DataFrame([
+    df = pd.DataFrame([ 
         {"timestamp": timestamp, "group": "low_activity", **low_metrics},
         {"timestamp": timestamp, "group": "high_activity", **high_metrics}
     ])
 
-    if os.path.exists(output_path):
-        df.to_csv(output_path, mode='a', header=False, index=False)
-    else:
-        df.to_csv(output_path, index=False)
+    # Overwrite the file with new metrics
+    df.to_csv(output_path, index=False)
 
     print(f"\n✅ Bias metrics saved to: {output_path}")
 
 
 # --- Step 4: Bias Mitigation & Score Optimization ---
 def optimize_recommendations(low_metrics, high_metrics, train_df):
-    # Detect disparities
-    disparity_threshold = 0.05
-    disparities = {key: abs(low_metrics[key] - high_metrics[key]) for key in low_metrics if key in high_metrics}
-    significant_disparities = {k: v for k, v in disparities.items() if v > disparity_threshold}
+    # Detect disparities in precision between low and high activity users
+    precision_disparity = abs(low_metrics['test_genre_precision'] - high_metrics['test_genre_precision'])
 
-    if not significant_disparities:
-        print("\n✅ No significant bias detected.")
+    # Only apply mitigation if precision disparity exceeds 0.05
+    if precision_disparity <= 0.05:
+        print("\n✅ No significant bias detected, no mitigation applied.")
         return False, train_df
 
     print("\n⚠️ Bias detected! Applying mitigation strategies...")
-    print("Disparities found:", significant_disparities)
 
-    # Improve recommendations for underperforming group
+    # Mitigation strategy: Oversample low-activity users to balance precision
     if low_metrics['test_genre_precision'] < high_metrics['test_genre_precision']:
         print("🔄 Boosting recommendations for low-activity users...")
         train_df = train_df.sample(frac=1.2, replace=True)  # Oversampling low-activity users
@@ -95,9 +91,10 @@ def run_bias_analysis():
     print("Low Activity Users:", low_metrics)
     print("High Activity Users:", high_metrics)
 
+    # Save the initial metrics without any mitigation
     log_metrics_to_csv(low_metrics, high_metrics)
 
-    # Apply Bias Mitigation & Optimize Scores
+    # Apply Bias Mitigation & Optimize Scores if needed
     bias_fixed, optimized_train_df = optimize_recommendations(low_metrics, high_metrics, sampled_train_df)
 
     if bias_fixed:
