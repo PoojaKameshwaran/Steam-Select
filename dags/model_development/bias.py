@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import datetime
 
-from build_model import run_hybrid_recommendation_system, load_processed_data, evaluate_genre_recommendations
+from model_development.build_model import run_hybrid_recommendation_system, load_processed_data, evaluate_genre_recommendations
 
 
 # --- Step 1: Slice Users by Activity Level ---

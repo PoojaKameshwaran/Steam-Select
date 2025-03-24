@@ -6,6 +6,8 @@ from airflow import configuration as conf
 from notification import notify_failure, notify_success
 from model_development.push_model_to_mlflow import log_model_to_mlflow
 from model_development.select_and_push_best_model import select_and_push_best_model
+from model_development.bias import run_bias_analysis
+from model_development.sensitivity_analysis import run_sensitivity_analysis
 
 # Specify the input parameters
 BUCKET_NAME = "steam-select"
@@ -108,6 +110,20 @@ select_and_push_best_model_task = PythonOperator(
     dag=dag
 )
 
+model_sensitivity_analysis_task = PythonOperator(
+   task_id='model_sensitivity_analysis',
+   python_callable=run_sensitivity_analysis,
+    # on_failure_callback=lambda context: notify_failure(context, "Feature Engineering Pipeline : Feature Reviews Task Failed."),
+   dag=dag,
+)
+
+model_bias_analysis_task = PythonOperator(
+   task_id='model_bias_analysis',
+   python_callable=run_bias_analysis,
+    # on_failure_callback=lambda context: notify_failure(context, "Feature Engineering Pipeline : Feature Reviews Task Failed."),
+   dag=dag,
+)
+
 # Define the task dependencies
-download_processed_data_from_gcp_task >> build_hybrid_model_task >> push_model_task >> hyperparameter_tuning_task >> push_tuned_model_task >> select_and_push_best_model_task
+download_processed_data_from_gcp_task >> build_hybrid_model_task >> push_model_task >> hyperparameter_tuning_task >> model_sensitivity_analysis_task >> model_bias_analysis_task >> push_tuned_model_task >> select_and_push_best_model_task
 
