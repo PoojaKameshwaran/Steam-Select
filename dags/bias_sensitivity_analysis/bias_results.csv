@@ -1,0 +1,3 @@
+timestamp,group,train_genre_precision,train_genre_recall,train_genre_hit_rate,test_genre_precision,test_genre_recall,test_genre_hit_rate,num_evaluated_users
+2025-03-24 02:29:36,low_activity,0.765625,0.7431547619047619,1.0,0.4264880952380952,0.7791666666666667,1.0,8
+2025-03-24 02:29:36,high_activity,0.0,0.0,0.0,0.0,0.0,0.0,0

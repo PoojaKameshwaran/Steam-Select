@@ -11,3 +11,4 @@ scipy
 snowflake-connector-python
 snowflake-connector-python[pandas]
 scikit-learn
+shap
