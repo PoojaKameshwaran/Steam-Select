@@ -7,6 +7,10 @@ from collections import Counter
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 
+
+from custom_logging import get_logger
+logger = get_logger('Model_Development')
+
 # --- Global variables for evaluation ---
 sample_user = None
 sample_user_test_games = None
@@ -25,7 +29,7 @@ os.makedirs(FINAL_MODEL_DIR, exist_ok=True)
 def split_train_test():
     cleaned_reviews_path = os.path.join(PROCESSED_DATA_DIR, "cleaned_reviews.parquet")
     df = pd.read_parquet(cleaned_reviews_path)
-    logging.info(f"Loaded data from {cleaned_reviews_path}, shape: {df.shape}")
+    logger.info(f"Loaded data from {cleaned_reviews_path}, shape: {df.shape}")
 
     eligible_users = df[df['count_games'] >= 6]['user_id'].unique()
     num_users_to_pick = max(1, int(len(eligible_users) * 0.05))
@@ -46,8 +50,8 @@ def split_train_test():
     train_df.to_csv(train_path, index=False)
     test_df.to_csv(test_path, index=False)
 
-    print(f"Train data saved to: {train_path} ({len(train_df)} rows)")
-    print(f"Test data saved to: {test_path} ({len(test_df)} rows)")
+    logger.info(f"Train data saved to: {train_path} ({len(train_df)} rows)")
+    logger.info(f"Test data saved to: {test_path} ({len(test_df)} rows)")
 
     return train_path, test_path
 
@@ -227,7 +231,7 @@ def evaluate_genre_recommendations(get_recommendations, train_df, test_df, senti
     if n_users is not None:
         test_users = np.random.choice(test_users, size=min(n_users, len(test_users)), replace=False)
 
-    print(f"Evaluating on {len(test_users)} users out of {len(unique_users_games_test)} total users")
+    logger.info(f"Evaluating on {len(test_users)} users out of {len(unique_users_games_test)} total users")
 
     train_genre_precision = []
     train_genre_recall = []
@@ -253,7 +257,7 @@ def evaluate_genre_recommendations(get_recommendations, train_df, test_df, senti
         try:
             recommendations = get_recommendations(user_id, train_games)
         except Exception as e:
-            print(f"Error for user {user_id}: {e}")
+            logger.error(f"Error for user {user_id}: {e}", exc_info=True)
             continue
 
         recommended_genres = {g for game in recommendations for g in game_genre_mapping.get(game, [])}
@@ -290,13 +294,13 @@ def evaluate_genre_recommendations(get_recommendations, train_df, test_df, senti
         'num_evaluated_users': evaluated_users
     }
 
-    print("\nEvaluation Results:")
+    logger.info("Evaluation Results:")
     for k, v in metrics.items():
-        print(f"{k}: {v:.4f}" if isinstance(v, float) else f"{k}: {v}")
-    print(f"\nSample User: {sample_user}")
-    print(f"Train Games: {sample_user_train_games}")
-    print(f"Test Games: {sample_user_test_games}")
-    print(f"Recommended Games: {sample_user_recommended_games}")
+        logger.info(f"{k}: {v:.4f}" if isinstance(v, float) else f"{k}: {v}")
+    logger.info(f"Sample User: {sample_user}")
+    logger.info(f"Train Games: {sample_user_train_games}")
+    logger.info(f"Test Games: {sample_user_test_games}")
+    logger.info(f"Recommended Games: {sample_user_recommended_games}")
 
     return metrics
 
@@ -332,7 +336,7 @@ def wrapper_build_model_function():
 
     with open(best_model_path, "wb") as f:
          pickle.dump(best_model_object, f)
-    print(f"✅ Saved best model object to: {best_model_path}")
+    logger.info(f"Saved best model object to: {best_model_path}")
 
 
 # --- MAIN ---

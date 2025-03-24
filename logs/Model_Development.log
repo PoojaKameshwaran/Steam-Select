@@ -1,0 +1,98 @@
+2025-03-24 03:06:28,101 - Model_Development - INFO - Loaded data from /opt/airflow/data/processed/cleaned_reviews.parquet, shape: (1141178, 5)
+2025-03-24 03:06:42,666 - Model_Development - INFO - Train data saved to: /opt/airflow/data/processed/train.csv (1139513 rows)
+2025-03-24 03:06:42,683 - Model_Development - INFO - Test data saved to: /opt/airflow/data/processed/test.csv (1665 rows)
+2025-03-24 03:07:12,576 - Model_Development - INFO - Evaluating on 10 users out of 829 total users
+2025-03-24 03:07:17,159 - Model_Development - INFO - 
+Evaluation Results:
+2025-03-24 03:07:17,179 - Model_Development - INFO - train_genre_precision: 0.7405
+2025-03-24 03:07:17,191 - Model_Development - INFO - train_genre_recall: 0.6673
+2025-03-24 03:07:17,195 - Model_Development - INFO - train_genre_hit_rate: 1.0000
+2025-03-24 03:07:17,199 - Model_Development - INFO - test_genre_precision: 0.4663
+2025-03-24 03:07:17,203 - Model_Development - INFO - test_genre_recall: 0.8217
+2025-03-24 03:07:17,241 - Model_Development - INFO - test_genre_hit_rate: 1.0000
+2025-03-24 03:07:17,248 - Model_Development - INFO - num_evaluated_users: 10
+2025-03-24 03:07:17,272 - Model_Development - INFO - 
+Sample User: 71279
+2025-03-24 03:07:17,317 - Model_Development - INFO - Train Games: [12110, 12810, 34190, 39500, 50620, 96100, 102500, 204450, 205230, 244630, 274310, 318430, 370510]
+2025-03-24 03:07:17,366 - Model_Development - INFO - Test Games: [242720]
+2025-03-24 03:07:17,382 - Model_Development - INFO - Recommended Games: [548050, 486150, 533690, 434920, 485160]
+2025-03-24 03:07:25,597 - Model_Development - INFO - Saved best model object to: /opt/airflow/data/models/base_model/model_v1.pkl
+2025-03-24 03:08:01,523 - Model_Development - INFO - Evaluating on 10 users out of 829 total users
+2025-03-24 03:08:03,544 - Model_Development - INFO - 
+Evaluation Results:
+2025-03-24 03:08:03,549 - Model_Development - INFO - train_genre_precision: 0.7539
+2025-03-24 03:08:03,555 - Model_Development - INFO - train_genre_recall: 0.6572
+2025-03-24 03:08:03,558 - Model_Development - INFO - train_genre_hit_rate: 1.0000
+2025-03-24 03:08:03,564 - Model_Development - INFO - test_genre_precision: 0.2739
+2025-03-24 03:08:03,568 - Model_Development - INFO - test_genre_recall: 0.7467
+2025-03-24 03:08:03,573 - Model_Development - INFO - test_genre_hit_rate: 0.9000
+2025-03-24 03:08:03,596 - Model_Development - INFO - num_evaluated_users: 10
+2025-03-24 03:08:03,598 - Model_Development - INFO - 
+Sample User: 336774
+2025-03-24 03:08:03,599 - Model_Development - INFO - Train Games: [204360, 207610, 225080, 233130, 261570]
+2025-03-24 03:08:03,605 - Model_Development - INFO - Test Games: [16450]
+2025-03-24 03:08:03,608 - Model_Development - INFO - Recommended Games: [44670, 219070, 32120, 233410, 259890]
+2025-03-24 03:17:21,326 - Model_Development - INFO - Loaded data from /opt/airflow/data/processed/cleaned_reviews.parquet, shape: (1141178, 5)
+2025-03-24 03:17:41,751 - Model_Development - INFO - Train data saved to: /opt/airflow/data/processed/train.csv (1139513 rows)
+2025-03-24 03:17:41,760 - Model_Development - INFO - Test data saved to: /opt/airflow/data/processed/test.csv (1665 rows)
+2025-03-24 03:17:53,663 - Model_Development - INFO - Evaluating on 10 users out of 829 total users
+2025-03-24 03:17:55,481 - Model_Development - INFO - 
+Evaluation Results:
+2025-03-24 03:17:55,489 - Model_Development - INFO - train_genre_precision: 0.7405
+2025-03-24 03:17:55,494 - Model_Development - INFO - train_genre_recall: 0.6673
+2025-03-24 03:17:55,499 - Model_Development - INFO - train_genre_hit_rate: 1.0000
+2025-03-24 03:17:55,502 - Model_Development - INFO - test_genre_precision: 0.4663
+2025-03-24 03:17:55,519 - Model_Development - INFO - test_genre_recall: 0.8217
+2025-03-24 03:17:55,527 - Model_Development - INFO - test_genre_hit_rate: 1.0000
+2025-03-24 03:17:55,565 - Model_Development - INFO - num_evaluated_users: 10
+2025-03-24 03:17:55,645 - Model_Development - INFO - 
+Sample User: 71279
+2025-03-24 03:17:55,723 - Model_Development - INFO - Train Games: [12110, 12810, 34190, 39500, 50620, 96100, 102500, 204450, 205230, 244630, 274310, 318430, 370510]
+2025-03-24 03:17:55,744 - Model_Development - INFO - Test Games: [242720]
+2025-03-24 03:17:55,762 - Model_Development - INFO - Recommended Games: [548050, 486150, 533690, 434920, 485160]
+2025-03-24 03:18:01,883 - Model_Development - INFO - Saved best model object to: /opt/airflow/data/models/base_model/model_v1.pkl
+2025-03-24 03:18:38,670 - Model_Development - INFO - Evaluating on 10 users out of 829 total users
+2025-03-24 03:18:40,613 - Model_Development - INFO - 
+Evaluation Results:
+2025-03-24 03:18:40,615 - Model_Development - INFO - train_genre_precision: 0.7539
+2025-03-24 03:18:40,616 - Model_Development - INFO - train_genre_recall: 0.6572
+2025-03-24 03:18:40,619 - Model_Development - INFO - train_genre_hit_rate: 1.0000
+2025-03-24 03:18:40,621 - Model_Development - INFO - test_genre_precision: 0.2739
+2025-03-24 03:18:40,623 - Model_Development - INFO - test_genre_recall: 0.7467
+2025-03-24 03:18:40,624 - Model_Development - INFO - test_genre_hit_rate: 0.9000
+2025-03-24 03:18:40,626 - Model_Development - INFO - num_evaluated_users: 10
+2025-03-24 03:18:40,627 - Model_Development - INFO - 
+Sample User: 336774
+2025-03-24 03:18:40,628 - Model_Development - INFO - Train Games: [204360, 207610, 225080, 233130, 261570]
+2025-03-24 03:18:40,630 - Model_Development - INFO - Test Games: [16450]
+2025-03-24 03:18:40,632 - Model_Development - INFO - Recommended Games: [44670, 219070, 32120, 233410, 259890]
+2025-03-24 03:19:50,052 - Model_Development - INFO - Evaluating on 3 users out of 3 total users
+2025-03-24 03:19:50,083 - Model_Development - INFO - 
+Evaluation Results:
+2025-03-24 03:19:50,086 - Model_Development - INFO - train_genre_precision: 0.8690
+2025-03-24 03:19:50,088 - Model_Development - INFO - train_genre_recall: 0.6540
+2025-03-24 03:19:50,090 - Model_Development - INFO - train_genre_hit_rate: 1.0000
+2025-03-24 03:19:50,092 - Model_Development - INFO - test_genre_precision: 0.3671
+2025-03-24 03:19:50,094 - Model_Development - INFO - test_genre_recall: 0.6825
+2025-03-24 03:19:50,095 - Model_Development - INFO - test_genre_hit_rate: 1.0000
+2025-03-24 03:19:50,096 - Model_Development - INFO - num_evaluated_users: 3
+2025-03-24 03:19:50,097 - Model_Development - INFO - 
+Sample User: 594567
+2025-03-24 03:19:50,098 - Model_Development - INFO - Train Games: [440, 4000, 49600, 211820, 252490, 298260, 377160, 394690, 750210]
+2025-03-24 03:19:50,099 - Model_Development - INFO - Test Games: [434570]
+2025-03-24 03:19:50,100 - Model_Development - INFO - Recommended Games: [453480, 7200, 240, 253770, 221100]
+2025-03-24 03:19:50,195 - Model_Development - INFO - Evaluating on 4 users out of 4 total users
+2025-03-24 03:19:50,274 - Model_Development - INFO - 
+Evaluation Results:
+2025-03-24 03:19:50,276 - Model_Development - INFO - train_genre_precision: 1.0000
+2025-03-24 03:19:50,278 - Model_Development - INFO - train_genre_recall: 0.5780
+2025-03-24 03:19:50,279 - Model_Development - INFO - train_genre_hit_rate: 1.0000
+2025-03-24 03:19:50,280 - Model_Development - INFO - test_genre_precision: 0.3854
+2025-03-24 03:19:50,280 - Model_Development - INFO - test_genre_recall: 0.6042
+2025-03-24 03:19:50,281 - Model_Development - INFO - test_genre_hit_rate: 0.7500
+2025-03-24 03:19:50,282 - Model_Development - INFO - num_evaluated_users: 4
+2025-03-24 03:19:50,282 - Model_Development - INFO - 
+Sample User: 187248
+2025-03-24 03:19:50,283 - Model_Development - INFO - Train Games: [98800, 107410, 113200, 200710, 216150, 219150, 250760, 259680, 327070, 368830, 377160]
+2025-03-24 03:19:50,283 - Model_Development - INFO - Test Games: [271590, 332580, 13230]
+2025-03-24 03:19:50,284 - Model_Development - INFO - Recommended Games: [368830, 327070, 259680, 391310, 98400]

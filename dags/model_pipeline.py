@@ -61,15 +61,14 @@ download_processed_data_from_gcp_task = PythonOperator(
         'PROJECT_DIR' : PROJECT_DIR,
         'DATA_DIR' : DATA_DIR
     },
-    # on_success_callback=lambda context: notify_success(context, "Data Download Pipeline Succeeded!"),
-    # on_failure_callback=lambda context: notify_failure(context, "Data Download Pipeline Failed."),
+    on_failure_callback=lambda context: notify_failure(context, "Model Pipeline : Download Processed Data from GCP Task Failed."),
     dag=dag,
 )
 
 build_hybrid_model_task = PythonOperator(
    task_id='build_hybrid_model',
    python_callable=wrapper_build_model_function,
-    # on_failure_callback=lambda context: notify_failure(context, "Feature Engineering Pipeline : Feature Reviews Task Failed."),
+   on_failure_callback=lambda context: notify_failure(context, "Model Pipeline : Build Hybrid Model Task Failed."),
    dag=dag,
 )
 
@@ -82,13 +81,14 @@ push_model_task = PythonOperator(
         'experiment_name': "steam_games_recommender",
         'run_name': "steam_games_recommender_v1"
     },
+    on_failure_callback=lambda context: notify_failure(context, "Model Pipeline : Push Base Model Task Failed."),
     dag=dag
 )
 
 hyperparameter_tuning_task = PythonOperator(
    task_id='hyperparameter_tuning',
    python_callable=tuning_task,
-    # on_failure_callback=lambda context: notify_failure(context, "Feature Engineering Pipeline : Feature Reviews Task Failed."),
+   on_failure_callback=lambda context: notify_failure(context, "Model Pipeline : Hyperparameter Tuning Task Failed."),
    dag=dag,
 )
 
@@ -101,26 +101,29 @@ push_tuned_model_task = PythonOperator(
         'experiment_name': "steam_games_recommender",
         'run_name': "steam_games_recommender_v2"
     },
+    on_failure_callback=lambda context: notify_failure(context, "Model Pipeline : Push Tuned Model Task Failed."),
     dag=dag
 )
 
 select_and_push_best_model_task = PythonOperator(
     task_id='select_and_push_best_model',
     python_callable=select_and_push_best_model,
+    on_success_callback=lambda context: notify_success(context, "Model Pipeline Succeeded!"),
+    on_failure_callback=lambda context: notify_failure(context, "Model Pipeline : Select and Push Best Model Task Failed."),
     dag=dag
 )
 
 model_sensitivity_analysis_task = PythonOperator(
    task_id='model_sensitivity_analysis',
    python_callable=run_sensitivity_analysis,
-    # on_failure_callback=lambda context: notify_failure(context, "Feature Engineering Pipeline : Feature Reviews Task Failed."),
+   on_failure_callback=lambda context: notify_failure(context, "Model Pipeline : Model Sensitivity Analysis Task Failed."),
    dag=dag,
 )
 
 model_bias_analysis_task = PythonOperator(
    task_id='model_bias_analysis',
    python_callable=run_bias_analysis,
-    # on_failure_callback=lambda context: notify_failure(context, "Feature Engineering Pipeline : Feature Reviews Task Failed."),
+   on_failure_callback=lambda context: notify_failure(context, "Model Pipeline : Model Bias Analysis Task Failed."),
    dag=dag,
 )
 

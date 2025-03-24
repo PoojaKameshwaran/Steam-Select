@@ -16,7 +16,7 @@ from airflow.operators.email import EmailOperator
 def notify_success(context, message = "The task succeeded!"):
     success_email = EmailOperator(
         task_id='success_email',
-        to='steamrecommendation83@gmail.com',
+        to='mlopssteamrecommender@gmail.com',
         subject='Success Notification from Airflow',
         html_content=f'<p>{message}.</p>',
         dag=context['dag']
@@ -26,7 +26,7 @@ def notify_success(context, message = "The task succeeded!"):
 def notify_failure(context, message = "The task failed."):
     failure_email = EmailOperator(
         task_id='failure_email',
-        to='steamrecommendation83@gmail.com',
+        to='mlopssteamrecommender@gmail.com',
         subject='Failure Notification from Airflow',
         html_content=f'<p>{message}</p>',
         dag=context['dag']
