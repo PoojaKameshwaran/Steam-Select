@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="header">
+        <h1>Game Recommendation System</h1>
+    </div>
+    <div class="content">
+        <div class="section" id="section1">
+            <input type="text" id="game1" class="game-input" placeholder="Enter your favorite game">
+            <div class="suggestions" id="suggestions1"></div>
+        </div>
+        <div class="section" id="section2">
+            <input type="text" id="game2" class="game-input" placeholder="Enter your favorite game">
+            <div class="suggestions" id="suggestions2"></div>
+        </div>
+        <div class="section" id="section3">
+            <input type="text" id="game3" class="game-input" placeholder="Enter your favorite game">
+            <div class="suggestions" id="suggestions3"></div>
+        </div>
+    </div>
+    <div class="submit-container">
+        <button type="submit" id="recommendBtn">Get Recommendations</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

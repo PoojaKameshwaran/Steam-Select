@@ -7,9 +7,11 @@ from collections import Counter
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 
-
-from custom_logging import get_logger
-logger = get_logger('Model_Development')
+try:
+    from custom_logging import get_logger
+    logger = get_logger('Model_Development')
+except:
+    import logging as logger
 
 # --- Global variables for evaluation ---
 sample_user = None

@@ -1,0 +1,140 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100%;
+}
+
+.header {
+    background-image: url('https://images2.alphacoders.com/870/870882.jpg');
+    background-size: contain; /* Changed from cover to contain */
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+    text-align: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+h1 {
+    margin: 0;
+    font-size: 3.5em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    position: relative;
+    z-index: 2;
+}
+
+.content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 80vh;
+    background-color: black;
+    padding: 20px;
+}
+
+.section {
+    flex: 0 1 30%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    background-size: contain; /* Changed from cover to contain */
+    background-position: center;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+#section1 {
+    background-image: url('https://www.journaldugeek.com/app/uploads/2025/01/remake-premier-assassins-creed.jpg');
+}
+
+#section2 {
+    background-image: url('https://cdn1.epicgames.com/spt-assets/53ec4985296b4facbe3a8d8d019afba9/pubg-battlegrounds-1e9a7.jpg');
+}
+
+#section3 {
+    background-image: url('https://preview.redd.it/call-of-duty-warzone-released-4-years-ago-today-on-march-10-v0-7ek8f39eqinc1.jpeg?auto=webp&s=037dd199b6b8afd40b7300f54ef645dcfe4536cd');
+}
+
+input {
+    width: 80%;
+    padding: 10px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 5px;
+    position: relative;
+    z-index: 2;
+    background-color: rgba(50, 50, 50, 0.8);
+    color: white;
+}
+
+.suggestions {
+    position: absolute;
+    top: 0px; /* Adjust to appear directly below the input */
+    left: 0;
+    width: 100%;
+    background-color: #666;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none; /* Initially hidden */
+    z-index: 10;
+}
+
+.suggestion-item {
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #444;
+}
+
+.submit-container {
+    text-align: center;
+    padding: 15px 0;
+    background-color: hsl(256, 100%, 3%);
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #f4f1f6e0;
+    color: #170101;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #eef4ee;
+}

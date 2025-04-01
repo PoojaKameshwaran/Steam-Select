@@ -1,9 +1,11 @@
 import os
 from google.cloud import storage
-from custom_logging import get_logger
 
-
-logger = get_logger('Data_Download')
+try:
+    from custom_logging import get_logger
+    logger = get_logger('Data_Download')
+except:
+    import logging as logger
 
 def download_from_gcp(bucket_name, blob_paths, PROJECT_DIR, DATA_DIR):
     try:
@@ -44,7 +46,7 @@ def download_from_gcp(bucket_name, blob_paths, PROJECT_DIR, DATA_DIR):
 
 if __name__ == "__main__":
     
-    blob_paths = ["raw/item_metadata.json","raw/bundle_data.json", "raw/reviews.json"]
+    blob_paths = ["raw/item_metadata.json","raw/bundle_data.json"]
 
     PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     # Set up project directories
