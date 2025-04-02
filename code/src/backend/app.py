@@ -49,15 +49,15 @@ def search_steam_games(query):
     results = []
     for name, appid in GAME_LIST.items():
         if query.lower() in name.lower():
-            game_details = get_game_details(appid)
-            if game_details and game_details.get("type") == "game":
-                results.append({
-                    "id": appid,
-                    "name": name,
-                    "image": f"https://cdn.cloudflare.steamstatic.com/steam/apps/{appid}/header.jpg"
-                })
-                if len(results) == 5:  # Return top 5 results
-                    break
+            # game_details = get_game_details(appid)
+            # if game_details and game_details.get("type") == "game":
+            results.append({
+                "id": appid,
+                "name": name,
+                "image": f"https://cdn.cloudflare.steamstatic.com/steam/apps/{appid}/header.jpg"
+            })
+            if len(results) == 5:  # Return top 5 results
+                break
     return results
 
 
@@ -184,4 +184,4 @@ def recommend():
 
 if __name__ == "__main__":
     fetch_game_list()  # Load game list on startup
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)

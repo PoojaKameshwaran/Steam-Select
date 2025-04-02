@@ -1,0 +1,24 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy only required files
+COPY requirements.txt .  
+RUN pip install --no-cache-dir -r requirements.txt  
+
+# Copy everything except logs
+COPY code /app/code
+COPY config /app/config
+COPY data /app/data
+COPY dags /app/dags
+
+# Expose Flask port
+EXPOSE 5000
+
+CMD ["python", "code/src/backend/app.py"]
