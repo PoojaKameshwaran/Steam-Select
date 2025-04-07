@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify, render_template, session
+from flask import Flask, request, jsonify, render_template, session, make_response
 import requests
 import random
 import os
 import json
 from dotenv import load_dotenv
+import time
 
 from recommendation import recommend_games_from_model, get_genre_from_gameid
 
@@ -12,6 +13,7 @@ MY_STEAM_API_ACCESS_KEY = os.getenv('STEAM_API')
 load_dotenv()
 
 app = Flask(__name__, static_folder='../frontend', template_folder='../frontend')
+app.config['VERSION'] = str(int(time.time()))
 
 STEAM_APP_LIST_URL = "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
 STEAM_GAME_DETAILS_URL = "https://store.steampowered.com/api/appdetails"
@@ -143,7 +145,11 @@ def search():
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+    response = make_response(render_template("index.html"))
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 @app.route("/recommend", methods=["POST", "GET"])

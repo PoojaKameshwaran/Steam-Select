@@ -55,3 +55,13 @@ document.getElementById("recommendBtn").addEventListener("click", async () => {
         alert("Error fetching recommendations.");
     }
 });
+
+function revealInput(index) {
+    const placeholder = document.getElementById(`placeholder${index}`);
+    const inputGroup = document.getElementById(`inputGroup${index}`);
+
+    if (placeholder.style.display !== "none") {
+        placeholder.style.display = "none";
+        inputGroup.style.display = "flex";
+    }
+}
