@@ -3,7 +3,7 @@ name: GCP Kubernetes Deployment
 on:
   push:
     branches:
-      - main  # or change to your default branch name
+      - deploy-automation  # or change to your default branch name
 
 jobs:
   deploy:
