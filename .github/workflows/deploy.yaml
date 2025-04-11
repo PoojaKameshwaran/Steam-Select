@@ -3,7 +3,7 @@ name: GCP Kubernetes Deployment
 on:
   push:
     branches:
-      - deploy-automation  # change this if your branch is different
+      - deploy-automation  # or your working branch
 
 jobs:
   deploy:
@@ -13,36 +13,34 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # ✅ Step 1: Authenticate with GCP using the secret
+    # Step 1: Authenticate with GCP
     - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v1
+      uses: google-github-actions/auth@v2
       with:
-        credentials_json: ${{ secrets.gcp_key }}  # match the secret your friend added
+        credentials_json: ${{ secrets.gcp_key }}
 
-    # ✅ Step 2: Set up the gcloud CLI
+    # Step 2: Set up gcloud CLI
     - name: Set up gcloud CLI
-      uses: google-github-actions/setup-gcloud@v1
+      uses: google-github-actions/setup-gcloud@v2
       with:
         project_id: poojaproject
 
-    - name: Authenticate Docker to GCR
-      run: gcloud auth configure-docker
-
-    - name: Build Docker images
+    # Step 3: Build and Save Docker Image
+    - name: Build and Save Docker Image
       run: |
-        docker build -t gcr.io/poojaproject/flask-app -f Dockerfile.flask .
-        docker build -t gcr.io/poojaproject/airflow -f Dockerfile.airflow .
-        docker build -t gcr.io/poojaproject/mlflow -f Dockerfile.mlflow .
+        docker build -t flask-app -f Dockerfile.flask .
+        docker save flask-app | gzip > flask-app.tar.gz
 
-    - name: Push Docker images to GCR
+    # Step 4: Upload Docker Image to GCS
+    - name: Upload to GCS
       run: |
-        docker push gcr.io/poojaproject/flask-app
-        docker push gcr.io/poojaproject/airflow
-        docker push gcr.io/poojaproject/mlflow
+        gsutil cp flask-app.tar.gz gs://steam-select-artifacts/docker-images/  # ✅ Update with actual bucket
 
+    # Step 5: Get GKE credentials (optional if deploying K8s objects)
     - name: Get GKE credentials
       run: gcloud container clusters get-credentials steam-select-clusters --region=us-east1
 
+    # Step 6: Apply Kubernetes config and secret
     - name: Create K8s secret and deploy
       run: |
         kubectl create secret generic gcp-credentials --from-literal=key.json="${{ secrets.gcp_key }}" --dry-run=client -o yaml | kubectl apply -f -
