@@ -41,7 +41,7 @@ jobs:
       run: gcloud container clusters get-credentials steam-select-clusters --region=us-east1
 
     # Step 6: Apply Kubernetes config and secret
-    - name: Create K8s secret and deploy
+    - name: Write GCP key to file and create Kubernetes secret
       run: |
-        kubectl create secret generic gcp-credentials --from-literal=key.json="${{ secrets.gcp_key }}" --dry-run=client -o yaml | kubectl apply -f -
-        kubectl apply -f kubernetes/
+        echo "${{ secrets.gcp_key }}" > gcp-key.json
+        kubectl create secret generic gcp-credentials --from-file=key.json=gcp-key.json --dry-run=client -o yaml | kubectl apply -f -
