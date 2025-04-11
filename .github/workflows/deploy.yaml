@@ -34,7 +34,7 @@ jobs:
     # Step 4: Upload Docker Image to GCS
     - name: Upload to GCS
       run: |
-        gsutil cp flask-app.tar.gz gs://steam-select-artifacts/docker-images/  # ✅ Update with actual bucket
+        gsutil cp flask-app.tar.gz gs://steam-select/docker-images/
 
     # Step 5: Get GKE credentials (optional if deploying K8s objects)
     - name: Get GKE credentials
