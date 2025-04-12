@@ -150,3 +150,75 @@ h1 {
         padding: 10px;
     }
 }
+
+/* Feedback Form */
+.feedback-form {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.feedback-form h2 {
+    margin-bottom: 20px;
+    color: #ffcc00;
+}
+
+/* Rating Group */
+.rating-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.rating-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.rating-group input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #2a2a2a;
+    color: white;
+}
+
+/* Submit Feedback Button */
+.submit-feedback {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #0078d7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-feedback:hover {
+    background-color: #005a9e;
+}
+
+/* Responsive Feedback Layout */
+@media screen and (max-width: 768px) {
+    .feedback-form {
+        width: 95%;
+    }
+
+    .rating-group input[type="number"] {
+        font-size: 1rem;
+    }
+
+    .submit-feedback {
+        width: 100%;
+        font-size: 1.1rem;
+    }
+}

@@ -14,3 +14,5 @@ scikit-learn
 shap
 flask
 requests
+google-cloud-bigquery
+google-cloud-monitoring

@@ -5,6 +5,8 @@ import os
 import json
 from dotenv import load_dotenv
 import time
+from google.cloud import bigquery
+from datetime import datetime, timezone
 
 from recommendation import recommend_games_from_model, get_genre_from_gameid
 
@@ -27,6 +29,27 @@ GAME_LIST_FILE = os.path.join(PROJECT_DIR, "data", "processed", "steam_game_list
 GAME_LIST = {}
 
 app.secret_key = 'your_secret_key'  # Make sure to use a secure key
+
+PROJECT_ID = "poojaproject"
+BQ_TABLE_ID = f"{PROJECT_ID}.recommendation_metrics.user_feedback"
+
+def log_user_feedback(game_ids, ratings, avg_rating):
+    try:
+        client = bigquery.Client(project=PROJECT_ID)
+        rows_to_insert = [{
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "game_ids": str(game_ids),
+            "ratings": str(ratings),
+            "avg_rating": avg_rating
+        }]
+        errors = client.insert_rows_json(BQ_TABLE_ID, rows_to_insert)
+        if errors:
+            print(f"[BigQuery] Insert errors: {errors}")
+        else:
+            print("[BigQuery] Feedback logged successfully.")
+    except Exception as e:
+        print(f"[BigQuery] Feedback logging failed: {e}")
+
 
 def fetch_game_list():
     """Fetch and store the list of games from Steam API"""
@@ -186,6 +209,24 @@ def recommend():
     # Handle GET request: Render recommendation.html
     recommended_games = session.get("recommended_games", [])
     return render_template("recommendation.html", games=recommended_games)
+
+@app.route("/submit_feedback", methods=["POST"])
+
+def submit_feedback():
+    try:
+        data = request.get_json()
+        ratings = list(map(int, data.get("ratings", [])))
+        game_ids = data.get("game_ids", [])
+
+        if not ratings or not game_ids or len(ratings) != len(game_ids):
+            return jsonify({"error": "Invalid feedback data"}), 400
+
+        avg_rating = sum(ratings) / len(ratings)
+        log_user_feedback(game_ids, ratings, avg_rating)
+
+        return jsonify({"message": "Thanks for your feedback!"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":

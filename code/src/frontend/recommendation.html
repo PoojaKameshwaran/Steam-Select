@@ -22,8 +22,7 @@
                     <img src="{{ screenshot }}" alt="{{ game.title }} Screenshot" class="carousel-image">
                     {% endfor %}
                 </div>
-            </div>
-
+            </div>  
             <div class="game-content">
                 <h2>{{ game.title }}</h2>
                 <p class="description">{{ game.description }}</p>
@@ -41,5 +40,35 @@
         </div>
         {% endfor %}
     </div>
+    <div class="feedback-form">
+        <h2>Rate the recommended games:</h2>
+        <form id="feedbackForm">
+            {% for game in games %}
+            <div class="rating-group">
+                <label for="rating_{{ loop.index }}">Rating for <strong>{{ game.title }}</strong> (1 to 10):</label>
+                <input type="number" name="ratings" min="1" max="10" required>
+                <input type="hidden" name="game_ids" value="{{ game.id }}">
+            </div>
+            {% endfor %}
+            <button type="submit" class="submit-feedback">Submit Feedback</button>
+        </form>
+    </div>
+
+    <script>
+    document.getElementById('feedbackForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const ratings = Array.from(document.querySelectorAll('[name="ratings"]')).map(i => i.value);
+        const game_ids = Array.from(document.querySelectorAll('[name="game_ids"]')).map(i => i.value);
+
+        const response = await fetch('/submit_feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ratings, game_ids })
+        });
+
+        const result = await response.json();
+        alert(result.message || result.error);
+    });
+    </script>
 </body>
 </html>
