@@ -101,11 +101,15 @@ def build_models(user_game_matrix, game_user_matrix, user_n, game_n, metric):
 
 # --- Genre-Based Recommendation ---
 def genre_based_recommendation(genres, sentiment_df, k=10, exclude_games=None):
-    if not genres or 'genres' not in sentiment_df.columns:
+    if genres is None or len(genres) == 0 or 'genres' not in sentiment_df.columns:
         return []
     if exclude_games is None:
         exclude_games = []
 
+    print(f"\n[DEBUG] Running genre-based fallback for genres: {genres}")
+    print(f"[DEBUG] Total games in sentiment_df: {len(sentiment_df)}")
+    
+    matched = 0
     game_scores = {}
     for _, row in sentiment_df.iterrows():
         game_id = row['Game_ID']
@@ -113,12 +117,17 @@ def genre_based_recommendation(genres, sentiment_df, k=10, exclude_games=None):
             continue
 
         game_genres = row['genres']
-        if not isinstance(game_genres, list):
+        input_genres_clean = set(g.lower().strip() for g in genres)
+        game_genres_clean = set(g.lower().strip() for g in game_genres)
+
+        if not isinstance(game_genres, (list, np.ndarray)):
             continue
 
-        matching_genres = set(genres).intersection(set(game_genres))
+        matching_genres = input_genres_clean.intersection(game_genres_clean)
+        if matching_genres:
+            matched += 1
+        
         match_score = len(matching_genres) / len(genres)
-
         sentiment_weight = 1.0
         if pd.notna(row.get('sentiment')):
             sentiment_weight = row['sentiment'] / 5.0
@@ -126,8 +135,14 @@ def genre_based_recommendation(genres, sentiment_df, k=10, exclude_games=None):
         if len(matching_genres) > 0:
             game_scores[game_id] = match_score * sentiment_weight
 
+
+    print(f"[DEBUG] Games matching at least one genre: {matched}")
+    print(f"[DEBUG] Total scored games: {len(game_scores)}")
+
     sorted_games = sorted(game_scores.items(), key=lambda x: x[1], reverse=True)
-    return [game_id for game_id, _ in sorted_games[:k]]
+    top_15 = sorted_games[:15]
+    np.random.shuffle(top_15)
+    return [game_id for game_id, _ in top_15[:5]]
 
 # --- Hybrid Recommendation ---
 def hybrid_recommendations(user_id, input_game_ids, df, user_model, game_model,
@@ -136,7 +151,7 @@ def hybrid_recommendations(user_id, input_game_ids, df, user_model, game_model,
                           sentiment_df=None, k=10):
     valid_game_ids = [g for g in input_game_ids if g in game_to_idx]
     missing_games = [g for g in input_game_ids if g not in game_to_idx]
-    if not valid_game_ids and not missing_game_genres:
+    if not valid_game_ids and (missing_game_genres is None or len(missing_game_genres) == 0):
         return []
 
     if user_id not in user_to_idx:
@@ -164,11 +179,17 @@ def hybrid_recommendations(user_id, input_game_ids, df, user_model, game_model,
         user_vector = user_game_matrix[user_idx:user_idx+1]
         _, user_indices = user_model.kneighbors(user_vector)
 
+        print(f"[DEBUG] User vector shape: {user_vector.shape}")
+        print(f"[DEBUG] Nearest users: {[idx_to_user[idx] for idx in user_indices[0]]}")
+
+
         game_recommendations = {}
+        print(f"[DEBUG] Valid Game IDs: {valid_game_ids}")
         for game_id in valid_game_ids:
             game_idx = game_to_idx[game_id]
             game_vector = game_user_matrix[game_idx:game_idx+1]
             distances, indices = game_model.kneighbors(game_vector)
+            # print(f"[DEBUG] Game {game_id} neighbors: {[idx_to_game[idx] for idx in indices[0]]}")
             for idx, dist in zip(indices[0], distances[0]):
                 similar_game = idx_to_game[idx]
                 if similar_game != game_id:
@@ -194,7 +215,16 @@ def hybrid_recommendations(user_id, input_game_ids, df, user_model, game_model,
         sorted_recs = sorted(hybrid_recs.items(), key=lambda x: x[1], reverse=True)
         recommendations = [game for game, _ in sorted_recs]
 
-    if (missing_games or len(recommendations) < k) and missing_game_genres and sentiment_df is not None:
+    if not valid_game_ids and missing_game_genres is not None and len(missing_game_genres) > 0 and sentiment_df is not None:
+        # Pure genre-based fallback: return 5 recommendations directly
+        genre_recommendations = genre_based_recommendation(
+            missing_game_genres, sentiment_df, k=max(k, 5),
+            exclude_games=[]
+        )
+        logger.info(f"Fallback triggered: returning {len(genre_recommendations[:5])} genre-based recommendations.")
+        return [int(game_id) for game_id in genre_recommendations[:5]]
+    elif (missing_games or len(recommendations) < k) and missing_game_genres and sentiment_df is not None:
+        # Top up using genre similarity
         genre_recommendations = genre_based_recommendation(
             missing_game_genres, sentiment_df, k=k*2,
             exclude_games=valid_game_ids + recommendations
@@ -203,6 +233,7 @@ def hybrid_recommendations(user_id, input_game_ids, df, user_model, game_model,
             if game_id not in recommendations:
                 recommendations.append(game_id)
 
+    print(f"[DEBUG] Final hybrid recs (before top-k): {recommendations[:10]}")
     return [int(game_id) for game_id in recommendations[:k]]
 
 # --- Wrapper ---
@@ -339,6 +370,57 @@ def wrapper_build_model_function():
     with open(best_model_path, "wb") as f:
          pickle.dump(best_model_object, f)
     logger.info(f"Saved best model object to: {best_model_path}")
+
+def test_genre_fallback():
+    print("\n--- Running Genre Fallback Test ---")
+    train_df, test_df, sentiment_df = load_processed_data()
+    get_recommendations, *_ = run_hybrid_recommendation_system(train_df, user_n=20, game_n=10, metric='cosine')
+
+    # Simulate a user with only games that are not in the game_to_idx
+    fake_user_id = "evcentric"
+    fake_game_ids = ["578080", "2456740", "1222670"]  # These should not be in your training data
+
+    # Simulate genres (pull genres from steam_api and hardcoded them here)
+    # sample_genres = np.array(['Action', 'Adventure', 'Massively Multiplayer', 'Free To Play', 'Casual', 'Simulation', 'Early Access'])
+
+    recommendations = get_recommendations(
+        user_id=fake_user_id,
+        input_game_ids=fake_game_ids,
+        missing_game_genres=[],
+        sentiment_df=sentiment_df,
+        k=10  # even though we pass 10, fallback is hardcoded to return 5
+    )
+
+    print("Returned Recommendations (genre-based fallback):", recommendations)
+    print("--- Done ---\n")
+
+def test_hybrid_recommendations_with_valid_games():
+    print("\n--- Running Hybrid Recommendation Test with Valid Game_IDs ---")
+    train_df, test_df, sentiment_df = load_processed_data()
+    get_recommendations, user_to_idx, game_to_idx, *_ = run_hybrid_recommendation_system(train_df, user_n=20, game_n=10, metric='cosine')
+
+    # Pick a real user with good history
+    known_user_id = "evcentric"
+    known_game_ids = ["1250", "204100", "22200"]
+
+    print(f"User ID: {known_user_id}")
+    print(f"Input Game IDs: {known_game_ids}")
+
+    # Call model without genres
+    recommendations = get_recommendations(
+        user_id=known_user_id,
+        input_game_ids=known_game_ids,
+        missing_game_genres=None,
+        sentiment_df=sentiment_df,
+        k=10
+    )
+
+    # Convert to pure ints for readability and debugging
+    recommendations = [int(game_id) for game_id in recommendations]
+
+    print(f"Returned Hybrid Recommendations: {recommendations}")
+    print("--- Done ---\n")
+
 
 
 # --- MAIN ---
