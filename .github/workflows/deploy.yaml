@@ -54,3 +54,14 @@ jobs:
       run: |
         echo "${{ secrets.gcp_key }}" > gcp-key.json
         kubectl create secret generic gcp-credentials --from-file=key.json=gcp-key.json --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Deploy app to GKE
+      run: |
+         kubectl apply -f k8s/flask-app-deployment.yaml
+         kubectl apply -f k8s/flask-app-service.yaml
+
+    - name: Tag and Push Docker Image to Container Registry
+      run: |
+           docker tag flask-app gcr.io/poojaproject/flask-app:latest
+           docker push gcr.io/poojaproject/flask-app:latest
+   
