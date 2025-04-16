@@ -49,7 +49,7 @@ jobs:
         ./google-cloud-sdk/bin/gcloud components install gke-gcloud-auth-plugin --quiet
         echo "$PWD/google-cloud-sdk/bin" >> $GITHUB_PATH
 
-    # Step 6: Apply Kubernetes config and secrett
+    # Step 6: Apply Kubernetes config and secret
     - name: Write GCP key to file and create Kubernetes secret
       run: |
         echo "${{ secrets.gcp_key }}" > gcp-key.json
