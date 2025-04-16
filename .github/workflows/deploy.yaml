@@ -40,6 +40,11 @@ jobs:
     - name: Get GKE credentials
       run: gcloud container clusters get-credentials steam-select-clusters --region=us-east1
 
+    #FIX: Install GKE auth plugin
+    - name: Install gke-gcloud-auth-plugin
+      run: |
+        sudo apt-get update && sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
+
     # Step 6: Apply Kubernetes config and secret
     - name: Write GCP key to file and create Kubernetes secret
       run: |
