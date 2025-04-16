@@ -6,6 +6,7 @@ import pickle
 from collections import Counter
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
+import json
 
 try:
     from custom_logging import get_logger
@@ -89,6 +90,13 @@ def build_sparse_matrices(df):
     game_user_matrix = user_game_matrix.T.tocsr()
 
     return user_game_matrix, game_user_matrix, user_to_idx, game_to_idx, idx_to_user, idx_to_game
+
+# -- Reference steam_game_list --
+def load_valid_appids(json_path):
+    with open(json_path, 'r') as f:
+        game_list = json.load(f)
+    return set(entry['appid'] for entry in game_list if 'appid' in entry)
+
 
 def build_models(user_game_matrix, game_user_matrix, user_n, game_n, metric):
     user_model = NearestNeighbors(n_neighbors=user_n, metric=metric, algorithm='brute')
@@ -242,15 +250,24 @@ def run_hybrid_recommendation_system(train_df, user_n, game_n, metric):
     user_model, game_model = build_models(user_game_matrix, game_user_matrix, user_n, game_n, metric)
 
     def get_recommendations(user_id, input_game_ids, missing_game_genres=None, sentiment_df=None, k=5):
-        return hybrid_recommendations(
+        recommendations = hybrid_recommendations(
             user_id, input_game_ids, train_df,
             user_model, game_model,
             user_game_matrix, user_to_idx, game_to_idx,
             idx_to_user, idx_to_game, game_user_matrix,
-            missing_game_genres, sentiment_df, k
+            missing_game_genres, sentiment_df, k*2  # get more to allow filtering
         )
 
-    return get_recommendations, user_to_idx, game_to_idx, idx_to_user, idx_to_game
+        print(f"[DEBUG] Raw model recommendations (pre-filter): {recommendations}")
+        # Filter to only valid appids
+        steam_json_path = os.path.join(PROCESSED_DATA_DIR, "steam_game_list.json")
+        valid_appids = load_valid_appids(steam_json_path)
+
+        filtered_recommendations = [game_id for game_id in recommendations if game_id in valid_appids]
+        print(f"[DEBUG] Valid recommendations after filtering: {filtered_recommendations}")
+        print(f"[DEBUG] Number of recommendations returned: {len(filtered_recommendations[:k])}")
+
+        return filtered_recommendations[:k]
 
 # --- Evaluation ---
 def evaluate_genre_recommendations(get_recommendations, train_df, test_df, sentiment_df, k=10, n_users=None):
