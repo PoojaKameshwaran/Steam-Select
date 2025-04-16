@@ -3,7 +3,7 @@ name: GCP Kubernetes Deployment
 on:
   push:
     branches:
-      - deploy-automation  # or your working branch
+      - cd-pipeline  # or your working branch
 
 jobs:
   deploy:
