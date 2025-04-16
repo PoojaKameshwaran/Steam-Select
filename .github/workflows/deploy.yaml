@@ -25,7 +25,7 @@ jobs:
       with:
         project_id: poojaproject
 
-    # Step 3: Build and Save Docker Image
+    # Step 3: Build and Save Docker Images
     - name: Build and Save Docker Image
       run: |
         docker build -t flask-app -f Dockerfile.flask .
