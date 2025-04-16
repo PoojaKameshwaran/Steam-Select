@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+      - name: flask-app
+        image: gcr.io/poojaproject/flask-app:latest
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: gcp-key
+          mountPath: "/secrets"
+          readOnly: true
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/secrets/key.json"
+      volumes:
+      - name: gcp-key
+        secret:
+          secretName: gcp-credentials
