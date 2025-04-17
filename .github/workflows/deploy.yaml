@@ -60,7 +60,10 @@ jobs:
          kubectl apply -f kubernetes/flask-app-deployment.yaml
          kubectl apply -f kubernetes/flask-app-service.yaml
 
-    - name: Tag and Push Docker Image to Container Registry
+    - name: Configure Docker for gcr.io
+      run: gcloud auth configure-docker gcr.io
+
+    - name: congigure docker for gcr
       run: |
            docker tag flask-app gcr.io/poojaproject/flask-app:latest
            docker push gcr.io/poojaproject/flask-app:latest
