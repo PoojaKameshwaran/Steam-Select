@@ -54,9 +54,12 @@ jobs:
     - name: Create Kubernetes Secret from GCP Key
       run: |
         mkdir -p config
-        printf '%s' "${{ secrets.gcp_key }}" > gcp-key.json
+        echo "${{ secrets.gcp_key }}" | tee gcp-key.json > /dev/null
         cp gcp-key.json config/key.json
-        kubectl create secret generic gcp-credentials --from-file=key.json=gcp-key.json --dry-run=client -o yaml | kubectl apply -f -
+        kubectl create secret generic gcp-credentials \
+          --from-file=key.json=gcp-key.json \
+          --dry-run=client -o yaml | kubectl apply -f -
+    
 
     - name: Configure Docker for gcr.io
       run: gcloud auth configure-docker gcr.io
