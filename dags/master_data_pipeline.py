@@ -13,7 +13,7 @@ default_args = {
 }
 
 dag = DAG(
-    'master_data_pipeline',
+    'master_pipeline',
     default_args=default_args,
     description='Master DAG to orchestrate the entire data pipeline',
     schedule_interval=None,
@@ -39,6 +39,7 @@ trigger_data_download = trigger_dag('trigger_data_download', 'data_download_pipe
 trigger_data_validation = trigger_dag('trigger_data_validation', 'data_validation_pipeline')
 trigger_data_cleaning = trigger_dag('trigger_data_cleaning', 'data_cleaning_EDA_pipeline')
 trigger_feature_engineering = trigger_dag('trigger_feature_engineering', 'feature_engineering_pipeline')
+trigger_model_pipeline = trigger_dag('trigger_model_pipeline', 'model_pipeline')
 
 # Define dependencies
-start >> trigger_data_download >> trigger_data_validation >> trigger_data_cleaning >> trigger_feature_engineering >> end
+start >> trigger_data_download >> trigger_data_validation >> trigger_data_cleaning >> trigger_feature_engineering >> trigger_model_pipeline >> end
