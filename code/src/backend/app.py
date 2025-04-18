@@ -50,6 +50,7 @@ def fetch_game_list():
     # if response.status_code == 200:
     #     data = response.json()
     #     GAME_LIST = {game["name"]: game["appid"] for game in data["applist"]["apps"]}
+    print("Trying to load")
     blob_paths = ["processed/train.csv", "processed/steam_game_list.json",
                   "processed/reviews_item_cleaned.parquet"]
     model_path_gcp = ["best_model/hybrid_recommender/artifacts/base_model/model_v1.pkl"]

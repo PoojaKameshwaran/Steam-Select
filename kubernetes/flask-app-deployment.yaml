@@ -16,15 +16,23 @@ spec:
       - name: flask-app
         image: gcr.io/poojaproject/flask-app:latest  # Your Docker image
         ports:
-        - containerPort: 5000  # Your Flask app port
+        - containerPort: 5000
         env:
         - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: "/secrets/key.json"  # How your app reads GCP credentials
+          value: "/secrets/key.json"
         volumeMounts:
         - name: gcp-key
           mountPath: /secrets
           readOnly: true
+        - name: processed-data
+          mountPath: /app/data/processed
+        - name: model-data
+          mountPath: /app/data/model/base_model
       volumes:
       - name: gcp-key
         secret:
           secretName: gcp-credentials
+      - name: processed-data
+        emptyDir: {}
+      - name: model-data
+        emptyDir: {}
