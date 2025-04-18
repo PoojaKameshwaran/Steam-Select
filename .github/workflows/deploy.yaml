@@ -50,15 +50,21 @@ jobs:
         ./google-cloud-sdk/bin/gcloud components install gke-gcloud-auth-plugin --quiet
         echo "$PWD/google-cloud-sdk/bin" >> $GITHUB_PATH
 
-      # Step 6: Write Key and Create Secret
+    # Step 6: Write Key and Create Secret
     - name: Create Kubernetes Secret from GCP Key
+      shell: bash
       run: |
         mkdir -p config
-        echo "${{ secrets.gcp_key }}" | tee gcp-key.json > /dev/null
+        cat <<EOF > gcp-key.json
+        ${{ secrets.gcp_key }}
+        EOF
         cp gcp-key.json config/key.json
         kubectl create secret generic gcp-credentials \
           --from-file=key.json=gcp-key.json \
           --dry-run=client -o yaml | kubectl apply -f -
+
+
+
     
 
     - name: Configure Docker for gcr.io
