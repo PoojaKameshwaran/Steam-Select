@@ -14,3 +14,4 @@ scikit-learn
 shap
 flask
 requests
+google-cloud-storage

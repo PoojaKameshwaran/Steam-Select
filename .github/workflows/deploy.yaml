@@ -1,6 +1,7 @@
 name: GCP Kubernetes Deployment
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - deploy-automation  # or your working branch
@@ -53,6 +54,7 @@ jobs:
     - name: Write GCP key to file and create Kubernetes secret
       run: |
         echo "${{ secrets.gcp_key }}" > gcp-key.json
+        echo "${{ secrets.gcp_key }}" > config/key.json
         kubectl create secret generic gcp-credentials --from-file=key.json=gcp-key.json --dry-run=client -o yaml | kubectl apply -f -
 
     - name: Configure Docker for gcr.io

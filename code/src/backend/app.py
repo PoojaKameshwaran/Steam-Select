@@ -5,6 +5,8 @@ import os
 import json
 from dotenv import load_dotenv
 import time
+import sys
+from pathlib import Path
 
 from recommendation import recommend_games_from_model, get_genre_from_gameid
 
@@ -25,6 +27,19 @@ GAME_LIST_FILE = os.path.join(PROJECT_DIR, "data", "processed", "steam_game_list
 
 # Cache the game list
 GAME_LIST = {}
+# Add project root to Python path
+PROJECT_ROOT = Path(__file__).resolve().parents[3]  # Adjust based on actual depth
+sys.path.append(str(PROJECT_ROOT))
+
+# Now use absolute import
+from dags.data_preprocessing.download_data import download_from_gcp
+
+# PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+MODEL_FILE_PATH = os.path.join(PROJECT_DIR, "data", "models", "base_model", "model_v1.pkl")
+MODEL_FILE_PATH_SAVE = os.path.join(PROJECT_DIR, "data", "models", "base_model")
+PROCESSED_PATH = os.path.join(PROJECT_DIR, "data", "processed")
+DF_PATH = os.path.join(PROCESSED_PATH, "train.csv")
+SENTIMENT_PATH = os.path.join(PROCESSED_PATH, "reviews_item_cleaned.parquet")
 
 app.secret_key = 'your_secret_key'  # Make sure to use a secure key
 
@@ -35,7 +50,12 @@ def fetch_game_list():
     # if response.status_code == 200:
     #     data = response.json()
     #     GAME_LIST = {game["name"]: game["appid"] for game in data["applist"]["apps"]}
-
+    blob_paths = ["processed/train.csv", "processed/steam_game_list.json",
+                  "processed/reviews_item_cleaned.parquet"]
+    model_path_gcp = ["best_model/hybrid_recommender/artifacts/base_model/model_v1.pkl"]
+    downloaded_files1 = download_from_gcp("steam-select", blob_paths, PROJECT_DIR, PROCESSED_PATH)
+    downloaded_files2 = download_from_gcp("steam-select", model_path_gcp, PROJECT_DIR, MODEL_FILE_PATH_SAVE)
+    # downloaded_files2 = download_from_gcp("steam-select", ["processed/test.csv"], PROJECT_DIR, PROCESSED_PATH)
 
     """Load the game list from the JSON file."""
     if os.path.exists(GAME_LIST_FILE):
