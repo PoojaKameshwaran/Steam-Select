@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Game Recommendations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='recommendation_styles.css') }}">
+</head>
+<body>
+    <h1>Top Steam Game Recommendations</h1>
+    <div class="game-list">
+        {% for game in games %}
+        <div class="game-card">
+            <!-- Image Carousel: First Static Image (Header Image) and Scrolling Images -->
+            <div class="image-carousel">
+                <!-- First Image is Static (Header Image) -->
+                <img src="{{ game.image }}" alt="{{ game.title }} Header Image" class="carousel-image-first">
+                
+                <!-- Scrollable Images -->
+                <div class="carousel-images" id="carousel-{{ loop.index }}">
+                    {% for screenshot in game.screenshots %}
+                    <img src="{{ screenshot }}" alt="{{ game.title }} Screenshot" class="carousel-image">
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="game-content">
+                <h2>{{ game.title }}</h2>
+                <p class="description">{{ game.description }}</p>
+                <p><strong>Genre:</strong> {{ game.genres }}</p>
+                <p><strong>Release Date:</strong> {{ game.release_date }}</p>
+                <p><strong>Developer:</strong> {{ game.developer }}</p>
+                <p class="price"><strong>Price:</strong> {{ game.price }}</p>
+                {% if game.video %}
+                    <video class="game-video" controls>
+                        <source src="{{ game.video }}" type="video/mp4">
+                    </video>
+                {% endif %}
+                <a href="{{ game.steam_link }}" class="buy-btn" target="_blank">Buy on Steam</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,239 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100%;
+    background-color: #000;
+    color: white;
+}
+
+/* Header Section */
+.header {
+    background-image: url('https://images2.alphacoders.com/870/870882.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+    text-align: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 3.5em;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    position: relative;
+    z-index: 2;
+}
+
+/* Intro Text Section */
+.intro-text {
+    background-color: #1a1a1a;
+    padding: 40px 20px;
+}
+
+.intro-text h2 {
+    margin-bottom: 10px;
+    font-size: 2em;
+    color: #f3f1eb;
+}
+
+.intro-text p {
+    font-size: 1.1em;
+    color: #ccc;
+}
+
+/* Game Input Sections */
+.content {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 40px 20px;
+    background-color: black;
+}
+
+.section {
+    background-image: url("https://png.pngtree.com/png-vector/20230124/ourmid/pngtree-click-here-button-with-black-color-in-rounded-rectangle-shape-for-png-image_6561839.png"); /* Or use Flask: url("{{ url_for('static', filename='image.png') }}") */
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    background-color: #1e1e1e;
+    border-radius: 15px;
+    flex: 1 1 30%;
+    min-width: 250px;
+    height: 300px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    overflow: visible;
+    transition: transform 0.2s ease;
+    z-index: 1;
+}
+
+.section:hover {
+    transform: scale(1.02);
+}
+
+.section-placeholder {
+    font-size: 1.2em;
+    color: #ccc;
+    user-select: none;
+    text-align: center;
+    z-index: 2;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-group h3 {
+    margin: 0;
+    color: #fff;
+}
+
+input.game-input {
+    width: 80%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+input.game-input:focus {
+    outline: 2px solid #ffcc00;
+}
+
+.section::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.section h3 {
+    position: absolute;
+    top: 15px;
+    z-index: 2;
+    background: rgba(0,0,0,0.6);
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+/* Specific Section Backgrounds
+#section1 {
+    background-image: url('https://www.journaldugeek.com/app/uploads/2025/01/remake-premier-assassins-creed.jpg');
+}
+
+#section2 {
+    background-image: url('https://cdn1.epicgames.com/spt-assets/53ec4985296b4facbe3a8d8d019afba9/pubg-battlegrounds-1e9a7.jpg');
+}
+
+#section3 {
+    background-image: url('https://preview.redd.it/call-of-duty-warzone-released-4-years-ago-today-on-march-10-v0-7ek8f39eqinc1.jpeg?auto=webp&s=037dd199b6b8afd40b7300f54ef645dcfe4536cd');
+} */
+
+.input-wrapper {
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.game-input {
+    width: 80%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: outline 0.3s;
+}
+
+.game-input:focus {
+    outline: 2px solid #ffcc00;
+}
+
+/* Suggestion Box */
+.suggestions {
+    width: 80%;
+    background-color: #333;
+    border-radius: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 5px;
+    display: none;
+    position: absolute;
+    bottom: -160px;
+}
+
+.suggestion-item {
+    padding: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #444;
+}
+
+/* Submit Button */
+.submit-container {
+    text-align: center;
+    background-color: #0a0a0a;
+    padding: 30px 0;
+}
+
+button {
+    padding: 14px 30px;
+    font-size: 1.3em;
+    background-color: #ffffff;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #ff9900;
+    transform: scale(1.05);
+}
+
+/* Footer */
+footer {
+    background-color: #111;
+    color: #aaa;
+    font-size: 0.9em;
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #333;
+}

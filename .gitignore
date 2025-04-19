@@ -12,4 +12,4 @@ logs/scheduler*
 /data/dvc/bundle_data.json
 /data/dvc/item_metadata.json
 /data/dvc/reviews.json
-
+/data/models

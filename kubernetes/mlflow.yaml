@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      containers:
+      - name: mlflow
+        image: gcr.io/poojaproject/mlflow
+        ports:
+        - containerPort: 5001
+        env:
+        - name: MLFLOW_TRACKING_URI
+          value: "postgresql://airflow:airflow@postgres:5432/airflow"
+        - name: MLFLOW_ARTIFACT_ROOT
+          value: "gs://steam-select/ml_flow_bucket/mlflow-artifacts"
+        volumeMounts:
+        - mountPath: /var/run/secrets/google
+          name: google-cloud-key
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: gcp-credentials
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 5001
+  selector:
+    app: mlflow

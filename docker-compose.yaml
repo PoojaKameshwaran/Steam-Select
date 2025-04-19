@@ -127,6 +127,19 @@ services:
     depends_on:
       - postgres
 
+  flask-app:
+      build:
+        context: .
+        dockerfile: Dockerfile.flask
+      ports:
+        - "5000:5000"
+      environment:
+        - FLASK_ENV=development
+      volumes:
+        - ./:/app
+      networks:
+        - default 
+
   redis:
     # Redis is limited to 7.2-bookworm due to licencing change
     # https://redis.io/blog/redis-adopts-dual-source-available-licensing/
