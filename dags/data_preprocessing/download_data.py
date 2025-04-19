@@ -9,9 +9,19 @@ except:
 
 def download_from_gcp(bucket_name, blob_paths, PROJECT_DIR, DATA_DIR):
     try:
-        # Set environment variables for authentication
-        KEY_PATH = os.path.join(PROJECT_DIR, "config", "key.json")
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = KEY_PATH
+        # Hybrid credential resolution
+        env_cred = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+        fallback_cred = os.path.join(PROJECT_DIR, "config", "key.json")
+
+        if env_cred and os.path.exists(env_cred):
+            KEY_PATH = env_cred
+        elif os.path.exists(fallback_cred):
+            KEY_PATH = fallback_cred
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = fallback_cred
+        else:
+            raise FileNotFoundError("No valid GCP credentials found.")
+
+        print(f"[INFO] Using credentials from: {KEY_PATH}")
         
         # Google Cloud setup
         storage_client = storage.Client()

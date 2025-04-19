@@ -14,5 +14,6 @@ scikit-learn
 shap
 flask
 requests
+google-cloud-storage
 google-cloud-bigquery
 google-cloud-monitoring

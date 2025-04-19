@@ -7,6 +7,8 @@ import os
 import json
 from dotenv import load_dotenv
 import time
+import sys
+from pathlib import Path
 import logging
 from google.cloud import bigquery, monitoring_v3
 from datetime import datetime, timezone
@@ -37,6 +39,22 @@ GAME_LIST = {}
 
 PROJECT_ID = "poojaproject"
 BQ_TABLE_ID = f"{PROJECT_ID}.recommendation_metrics.user_feedback"
+
+# Cache the game list
+GAME_LIST = {}
+# Add project root to Python path
+PROJECT_ROOT = Path(__file__).resolve().parents[3]  # Adjust based on actual depth
+sys.path.append(str(PROJECT_ROOT))
+
+# Now use absolute import
+from dags.data_preprocessing.download_data import download_from_gcp
+
+# PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+MODEL_FILE_PATH = os.path.join(PROJECT_DIR, "data", "models", "base_model", "model_v1.pkl")
+MODEL_FILE_PATH_SAVE = os.path.join(PROJECT_DIR, "data", "models", "base_model")
+PROCESSED_PATH = os.path.join(PROJECT_DIR, "data", "processed")
+DF_PATH = os.path.join(PROCESSED_PATH, "train.csv")
+SENTIMENT_PATH = os.path.join(PROCESSED_PATH, "reviews_item_cleaned.parquet")
 
 
 def write_custom_metric(avg_rating: float) -> None:
@@ -78,6 +96,19 @@ def log_user_feedback(game_ids, ratings, avg_rating):
 
 def fetch_game_list():
     global GAME_LIST
+    # response = requests.get(STEAM_APP_LIST_URL)
+    # if response.status_code == 200:
+    #     data = response.json()
+    #     GAME_LIST = {game["name"]: game["appid"] for game in data["applist"]["apps"]}
+    print("Trying to load")
+    blob_paths = ["processed/train.csv", "processed/steam_game_list.json",
+                  "processed/reviews_item_cleaned.parquet"]
+    model_path_gcp = ["best_model/hybrid_recommender/artifacts/base_model/model_v1.pkl"]
+    downloaded_files1 = download_from_gcp("steam-select", blob_paths, PROJECT_DIR, PROCESSED_PATH)
+    downloaded_files2 = download_from_gcp("steam-select", model_path_gcp, PROJECT_DIR, MODEL_FILE_PATH_SAVE)
+    # downloaded_files2 = download_from_gcp("steam-select", ["processed/test.csv"], PROJECT_DIR, PROCESSED_PATH)
+
+    """Load the game list from the JSON file."""
     if os.path.exists(GAME_LIST_FILE):
         with open(GAME_LIST_FILE, "r") as f:
             GAME_LIST = {game["name"]: game["appid"] for game in json.load(f)}
