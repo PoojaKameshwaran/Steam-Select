@@ -1,8 +1,5 @@
 from pathlib import Path
 import logging
-
-# Updated version of app.py with structured logging and logging to GCP-compatible stdout
-
 from flask import Flask, request, jsonify, render_template, session, make_response
 import requests
 import random
@@ -11,8 +8,11 @@ import json
 from dotenv import load_dotenv
 import time
 import logging
-from google.cloud import bigquery
+from google.cloud import bigquery, monitoring_v3
 from datetime import datetime, timezone
+from google.cloud import monitoring_v3
+from google.protobuf.timestamp_pb2 import Timestamp
+from datetime import datetime
 
 from recommendation import recommend_games_from_model, get_genre_from_gameid
 
@@ -37,6 +37,27 @@ GAME_LIST = {}
 
 PROJECT_ID = "poojaproject"
 BQ_TABLE_ID = f"{PROJECT_ID}.recommendation_metrics.user_feedback"
+
+
+def write_custom_metric(avg_rating: float) -> None:
+    client = monitoring_v3.MetricServiceClient()
+    project_name = f"projects/{PROJECT_ID}"
+
+    now = datetime.now(timezone.utc)
+    series = monitoring_v3.TimeSeries() 
+    series.metric.type = "custom.googleapis.com/user_feedback_rating"
+    series.resource.type = "global"
+    series.resource.labels["project_id"] = PROJECT_ID
+
+    point = monitoring_v3.Point()
+    point.value.double_value = float(avg_rating)
+    point.interval = monitoring_v3.TimeInterval(
+        end_time={"seconds": int(now.timestamp()), "nanos": now.microsecond * 1000}
+    )
+
+    series.points.append(point)
+    client.create_time_series(name=project_name, time_series=[series])
+    logging.info("[Monitoring] Custom metric written.")
 
 def log_user_feedback(game_ids, ratings, avg_rating):
     try:
@@ -178,6 +199,7 @@ def submit_feedback():
             return jsonify({"error": "Invalid feedback data"}), 400
         avg_rating = sum(ratings) / len(ratings)
         log_user_feedback(game_ids, ratings, avg_rating)
+        write_custom_metric(avg_rating)
         return jsonify({"message": "Thanks for your feedback!"})
     except Exception as e:
         logging.exception("Exception in /submit_feedback")
