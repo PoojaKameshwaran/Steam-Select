@@ -23,7 +23,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 load_dotenv()
 MY_STEAM_API_ACCESS_KEY = os.getenv('STEAM_API')
-logging.info(f"Loaded STEAM_API: {MY_STEAM_API_ACCESS_KEY}")
 
 app = Flask(__name__, static_folder='../frontend', template_folder='../frontend')
 app.config['VERSION'] = str(int(time.time()))
