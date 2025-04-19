@@ -37,8 +37,7 @@
 
 import requests
 
-# STEAM_API_KEY = "7BCC51361EC7334C9F743AA130F32406"  # Replace with your API key
-# STEAM_USER_ID = "76561198842127783"  # Replace with a valid Steam64 ID
+
 
 def check_steam_api(game_ids):
     url = "https://store.steampowered.com/api/appdetails"
