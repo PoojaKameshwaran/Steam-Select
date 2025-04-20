@@ -1,6 +1,5 @@
-# install kubectl
-gcloud components install kubectl
-
+# install gcloud, kubectl, docker
+# Project setup 
 # set gcp project
 gcloud config set project poojaproject
 
