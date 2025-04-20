@@ -38,6 +38,25 @@ kubectl apply -f kubernetes/
 
 
 
+steps to monitor the metrics DEPLOYMENT
+
+gcloud functions deploy insert_metrics_from_pkl --runtime python310 --trigger-resource steam-select --trigger-event google.storage.object.finalize --entry-point gcs_trigger --region us-east1 --source=. --timeout=300s --memory=2048MB
+
+cd code/src/cloud_functions
+
+# Build the container
+docker build -t gcr.io/poojaproject/k8s-restart -f Dockerfile.k8s .
+
+# Configure Docker to use Google Container Registry
+gcloud auth configure-docker
+
+# Push to Google Container Registry
+docker push gcr.io/poojaproject/k8s-restart
+
+# Create or update the Cloud Run job
+gcloud run jobs create flask-restart-job `
+  --image gcr.io/poojaproject/k8s-restart `
+  --region us-east1
 
 
 

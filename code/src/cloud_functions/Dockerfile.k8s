@@ -1,0 +1,12 @@
+FROM google/cloud-sdk:slim
+
+# Install kubectl
+RUN apt-get update && apt-get install -y kubectl
+
+WORKDIR /app
+
+# Create a simple script to restart the deployment
+COPY k8s_restart.sh .
+RUN chmod +x k8s_restart.sh
+
+ENTRYPOINT ["/app/k8s_restart.sh"]
