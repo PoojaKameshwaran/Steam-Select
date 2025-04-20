@@ -42,7 +42,7 @@ def split_train_test():
     for user_id in selected_users:
         user_entries = df[df['user_id'] == user_id]
         num_test_entries = min(len(user_entries), np.random.randint(1, 4))
-        test_rows = user_entries.sample(n=num_test_entries)
+        test_rows = user_entries.sample(n=num_test_entries, random_state=42)
         test_set.append(test_rows)
 
     test_df = pd.concat(test_set) if test_set else pd.DataFrame(columns=df.columns)
@@ -364,7 +364,7 @@ def wrapper_build_model_function():
     get_recommendations, *_ = run_hybrid_recommendation_system(train_df, user_n, game_n, metric)
 
     metrics = evaluate_genre_recommendations(
-        get_recommendations, train_df, test_df, sentiment_df, k=10, n_users=10
+        get_recommendations, train_df, test_df, sentiment_df, k=10, n_users=15
     )
     # Build and capture actual models and mappings
     user_game_matrix, game_user_matrix, user_to_idx, game_to_idx, idx_to_user, idx_to_game = build_sparse_matrices(train_df)
