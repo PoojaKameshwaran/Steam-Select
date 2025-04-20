@@ -383,6 +383,11 @@ def wrapper_build_model_function():
         "idx_to_game": idx_to_game,
         "metrics": metrics
     }
+    print("The path to save the model ", best_model_path)
+    # Delete existing file if it exists
+    if os.path.exists(best_model_path):
+        logger.info(f"Removing existing model file: {best_model_path}")
+        os.remove(best_model_path)
 
     with open(best_model_path, "wb") as f:
          pickle.dump(best_model_object, f)
