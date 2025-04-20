@@ -42,7 +42,7 @@ def split_train_test():
     for user_id in selected_users:
         user_entries = df[df['user_id'] == user_id]
         num_test_entries = min(len(user_entries), np.random.randint(1, 4))
-        test_rows = user_entries.sample(n=num_test_entries, random_state=42)
+        test_rows = user_entries.sample(n=num_test_entries)
         test_set.append(test_rows)
 
     test_df = pd.concat(test_set) if test_set else pd.DataFrame(columns=df.columns)
@@ -115,7 +115,7 @@ def genre_based_recommendation(genres, sentiment_df, k=10, exclude_games=None):
         exclude_games = []
 
     print(f"\n[DEBUG] Running genre-based fallback for genres: {genres}")
-    print(f"[DEBUG] Total games in sentiment_df: {len(sentiment_df)}")
+    # print(f"[DEBUG] Total games in sentiment_df: {len(sentiment_df)}")
     
     matched = 0
     game_scores = {}
@@ -187,12 +187,12 @@ def hybrid_recommendations(user_id, input_game_ids, df, user_model, game_model,
         user_vector = user_game_matrix[user_idx:user_idx+1]
         _, user_indices = user_model.kneighbors(user_vector)
 
-        print(f"[DEBUG] User vector shape: {user_vector.shape}")
-        print(f"[DEBUG] Nearest users: {[idx_to_user[idx] for idx in user_indices[0]]}")
+        # print(f"[DEBUG] User vector shape: {user_vector.shape}")
+        # print(f"[DEBUG] Nearest users: {[idx_to_user[idx] for idx in user_indices[0]]}")
 
 
         game_recommendations = {}
-        print(f"[DEBUG] Valid Game IDs: {valid_game_ids}")
+        # print(f"[DEBUG] Valid Game IDs: {valid_game_ids}")
         for game_id in valid_game_ids:
             game_idx = game_to_idx[game_id]
             game_vector = game_user_matrix[game_idx:game_idx+1]
@@ -241,7 +241,7 @@ def hybrid_recommendations(user_id, input_game_ids, df, user_model, game_model,
             if game_id not in recommendations:
                 recommendations.append(game_id)
 
-    print(f"[DEBUG] Final hybrid recs (before top-k): {recommendations[:10]}")
+    # print(f"[DEBUG] Final hybrid recs (before top-k): {recommendations[:10]}")
     return [int(game_id) for game_id in recommendations[:k]]
 
 # --- Wrapper ---
@@ -258,16 +258,17 @@ def run_hybrid_recommendation_system(train_df, user_n, game_n, metric):
             missing_game_genres, sentiment_df, k*2  # get more to allow filtering
         )
 
-        print(f"[DEBUG] Raw model recommendations (pre-filter): {recommendations}")
+        # print(f"[DEBUG] Raw model recommendations (pre-filter): {recommendations}")
         # Filter to only valid appids
         steam_json_path = os.path.join(PROCESSED_DATA_DIR, "steam_game_list.json")
         valid_appids = load_valid_appids(steam_json_path)
 
         filtered_recommendations = [game_id for game_id in recommendations if game_id in valid_appids]
-        print(f"[DEBUG] Valid recommendations after filtering: {filtered_recommendations}")
-        print(f"[DEBUG] Number of recommendations returned: {len(filtered_recommendations[:k])}")
+        # print(f"[DEBUG] Valid recommendations after filtering: {filtered_recommendations}")
+        # print(f"[DEBUG] Number of recommendations returned: {len(filtered_recommendations[:k])}")
 
         return filtered_recommendations[:k]
+    return get_recommendations, user_to_idx, game_to_idx, idx_to_user, idx_to_game
 
 # --- Evaluation ---
 def evaluate_genre_recommendations(get_recommendations, train_df, test_df, sentiment_df, k=10, n_users=None):
@@ -343,7 +344,6 @@ def evaluate_genre_recommendations(get_recommendations, train_df, test_df, senti
         'test_genre_hit_rate': test_genre_hit_rate / evaluated_users if evaluated_users else 0,
         'num_evaluated_users': evaluated_users
     }
-
     logger.info("Evaluation Results:")
     for k, v in metrics.items():
         logger.info(f"{k}: {v:.4f}" if isinstance(v, float) else f"{k}: {v}")
