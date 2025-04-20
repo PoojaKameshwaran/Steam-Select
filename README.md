@@ -248,3 +248,141 @@ The pipeline produces several key outputs at different stages of execution:
 - Also uploaded to GCS at: [gs://steam-select/best_models/best_model.pkl]
 
 ---
+
+### CI/CD Pipeline
+
+- To ensure a smooth and automated deployment experience, Steam Select is integrated with a GitHub Actions-based Continuous      Integration and Continuous Deployment (CI/CD) pipeline. The pipeline automates model building, Docker packaging, cloud storage upload, and Kubernetes deployment.
+
+## Overview
+
+    CI/CD Tool: GitHub Actions
+
+    Trigger: Push to cd-pipeline branch
+
+    Key Steps:
+
+        Authenticate with GCP
+
+        Set up the gcloud CLI
+
+        Build and save Docker image
+
+        Upload Docker image to GCS
+
+        Get GKE credentials
+
+        Apply Kubernetes secrets
+
+        Deploy Kubernetes manifests
+
+### Pipeline Code
+# .github/workflows/deploy.yaml
+name: GCP Kubernetes Deployment
+
+on:
+  push:
+    branches:
+      - cd-pipeline
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.gcp_key }}
+
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: poojaproject
+
+      - name: Build and Save Docker Image
+        run: |
+          docker build -t flask-app -f Dockerfile.flask .
+          docker save flask-app | gzip > flask-app.tar.gz
+
+      - name: Upload to GCS
+        run: gsutil cp flask-app.tar.gz gs://steam-select/docker-images/
+
+      - name: Get GKE credentials
+        run: gcloud container clusters get-credentials steam-select-clusters --region=us-east1
+
+      - name: Write GCP key to file and create Kubernetes secret
+        run: |
+          echo "${{ secrets.gcp_key }}" > gcp-key.json
+          kubectl create secret generic gcp-credentials --from-file=key.json=gcp-key.json --dry-run=client -o yaml | kubectl apply -f -
+
+![WhatsApp Image 2025-04-20 at 19 46 19_742aaabd](https://github.com/user-attachments/assets/40ebe55e-29bd-4e61-8de9-77c162d68cb2)
+
+
+![WhatsApp Image 2025-04-20 at 19 46 20_cd9f317d](https://github.com/user-attachments/assets/e0687ff6-1384-4dfc-9d0e-b845ff0399da)
+
+
+### Kubernetes Infrastructure
+
+Steam Select is deployed using Google Kubernetes Engine (GKE) for efficient container orchestration.
+
+## Deployment & Service Structure
+
+# 1. flask-app-deployment.yaml:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+        - name: flask-app
+          image: gcr.io/poojaproject/flask-app:latest
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: gcp-key
+              mountPath: "/secrets"
+              readOnly: true
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/secrets/key.json"
+      volumes:
+        - name: gcp-key
+          secret:
+            secretName: gcp-credentials
+
+# 2. flask-app-service.yaml:
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-app-service
+spec:
+  selector:
+    app: flask-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: LoadBalancer
+
+# 3. airflow.yaml: Deploys Apache Airflow using a similar setup for DAG orchestration.
+
+    Web UI exposed on port 8080
+
+    Deployed on same GKE cluster
+
+![WhatsApp Image 2025-04-20 at 19 47 32_1271531e](https://github.com/user-attachments/assets/68ffac5a-9512-46fa-9120-9577b089e004)
+
+![WhatsApp Image 2025-04-20 at 19 48 07_1bf9ee36](https://github.com/user-attachments/assets/3f1036da-ac77-4f38-adfc-d56db4839b5f)
+
