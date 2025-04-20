@@ -38,6 +38,10 @@ kubectl apply -f kubernetes/
 
 
 
+steps to monitor the metrics DEPLOYMENT
+
+gcloud functions deploy insert_metrics_from_pkl --runtime python310 --trigger-resource steam-select --trigger-event google.storage.object.finalize --entry-point gcs_trigger --region us-east1 --source=. --timeout=300s --memory=2048MB
+
 
 
 
