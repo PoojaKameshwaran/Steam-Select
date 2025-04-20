@@ -1,0 +1,29 @@
+name: Trigger Airflow DAG when model code changes
+
+on:
+  push:
+    paths:
+      - 'dags/model_development/build_model.py'
+      - 'dags/model_development/hybrid_mlflow_model.py'
+      - 'dags/model_development/hyperparameter_tuning.py'
+
+jobs:
+  trigger-dag:
+    runs-on: self-hosted
+
+    steps:
+      - name: Check for existing running DAGs
+        id: check
+        run: |
+          echo "Checking if model_development DAG is already running..."
+          running=$(curl -s "http://localhost:8080/api/v1/dags/model_development/dagRuns?state=running" | jq '.total_entries')
+          echo "Found $running running DAG(s)."
+          echo "running_dags=$running" >> "$GITHUB_OUTPUT"
+
+      - name: Conditionally trigger DAG
+        if: steps.check.outputs.running_dags == '0'
+        run: |
+          echo "No active DAGs found. Triggering a new run..."
+          curl -X POST "http://localhost:8080/api/v1/dags/model_development/dagRuns" \
+            -H "Content-Type: application/json" \
+            --data '{"dag_run_id": "github_push_'"$(date +%s)"'"}'
