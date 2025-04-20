@@ -1,7 +1,10 @@
 import pickle
 import io
+import requests
 from datetime import datetime, timezone
 from google.cloud import bigquery, storage
+import google.auth
+import google.auth.transport.requests
 
 def gcs_trigger(event, context):
     bucket_name = event['bucket']
@@ -29,3 +32,37 @@ def gcs_trigger(event, context):
     if errors:
         raise RuntimeError(f"BigQuery insert error: {errors}")
     print(f"Inserted metrics from {file_name} into BigQuery.")
+    
+    # Execute the Cloud Run job via the REST API
+    try:
+        # Get credentials for the API request
+        credentials, project = google.auth.default()
+        auth_req = google.auth.transport.requests.Request()
+        credentials.refresh(auth_req)
+        
+        # Construct the API URL
+        job_name = "flask-restart-job"
+        region = "us-east1"
+        project_id = "poojaproject"
+        
+        run_job_url = f"https://{region}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/{project_id}/jobs/{job_name}:run"
+        
+        # Set headers with authentication
+        headers = {
+            'Authorization': f'Bearer {credentials.token}',
+            'Content-Type': 'application/json'
+        }
+        
+        # Execute the job
+        response = requests.post(run_job_url, headers=headers, json={})
+        
+        if response.status_code in [200, 201, 202]:
+            print(f"Successfully triggered Flask app restart job")
+        else:
+            print(f"Failed to trigger job. Status: {response.status_code}, Response: {response.text}")
+            
+    except Exception as e:
+        print(f"Error triggering restart job: {str(e)}")
+    
+    print("Model metrics processing completed")
+    return "Processing completed successfully"
