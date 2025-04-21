@@ -249,6 +249,102 @@ The pipeline produces several key outputs at different stages of execution:
 
 ---
 
+# Project Deployment and Infrastructure Setup
+
+## Model Deployment
+
+Follow these steps to deploy and run the application efficiently on Google Cloud Platform (GCP):
+
+### Step 1: Install Google Component kubectl
+```bash
+gcloud components install kubectl
+```
+
+### Step 2: Set GCP Project
+```bash
+gcloud config set project poojaproject
+```
+
+### Step 3: Build Docker Image
+```bash
+docker build -t gcr.io/poojaproject/flask-app -f Dockerfile.flask .
+```
+
+### Step 4: Push Docker Image to Google Container Registry
+```bash
+docker push gcr.io/poojaproject/flask-app
+```
+
+### Step 5: Create Kubernetes Cluster
+```bash
+gcloud beta container --project "poojaproject" clusters create "steam-select-clusters" \
+--region "us-east1" --tier "standard" --no-enable-basic-auth \
+--cluster-version "1.31.6-gke.1020000" --release-channel "regular" \
+--machine-type "e2-medium" --image-type "COS_CONTAINERD" \
+--disk-type "pd-balanced" --disk-size "100" --metadata disable-legacy-endpoints=true \
+--scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" \
+--num-nodes "3" --logging=SYSTEM,WORKLOAD --monitoring=SYSTEM,STORAGE,POD,DEPLOYMENT,STATEFULSET,DAEMONSET,HPA,CADVISOR,KUBELET \
+--enable-ip-alias --network "projects/poojaproject/global/networks/default" \
+--subnetwork "projects/poojaproject/regions/us-east1/subnetworks/default" \
+--no-enable-intra-node-visibility --default-max-pods-per-node "110" \
+--enable-ip-access --security-posture=standard --workload-vulnerability-scanning=disabled \
+--no-enable-google-cloud-access --addons HorizontalPodAutoscaling,HttpLoadBalancing,GcePersistentDiskCsiDriver \
+--enable-autoupgrade --enable-autorepair --max-surge-upgrade 1 --max-unavailable-upgrade 0 \
+--binauthz-evaluation-mode=DISABLED --enable-managed-prometheus \
+--enable-shielded-nodes --shielded-integrity-monitoring --no-shielded-secure-boot \
+--node-locations "us-east1-b"
+```
+
+### Step 6: Activate the Created Cluster
+```bash
+gcloud container clusters get-credentials steam-select-clusters --region=us-east1
+```
+
+### Step 7: Create Kubernetes Secret for Credentials
+```bash
+kubectl create secret generic gcp-credentials --from-file=key.json=./config/key.json
+```
+
+### Step 8: Create Disk for PostgreSQL
+```bash
+gcloud compute disks create postgres-disk --size=10GB --zone=us-east1-b
+```
+
+### Step 9: Deploy the Application
+```bash
+kubectl apply -f kubernetes/flask-app-deployment.yaml
+kubectl apply -f kubernetes/flask-app-service.yaml
+```
+
+## Infrastructure Setup on GCP
+
+### Google Kubernetes Engine (GKE)
+- **Cluster Name:** steam-select-clusters
+- **Region:** us-east1
+- **Nodes:** 3 nodes
+
+### IAM and Service Accounts
+- **Service Account:** `airflow-gcs-access@poojaproject.iam.gserviceaccount.com`
+- **Assigned Roles:**
+  - Artifact Registry Writer
+  - BigQuery Data Editor
+  - BigQuery User
+  - Kubernetes Engine Cluster Viewer
+  - Kubernetes Engine Developer
+  - Monitoring Metric Writer
+  - Storage Admin
+  - Storage Object Admin
+  - Storage Object Creator
+
+### Google Cloud Storage
+- **Bucket Name:** steam-select
+- **Used for:**
+  - Cleaned training data
+  - Trained models
+  - Docker images
+
+---
+
 ### CI/CD Pipeline
 
 - To ensure a smooth and automated deployment experience, Steam Select is integrated with a GitHub Actions-based Continuous      Integration and Continuous Deployment (CI/CD) pipeline. The pipeline automates model building, Docker packaging, cloud storage upload, and Kubernetes deployment.
