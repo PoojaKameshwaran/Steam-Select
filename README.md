@@ -482,3 +482,127 @@ spec:
 
 ![WhatsApp Image 2025-04-20 at 19 48 07_1bf9ee36](https://github.com/user-attachments/assets/3f1036da-ac77-4f38-adfc-d56db4839b5f)
 
+
+Here's a clean and well-formatted version of your content tailored for a `README.md` on GitHub. It's structured using Markdown with headers, bullet points, and code snippets where appropriate:
+
+---
+
+# 🎮 Flask UI + Monitoring for Game Recommendation System
+
+## 🌐 Flask API - UI Page
+
+The user interface of our application is built using **Flask** and served on port `5000`. Once deployed behind a **Load Balancer**, the interface allows users to:
+
+1. Enter their **top 3 favorite games**.
+![WhatsApp Image 2025-04-20 at 20 19 40_59252697](https://github.com/user-attachments/assets/6fdd5219-892d-426d-a006-dc59225a58f2)
+2. Click **"Get Recommendations"** to receive **top 3 game suggestions**.
+![WhatsApp Image 2025-04-20 at 20 19 47_285673e5](https://github.com/user-attachments/assets/745720a5-638a-4450-95d9-47755814bbf0)
+![WhatsApp Image 2025-04-20 at 20 19 53_07c70488](https://github.com/user-attachments/assets/64379006-0551-49da-be15-6e8198ff47b2)
+3. View recommendations directly on the UI.
+![WhatsApp Image 2025-04-20 at 20 20 01_59b964fe](https://github.com/user-attachments/assets/778582d0-05e4-4b93-aedd-a2e4e3a40e20)
+4. Provide **feedback** on each recommended game.
+![WhatsApp Image 2025-04-20 at 20 20 18_3e8f82a5](https://github.com/user-attachments/assets/aca0e2a9-b7f7-4f30-a9bd-ce7b1762f029)
+
+---
+
+## 📊 Logging and Monitoring
+
+We implemented a logging and monitoring pipeline using **BigQuery** and **Google Cloud Monitoring** to track input features, predictions, and system performance.
+
+### 🔧 BigQuery
+
+**BigQuery** serves as the central logging repository for user inputs and model predictions.
+
+#### Setup Instructions:
+
+1. **Create Dataset:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/).
+   - Navigate to **BigQuery**.
+   - Create a new dataset named `recommendation_metrics`.
+
+2. **Create Table:**
+   - Under `recommendation_metrics`, create a table named `user_feedback`.
+   - Use the schema below:
+     ```json
+     [
+       {"name": "timestamp", "type": "timestamp", "mode": "NULLABLE"},
+       {"name": "game_ids", "type": "STRING", "mode": "NULLABLE"},
+       {"name": "ratings", "type": "STRING", "mode": "NULLABLE"},
+       {"name": "avg_ratings", "type": "FLOAT", "mode": "NULLABLE"}
+     ]
+     ```
+     
+3. **Add Permissions:**
+   - Go to **IAM & Admin**.
+   - Edit the appropriate service account.
+   - Add the following roles:
+     - `BigQuery Data Editor`
+     - `BigQuery Data Viewer`
+     - `BigQuery User`
+     - `Storage Object Viewer`
+     - `Editor`
+
+Once completed, predictions and metadata are automatically logged to BigQuery upon every recommendation request.
+
+![WhatsApp Image 2025-04-20 at 20 24 56_442165e6](https://github.com/user-attachments/assets/45c8b976-0e45-48d5-9035-54385a92f311)
+
+
+---
+
+### 📈 Google Cloud Monitoring
+
+**Google Cloud Monitoring** provides observability into the system's health, prediction performance, and user engagement.
+
+#### Use Cases:
+
+- Track **API response times** and system health
+- Monitor **model decay** and prediction anomalies
+- Log user feedback and metrics for debugging
+
+#### Setup Instructions:
+
+1. Open **Google Cloud Monitoring Console**.
+2. Create a **Workspace** and link it with your project.
+3. Use **Metrics Explorer** to:
+   - Visualize latency and system health
+   - Track key metrics over time
+4. Set up **Alert Policies** to get notified about anomalies (e.g., high latency or failed predictions)
+
+---
+
+## 📊 Monitoring Dashboard Features
+
+### 🧠 Model Performance
+
+- Shows **Precision & Recall** for training and testing datasets
+- Includes gauges to quickly evaluate **model reliability**
+
+### 💬 User Feedback
+
+- Tracks **average user rating trends**
+- Monitors **daily feedback volume** for engagement analysis
+
+### 📈 Performance Trends
+
+- Visualizes **precision and recall** over time
+- Helps detect **model drift** and quality changes
+
+  ![WhatsApp Image 2025-04-20 at 20 25 05_ab7f9d34](https://github.com/user-attachments/assets/7aee294c-3828-4c5a-861c-41aad146a2e7)
+
+
+---
+
+
+## ✅ Conclusion
+
+We developed a **hybrid game recommendation system** with a clean UI and integrated monitoring for performance insights. The combination of **Flask**, **BigQuery**, and **Google Cloud Monitoring** ensures:
+
+- Accurate predictions
+- High user satisfaction
+- Scalable performance tracking
+
+🔮 **Future Enhancements:**  
+We plan to integrate a **chatbot interface** for a more conversational recommendation experience.
+
+---
+
